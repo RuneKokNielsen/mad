@@ -1,0 +1,1 @@
+Afløsningsopgave i fagområdet Modellering og Analyse af Data.
