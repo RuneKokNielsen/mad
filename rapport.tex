@@ -14,6 +14,8 @@
 \usepackage{verbatim}
 \usepackage{qtree}
 \usepackage{scrextend}
+\usepackage{multirow}
+\usepackage{float}
 
 \tikzset{main node/.style={circle,fill=blue!20,draw,minimum size=1cm,inner sep=0pt},
 }
@@ -75,6 +77,10 @@ mathescape
 
 \graphicspath{ {images/} }
 \usetikzlibrary{arrows}
+\tikzset{
+  leaf_/.style = {shape=rectangle,draw, align=center},
+  node_/.style     = {shape=circle,draw,align=center}
+}
 \author{Rune Kok Nielsen (qkd362), Andreas Holm (jnh508)}
 \title{Afløsningsopgave i fagområdet Modellering og Analyse af Data}
 \DeclareMathOperator{\Ran}{Ran}
@@ -84,16 +90,74 @@ mathescape
 \maketitle
 
 \section{Klassificering}
-Formålet med klassificering er at putte datapunkter bestående af et antal egenskaber i passende kategorier fra en prædifineret mængde af diskrete, beskrivende kategorier. Klassificering består i definitionen af at finde en passende klassificeringsmodel, hvilket er en funktion der tager et datapunkt og returnerer den tilhørende kategori.
+Formålet med klassificering er at putte datapunkter bestående af et antal egenskaber i passende kategorier fra en prædifineret mængde af diskrete, beskrivende kategorier, disse datapunkter er også kendt som tupler bestående af $(x,y)$, hvor $x$ er de givet egenskaber, og $y$ er dens kategori. Klassificering består i definitionen af at finde en passende klassificeringsmodel, hvilket er en funktion $f$ der tager et datapunkt $x$ og returnerer den tilhørende kategori $y$.
 
 Der findes adskillige teknikker til at bestemme en klassificeringsmodel. En sådan teknik beskriver en læringsalgoritme, der på basis af et træningssæt (et sæt af datapunkter med kendte kategorier) udleder en (evt. suboptimal) model.
 
-Det er sjældent muligt at klassificere ethvert givent punkt korrekt ud fra de tilgængelige egenskaber, og vi har derfor brug for en måde at afgøre nøjagtigheden af den resulterende model. Denne nøjagtighed estimeres ved at klassificere et testsæt med modellen, og se på hvor stor en andel af datapunkterne der har fået den rigtige kategori.
+Det er sjældent muligt at klassificere ethvert givent punkt korrekt ud fra de tilgængelige egenskaber, og vi har derfor brug for en måde at afgøre nøjagtigheden af den resulterende model. Denne nøjagtighed estimeres ved at klassificere et testsæt med modellen, og se på hvor stor en andel af datapunkterne der har fået den rigtige kategori. For at vise modellens nøjagtighed kan man beregne dens \textit{accuracy}, hvilket fortæller hvor præcis den er, eller man kan beregne dens \textit{error rate}, hvilke er det modsatte af \textit{accuracy} dvs. hvor mange forkerte punkter modellen har produceret. For at beregne disse målenheder bruger vi en \textit{confusion matrix}. I table 1 ses en \textit{confusion matrix}, det ses i kolonnerne hvad modellen har tildelt klassen, og i rækkerne ses hvad dens rigtige klasser er. \\
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{cc|c|c|c|c|}
+    & \multicolumn{5}{c}{Predicted Class} \\
+    \cline{3-6}
+     & & Class = 0 & Class = 1 & .. & Class = n \\
+    \cline{2-6}
+    \multicolumn{1}{c|}{\multirow{4}{*}{Actual Class}} & Class = 0 & $f_{00}$ & $f_{01}$ & .. & $f_{0n}$ \\
+    \cline{2-6}
+    \multicolumn{1}{c|}{} & Class = 1 & $f_{10}$ & $f_{11}$ & .. & $f_{1n}$ \\
+    \cline{2-6}
+    \multicolumn{1}{c|}{} & .. & .. & .. & .. & .. \\
+    \cline{2-6}
+    \multicolumn{1}{c|}{} & Class = m & $f_{m0}$ & $f_{m1}$ & .. & $f_{mn}$ \\
+    \cline{2-6}
+\end{tabular}
+\caption{\textit{Confusion matrix}}
+\end{center}
+\end{table}
+
+For at beregne vores \textit{accuracy} og \textit{error rate} bruger vi vores tabel, og har således en formel for hver målenhed, som kan ses nedenfor. \\
+
+\begin{align*}
+Accuracy &= \frac{Antallet \ af \ korrekte \ forudsigelser}{Det \ totale \ antal \ forudsigelser} \\
+         &= \frac{f_{00} + f_{11} + f_{mn}}{f_{00} + f_{01} + f_{0n} + f_{10} + f_{11} + f_{1m} + f_{m0} + f_{m1} + f_{mn}}
+\end{align*}
+
+\begin{align*}
+Error \ rate &= \frac{Antallet \ af \ forkerte \ forudsigelser}{Det \ totale \ antal \ forudsigelser} \\
+           &= \frac{f_{01} + f_{0n} + f_{10} + f_{1n} + f_{m0} + f_{m1}}{f_{00} + f_{01} + f_{0n} + f_{10} + f_{11} + f_{1m} + f_{m0} + f_{m1} + f_{mn}}
+\end{align*}
+
+Her gælder det at jo højere \textit{accuracy} desto bedre, og det modsatte gælder for \textit{error rate}. \\
 
 \subsection{Beslutningstræer (Decision trees)}
 Et eksempel på en klassificeringsteknik er gennem brug af beslutningstræer. Et beslutningstræ består af knuder og blade samt en rodknude. Et datapunkt kan da klassificeres ved at traversere træet startende i roden.
 
-Hver knude består af et spørgsmål, som har en definitiv mængde svar, der kan besvares ud fra egenskaberne i et givent datapunkt. Ud fra svaret (altså datapunktets egenskaber) peger knuden videre til en ny knude eller et blad. Et blad repræsenterer den endelige kategori.
+Hver knude består af et spørgsmål, som har en definitiv mængde svar, der kan besvares ud fra egenskaberne i et givent datapunkt. Ud fra svaret (altså datapunktets egenskaber) peger knuden videre til en ny knude eller et blad. Et blad repræsenterer den endelige kategori. I eksemplet i figur 1, kan der ses et eksempel på hvordan et \textit{decision tree} fungere, i dette eksempel antager vi, vi har fået en mængde, som indeholder enten biler, fly eller både, vi starter med at spørge om det givet datapunkt har hjul, hvis nej må det være en båd, hvis ja kan det enten være en bil eller et fly, og derfor spørger vi igen, denne gang om det givet datapunkt har vinger, hvis ja er det et fly, og hvis nej må det være en bil, på denne måde har vi sikret os at vores datapunkt er kommet i den rigtige kategori.
+
+\begin{figure}[H]
+\begin{center}
+\begin{tikzpicture}
+  [
+    grow                    = down,
+    sibling distance        = 6em,
+    level distance          = 6em,
+    edge from parent/.style = {draw, -latex},
+    every node/.style       = {font=\footnotesize}
+  ]
+  \node [node_] {Hjul?}
+    child { node [leaf_] {Båd}
+      edge from parent node [left] {Nej} }
+    child { node [node_] {Vinger?}
+      child { node [leaf_] {Bil}
+              edge from parent node [left]{Nej} }       
+      child { node [leaf_] {Fly}
+              edge from parent node [right]{Ja} }
+              edge from parent node [right] {Ja} };
+\end{tikzpicture}
+\end{center}
+\caption{\textit{Decision tree} eksempel}
+\end{figure}
 
 Et (muligvis suboptimalt) beslutningstræ kan bl.a. konstrueres fra et træningssæt med Hunts algoritme. Algoritmen starter med en mængde af alle datapunkter i træningssættet. Hvis alle punkter i mængden har samme kategori bliver denne mængde et blad i træet. Ellers stilles et spørgsmål om punkterne i mængden, og disse punkter uddeles samles i delmængder ud fra, hvordan de besvarer spørgsmålet. Spørgsmålet bliver en knude i træet, som peger på de nye delmængder, og algoritmen køres rekursivt på delmængderne.
 
