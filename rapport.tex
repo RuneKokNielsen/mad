@@ -90,11 +90,15 @@ mathescape
 \maketitle
 
 \section{Klassificering}
-Formålet med klassificering er at putte datapunkter bestående af et antal egenskaber i passende kategorier fra en prædifineret mængde af diskrete, beskrivende kategorier, disse datapunkter er også kendt som tupler bestående af $(x,y)$, hvor $x$ er de givet egenskaber, og $y$ er dens kategori. Klassificering består i definitionen af at finde en passende klassificeringsmodel, hvilket er en funktion $f$ der tager et datapunkt $x$ og returnerer den tilhørende kategori $y$.
+Formålet med klassificering er at putte datapunkter bestående af et antal egenskaber i passende kategorier fra en prædifineret mængde af diskrete, beskrivende kategorier. Disse datapunkter er også kendt som tupler bestående af $(x,y)$, hvor $x$ er de givne egenskaber, og $y$ er punktets kategori. Klassificering består i definitionen af at finde en passende klassificeringsmodel, hvilket er en funktion $f$ der tager et datapunkt $x$ og returnerer den tilhørende kategori $y$.
 
 Der findes adskillige teknikker til at bestemme en klassificeringsmodel. En sådan teknik beskriver en læringsalgoritme, der på basis af et træningssæt (et sæt af datapunkter med kendte kategorier) udleder en (evt. suboptimal) model.
 
-Det er sjældent muligt at klassificere ethvert givent punkt korrekt ud fra de tilgængelige egenskaber, og vi har derfor brug for en måde at afgøre nøjagtigheden af den resulterende model. Denne nøjagtighed estimeres ved at klassificere et testsæt med modellen, og se på hvor stor en andel af datapunkterne der har fået den rigtige kategori. For at vise modellens nøjagtighed kan man beregne dens \textit{accuracy}, hvilket fortæller hvor præcis den er, eller man kan beregne dens \textit{error rate}, hvilke er det modsatte af \textit{accuracy} dvs. hvor mange forkerte punkter modellen har produceret. For at beregne disse målenheder bruger vi en \textit{confusion matrix}. I table 1 ses en \textit{confusion matrix}, det ses i kolonnerne hvad modellen har tildelt klassen, og i rækkerne ses hvad dens rigtige klasser er. \\
+Det er sjældent muligt at klassificere ethvert givent punkt korrekt ud fra de tilgængelige egenskaber, og vi har derfor brug for en måde at afgøre nøjagtigheden af den resulterende model. Denne nøjagtighed estimeres ved at klassificere et testsæt med modellen, og se på hvor stor en andel af datapunkterne der har fået den rigtige kategori. For at vise modellens nøjagtighed kan man beregne dens \textit{accuracy}, hvilket fortæller hvor præcis den er, eller man kan beregne dens \textit{error rate}, hvilke er det modsatte af \textit{accuracy} dvs. hvor mange forkerte punkter modellen har produceret.\\
+For at beregne nøjagtigheden af en model, benytter vi et testsæt. Ligesom træningssættet er testsættet en mængde af datapunkter med kendte kategorier. Udregningerne består da i at klassificere punkterne i testsættet ved hjælp af modellen, og sammenligne punkternes kategorier som udregnet af modellen med deres egentlige kategorier, som vi kender i forvejen.\\
+Det er essentielt at testsættet ikke overlapper med træningssættet, da dette vil tildele en for høj nøjagtighed til modellen. Har man f.eks. et meget lille træningssæt kan man nemt lave en model, som tilfældigvis passer perfekt på træningssættet, men som i realiteten er helt forkert. Tester man modellen på et testsæt som næsten overlapper fuldstændigt med træningssættet vil de overlappende punkter højst sandsynligt klassificeres korrekt, hvilket resulterer i meget høj nøjagtighed, selvom modellen i virkeligheden kun passer netop på træningssættet. 
+
+For at beregne nøjagtiheden og fejlraten bruger vi en \textit{confusion matrix}. I bel 1 ses en \textit{confusion matrix}, det ses i kolonnerne hvad modellen har tildelt klassen, og i rækkerne ses hvad dens rigtige klasser er. \\
 
 \begin{table}[H]
 \begin{center}
@@ -130,6 +134,45 @@ Error \ rate &= \frac{Antallet \ af \ forkerte \ forudsigelser}{Det \ totale \ a
 
 Her gælder det at jo højere \textit{accuracy} desto bedre, og det modsatte gælder for \textit{error rate}. \\
 
+\subsubsection{Problemer ved klassificering}
+Det er ikke altid muligt at lave en perfekt klassificeringsmodel, som klassificerer ethvert givent punkt korrekt. F.eks. kunne dataen være utilstrækkelig til, at ramme alle tænkelige eksempler korrekt. Betragt træningssættet nedenfor. 
+
+\begin{tabular}{c|c|c|c}
+	Dyr & Lægger æg & Har et næb & Klasse\\
+	\hline
+	Pingvin & Ja & Ja & Fugl\\
+	Aborre & Ja & Nej & Fisk\\
+	Gorilla & Nej & Nej & Pattedyr\\
+	Torsk & Ja & Nej & Fisk\\
+	Due & Ja & Ja & Fugl\\
+	Kat & Nej & Nej & Pattedyr
+\end{tabular}
+
+Datasættet indeholder kun to binære egenskaber, men ud fra træningssættet kan man nemt lave en model, som lader til at tildelte ethvert dyr i korrekt kategori (antaget at det ligger inde for en af de tre mulige klasser). Nedenfor ses et beslutningstræ, som klassificerer alle punkterne i træningssættet korrekt (mere om beslutingstræer i næste afsnit).
+
+\begin{center}
+	\begin{tikzpicture}
+	[
+	grow                    = down,
+	sibling distance        = 6em,
+	level distance          = 6em,
+	edge from parent/.style = {draw, -latex},
+	every node/.style       = {font=\footnotesize}
+	]
+	\node [node_] {Lægger æg?}
+	child { node [leaf_] {Pattedyr}
+		edge from parent node [left] {Nej} }
+	child { node [node_] {Har et næb?}
+		child { node [leaf_] {Fisk}
+			edge from parent node [left]{Nej} }       
+		child { node [leaf_] {Fugl}
+			edge from parent node [right]{Ja} }
+		edge from parent node [right] {Ja} };
+	\end{tikzpicture}
+\end{center}
+Dette ser undertiden fint ud, men prøver man sætte et næbdyr ind i denne model, vil den blive klassificeret som en fugl (da den har et næb og lægger æg), selvom den egentlig er et pattedyr. Selvom vi egentlig har en model, som måske kan klassificere de fleste dyr korrekt, vil der være specielle tilfælde, hvor den skyder helt ved siden af. I dette eksempel kunne man muligvis løse problemet ved at indsamle flere egenskaber, og benytte et større træningssæt, men dette vil ikke altid være muligt, og der vil som sådan være situationer, hvor man ikke kan bygge en perfekt klassificeringsmodel.
+
+
 \subsection{Beslutningstræer (Decision trees)}
 Et eksempel på en klassificeringsteknik er gennem brug af beslutningstræer. Et beslutningstræ består af knuder og blade samt en rodknude. Et datapunkt kan da klassificeres ved at traversere træet startende i roden.
 
@@ -162,5 +205,84 @@ Hver knude består af et spørgsmål, som har en definitiv mængde svar, der kan
 Et (muligvis suboptimalt) beslutningstræ kan bl.a. konstrueres fra et træningssæt med Hunts algoritme. Algoritmen starter med en mængde af alle datapunkter i træningssættet. Hvis alle punkter i mængden har samme kategori bliver denne mængde et blad i træet. Ellers stilles et spørgsmål om punkterne i mængden, og disse punkter uddeles samles i delmængder ud fra, hvordan de besvarer spørgsmålet. Spørgsmålet bliver en knude i træet, som peger på de nye delmængder, og algoritmen køres rekursivt på delmængderne.
 
 
+\subsubsection{Eksempel på modeludledning}
+For at illustrere brugen af decision trees vil vi her vise et eksempel på, hvordan man ud fra et todimensionelt træningssæt og testsæt kan bygge og efterteste en klassificeringsmodel. Betragt følgende træningssæt:
+
+\begin{tabular}{c|c|c}
+	X & Y & Klasse\\
+	\hline
+	0.8 & 0.9 & A\\
+	0.6 & 0.1 & B\\
+	0.2 & 0.3 & C\\
+	0.1 & 0.8 & C\\
+	0.4 & 0.2 & B\\
+	0.4 & 0.5 & A\\
+	0.03 & 0.6 & C\\
+	0.5 & 0. 3 & B\\
+	0.6 & 0.7 & A\\
+	0.45 & 0.8 & A\\
+	0.8 & 0.7 & B\\
+	0.28 & 0.3 & C\\
+	0.1 & 0.05 & C
+\end{tabular} 
+
+Tegner vi disse punkter ind i en graf ser det således ud:
+\begin{center}
+	\includegraphics{decision_tree_example_plot}
+\end{center}
+Hvor blå cirkler er A, røde plusser er B og gule stjerner er C. Der er klare tendenser i, hvordan punkterne har fordelt sig. Ved at indtegne et par linjer kan vi tydeligt illustrere dette:
+\begin{center}
+	\includegraphics{decision_tree_example_plot_splitted}
+\end{center}
+Ud fra denne opdeling kunne det tyde på, at $f(x,y)=C$ for $x<0.3$, $f(x,y)=A$ for $0.3<x<y$ og $f(x,y)=B$ for $0.3<x$ og $y<x$. Med disse observationer kan vi bygge et beslutningstræ med Hunts algoritme.
+
+Lad $D_t$ være hele træningssættet. Så indeholder $D_t$ punkter af alle klasser, vælger vi en (\textit{attribute test condition}) ad adskille punkterne på. For at få det mindste træ starter vi med at teste om $x<0.3$, hvilket giver også en mængde $D_{t1}=\{p\ |\ class(p)=C\}$ for ja og $D_{t2}=\{p\ |\ class(p)\neq C\}$ for $0.3<x$. Da $D_{t1}$ kun indeholder en klasse bliver dette til et $C-$blad i træet, mens vi må teste rekursivt på $D_{t2}$.
+
+Vi tester $D_{t2}$ for egenskaben $x<y$ og får en gruppe $D_{t3}=\{p\ | class(p)=A\}$ for ja og $D_{t4}=\{p\ |\ class(p)=B\}$ for nej. Da begge disse grupper er rene (kun indeholder en punkter af en klasse) bliver disse til blade, og vi kan nu tegne vores beslutningstræ.
+
+\begin{center}
+	\begin{tikzpicture}
+	[
+	grow                    = down,
+	sibling distance        = 6em,
+	level distance          = 6em,
+	edge from parent/.style = {draw, -latex},
+	every node/.style       = {font=\footnotesize}
+	]
+	\node [node_] {$x<0.3$}
+	child { node [leaf_] {C}
+		edge from parent node [left] {Ja} }
+	child { node [node_] {$x<y$}
+		child { node [leaf_] {A}
+			edge from parent node [left]{Ja} }       
+		child { node [leaf_] {B}
+			edge from parent node [right]{Nej} }
+		edge from parent node [right] {Nej} };
+	\end{tikzpicture}
+\end{center}
+Det er nu lykkedes at bygge en model, som kan opdele træningssættet korrekt. Dette er dog ingen garanti for, modellen er korrekt. Modellen er bygget ud fra nogen antagelser, som holder gennem træningssættet, men det betyder ikke, at det holder i praksis. For at undersøge modellens nøjagtighed vil vi bruge den til at klassificere testsættet nedenfor.
+
+\begin{tabular}{c|c|c}
+	X & Y & Klasse\\
+	\hline
+	0.2 & 0.01 & C\\
+	0.28 & 0.1 & C\\
+	0.1 & 0.2 & C\\
+	0.4 & 0.5 & A\\
+	0.5 & 0.8 & A\\
+	0.9 & 0.95 & A\\
+	0.5 & 0.4 & B\\
+	0.8 & 0.2 & B\\
+	0.6 & 0.5 & A\\
+	0.7 & 0.1 & B\\
+	0.5 & 0.12 & B\\
+	0.12 & 0.75 & C
+\end{tabular} 
+
+Tegner vi punkterne ind i en graf med grænserne sat som før får vi følgende resultat:
+\begin{center}
+	\includegraphics{decision_tree_example_plot_test}
+\end{center}
+Testsættet passer næsten overens, men der er et enkelt punkt som ikke overholder vores antagelse, så modellen er ikke perfekt. Helt konkret kan vi udregne en nøjagtighed baseret på vores resultat med testsættet. Ud af 12 punkter blev 11 punkter klassificeret korrekt, så vi regner os frem til en nøjagtihed $acc_M=\frac{11}{12}\approx0.92$
 
 \end{document}
