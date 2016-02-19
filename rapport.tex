@@ -292,7 +292,63 @@ En SMV træningsalgoritme er en type klassifikationsteknik til binær klassifika
 
 \subsection{Linear SVM}
 \subsubsection{Separable case}
+$(x_i,y_i) \ i=1,2,...N$ hvor $x_i$ repræsentere det i'te dataset, i disse eksempler vil $y_i \in \{-1,1\}$ dvs. at vi indeler vores data i 2 klasser, enten $-1$ eller $1$. \\
+
+For at finde punkter paa vores graense kan vi opstille ligningen nedenfor, og de punkter der er lig med 0 ligger paa graensen. \\
+(Indsaet eksempel)
+$$w * x + b = 0$$
+
+$$w * x_a + b = 0$$
+$$w * x_b + b = 0$$
+
+(Vend om paa b11 og b12)
+
+For punkter der ligger ved siden af graensen kan vi opstille en gaffelfunktion, som kan ses nedenfor, de punkter der er mindre end $0$ ligger under graensen, og vil blive klassifiseret som $-1$, og de punkter der er stoerrer end $0$ ligger over graensen og vil blive klassifiseret som $1$. \\
+
+$$
+   y_i = \left\{
+     \begin{array}{lr}
+       1, & if \ w * x_i + b > 0 \\
+       -1, & if \ w * x_i + b < 0
+     \end{array}
+   \right.
+$$
+
+Vi kan give vores $w$ og $b$ nye vaerdier saaledes at vi finder de punkter der ligger paa vores margner. Som det kan ses i den tidligere graf vil det punkt som ligger paa $b_{11}$ opfylde den foerste ligning, og det punkt, som ligger paa b12 opfylde den anden ligning. \\
+$$b_{i1}: w * x + b = 1$$
+$$b_{i2}: w * x + b = -1$$
+
+Og da vi gerne vil have de magner med den stoerste afstand fra hinanden kan vi omskrve de forgaaende formler til at kunne beregne afstanden mellem magnerne,dette kan vi goere ved at indsaette de punkter, som ligger paa den ovre og den nedre margen, og ved at traekke de to formler fra hinanden, kan vi komme frem til den formel, som kan ses nedenfor. Her kan vi se at afstanden mellem de to margner ($d$), kan findes ved $\frac{2}{||w||}$. Og naar vi senere hen skal til at optimere $w$, kan det let ses her at for at finde den stoerste afstand, skal vi minimere $w$. \\
+\begin{align*}
+w * (x_1 - x_2) = 2 \\
+||w|| \times d = 2 \\
+d = \frac{2}{||w||} \\
+\end{align*}
+
+For at traene vores SVM skal vi estimere $w$ og $b$ saaledes at nedenstaaende formler er overholdt, de skal overholdes paa den maade at de dataset som tilhoerer klassen $1$ skal overholde den foerste formel, og de dataset som tilhoere klassen $-1$ skal overholde den anden formel. \\
+$$w * x_i + b \leq 1 \ if \ y_i = 1$$
+$$w * x_i + b \geq 1 \ if \ y_i = -1$$
+
+Formlerne ovenfor kan samles til formlen, som kan ses nedenfor. \\
+$$y_i(w * x_i + b) \geq, \ i =1,2,...,N$$
+
+For at opnaa den stoerste afstand mellem de to margner, skal formlen nedenfor minimeres, og det ses let at jo mindre $w$ bliver desto  \\
+$$f(w)=\frac{||w||^2}{2}$$
+
+(Optimering)
+
 \subsubsection{Non-separable case}
+Det er ikke altid den bedste \textit{dicision boundary} er den som opdeler de givet dataset $100\%$, men nogen gange findes der andre graensen som giver en stoere afstand mellem margnerne, som vil vaere et bedre valg, men grundet eventuelle fejl i test settet, eller bare dataset, som ikke ligger i samme omraade med de andre dataset goer det det ikke muligt at vaelge denne graense. Men selvom her vil vi stadig vaelge den graense med stoerst afstand mellem magnerne, selvom der er enkelte dataset, som bliver klassifiseret forkert, men paa grund af et den store afstand mellem magnerne goer at vores model bliver mindre udsat for \textit{overfitting} vil det vaere et bedre valg. \\
+
+Men for de dataset, som ikke bliver klassifiseret rigtigt, kan vi introducere \textit{slack variables}, disse variabler vil placere de misplaceret dataset i den rigtige klassificering. \\
+
+$$w * x_i + b \geq 1 - \xi_i \ if \ y_i = 1$$
+$$w * x_i + b \leq 1 - \xi_i \ if \ y_i = -1$$
+where $\forall i : \xi_i > 0$
+
+
+
+$$f(w) = \frac{||w||^2}{2}+C(\sum\limits_{i=1}^N \xi_i)^k$$
 
 \subsection{Non-linear SVM}
 \subsubsection{Kernel trick}
