@@ -294,7 +294,7 @@ En SMV træningsalgoritme er en type klassifikationsteknik til binær klassifika
 \subsubsection{Separable case}
 I vores gennemgang af linear SVM vil vi kigge paa et problem hvor, vi kan klassificere dataset i to klasser, vores inddeling kan beskrives mere formelt som $(x_i,y_i) \ i=1,2,...N$ hvor $x_i$ repræsentere det i'te dataset, i disse eksempler vil $y_i \in \{-1,1\}$ dvs. at vi indeler vores data i 2 klasser, enten $-1$ eller $1$.
 
-For at finde punkter paa vores graense kan vi opstille formlen nedenfor, og de punkter der er lig med $0$ vil ligge paa graensen. w \\
+For at finde punkter paa vores graense kan vi opstille formlen nedenfor, og de punkter der er lig med $0$ vil ligge paa graensen. De to variable $w$ og $b$ er inputs fra modellen, for helt praecist at beskrive dem er $w$ en normal vektor til vores graense \textit{decision boundary}, og $b$ er den vinkelrette afstand til  (....TODO....) \\
 (Indsaet eksempel)
 $$w * x + b = 0$$
 
@@ -314,7 +314,7 @@ $$
    \right.
 $$
 
-Vi kan give vores $w$ og $b$ nye vaerdier saaledes at vi finder de punkter der ligger paa vores margner. Som det kan ses i den tidligere graf vil det punkt som ligger paa $b_{11}$ opfylde den foerste ligning, og det punkt, som ligger paa b12 opfylde den anden ligning. \\
+Vi kan skalere vores $w$ og $b$1 saaledes at vi finder de punkter der ligger paa vores margner. Som det kan ses i den tidligere graf vil det punkt som ligger paa $b_{11}$ opfylde den foerste ligning, og det punkt, som ligger paa b12 opfylde den anden ligning. \\
 $$b_{i1}: w * x + b = 1$$
 $$b_{i2}: w * x + b = -1$$
 
@@ -332,10 +332,12 @@ $$w * x_i + b \geq 1 \ if \ y_i = -1$$
 Formlerne ovenfor kan samles til formlen, som kan ses nedenfor. \\
 $$y_i(w * x_i + b) \geq, \ i =1,2,...,N$$
 
-For at opnaa den stoerste afstand mellem de to margner, skal formlen nedenfor minimeres, og det ses let at jo mindre $w$ bliver desto  \\
+For at opnaa den stoerste afstand mellem de to margner, skal formlen nedenfor maximeres (modsat af formlen for at finde $d$).  \\
 $$f(w)=\frac{||w||^2}{2}$$
 
 (Optimering)
+
+$$L_P = \frac{1}{2} * ||w||^2 - \sum\limits_{i=1}^N \lambda_i (y_i(w * x_i + b) - 1)$$
 
 \subsubsection{Non-separable case}
 I nogle tilfaelde vil den bedste graense (\textit{dicision boundary}) ikke altid opdele alle vores dataset, men der vil vaere enkelte dataset, som bliver klassificeret forkert, dette kan skyldes forskellige ting saasom fejl i traenings data, eller at der er et enkelt dataset, som ikke holder sig til moenstret for dens klassificering. Men i disse tilfaelde vil vi stadig proeve at opnaa saa stor en afstand mellem vores magner, som muligt, selvom enkelte dataset bliver klassificeret forkert, dette skyldes at hvis vi valgte en graense, som ville opdele vores dataset uden fejl, ofte ville have en meget lille afstand mellems dens magner, og dette vil goere at modellen ville vaere meget udsat for \textit{overfitting}. \\
@@ -345,7 +347,7 @@ Grundet at vi har punkter der ikke er klassificeret rigtigt af vores graensen, v
  Som det kan ses i vores to nye formler skal vi subtrakterer hvis vores dataset er placeret under graensen, men den skal kvalificeres, som om den laa oven for graensen, dette goer vi ved at subtrakterer hoejre siden af formlen med vores \textit{slack variable}, med en vaerdi som goer at formlen er sand. Det samme gaelder for det omvendte scenarie, men her bruges addition paa hoejre siden af formlen for at faa formlen til at blive sand.  \\
 $$w * x_i + b \geq 1 - \xi_i \ if \ y_i = 1$$
 $$w * x_i + b \leq 1 - \xi_i \ if \ y_i = -1$$
-where $\forall i : \xi_i > 0$
+Bemaerk $\forall i : \xi_i > 0$
 
 Men for ikke bare at vaelge en graense med store magner, og saa bare rette alle de forkerte klassificeret dataset til med \textit{slack variables}, introducere vi en vaegt for hvert dataset, som er kvalificeret forkert, denne vaegt kan ses i den modificeret formel nedenfor, bemaerk at $C$ og $k$ bliver sat a brugeren (ofte vil $k = 1$ grundet simplicitet). Det ses klart at for hvert punkt, som er kvilificeret fokert vil de valgte magner blive rangeret daarligere. \\
 
