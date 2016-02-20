@@ -309,62 +309,81 @@ Nedenfor er indtegnet to hyperplaner (sorte linjer) og deres margin (grå linjer
 \subsubsection{Separable case}
 I vores gennemgang af linear SVM vil vi kigge paa et problem hvor, vi kan klassificere dataset i to klasser, vores inddeling kan beskrives mere formelt som $(x_i,y_i) \ i=1,2,...N$ hvor $x_i$ repræsentere det i'te dataset, i disse eksempler vil $y_i \in \{-1,1\}$ dvs. at vi indeler vores data i 2 klasser, enten $-1$ eller $1$.
 
-For at finde punkter paa vores graense kan vi opstille formlen nedenfor, og de punkter der er lig med $0$ vil ligge paa graensen. De to variable $w$ og $b$ er inputs fra modellen, for helt praecist at beskrive dem er $w$ en normal vektor til vores graense \textit{decision boundary}, og $b$ er den vinkelrette afstand til  (....TODO....) \\
+For at finde punkter paa vores graense kan vi opstille formlen nedenfor, og de punkter der er lig med $0$ vil ligge paa graensen. De to variable $w$ og $b$ er inputs fra modellen, for helt praecist at beskrive dem er $w$ en normal vektor til vores graense \textit{decision boundary}, og $b$ er den vinkelrette afstand til  (....TODO....) 
 (Indsaet eksempel)
-$$w * x + b = 0$$
+$$w \cdot x + b = 0$$
 
-$$w * x_a + b = 0$$
-$$w * x_b + b = 0$$
+$$w \cdot x_a + b = 0$$
+$$w \cdot x_b + b = 0$$
 
 (Vend om paa b11 og b12)
 
-For punkter der ligger ved siden af graensen kan vi opstille en gaffelfunktion, som kan ses nedenfor, de punkter der er mindre end $0$ ligger under graensen, og vil blive klassifiseret som $-1$, og de punkter der er stoerrer end $0$ ligger over graensen og vil blive klassifiseret som $1$. \\
-
+For punkter der ligger ved siden af graensen kan vi opstille en gaffelfunktion, som kan ses nedenfor, de punkter der er mindre end $0$ ligger under graensen, og vil blive klassifiseret som $-1$, og de punkter der er stoerrer end $0$ ligger over graensen og vil blive klassifiseret som $1$. 
 $$
    y_i = \left\{
      \begin{array}{lr}
-       1, & if \ w * x_i + b > 0 \\
-       -1, & if \ w * x_i + b < 0
+       1, & if \ w \cdot x_i + b > 0 \\
+       -1, & if \ w \cdot x_i + b < 0
      \end{array}
    \right.
 $$
 
-Vi kan skalere vores $w$ og $b$1 saaledes at vi finder de punkter der ligger paa vores margner. Som det kan ses i den tidligere graf vil det punkt som ligger paa $b_{11}$ opfylde den foerste ligning, og det punkt, som ligger paa b12 opfylde den anden ligning. \\
-$$b_{i1}: w * x + b = 1$$
-$$b_{i2}: w * x + b = -1$$
+Vi kan skalere vores $w$ og $b$1 saaledes at vi finder de punkter der ligger paa vores margner. Som det kan ses i den tidligere graf vil det punkt som ligger paa $b_{11}$ opfylde den foerste ligning, og det punkt, som ligger paa b12 opfylde den anden ligning. 
+$$b_{i1}: w \cdot x + b = 1$$
+$$b_{i2}: w \cdot x + b = -1$$
 
-Og da vi gerne vil have de magner med den stoerste afstand fra hinanden kan vi omskrve de forgaaende formler til at kunne beregne afstanden mellem magnerne,dette kan vi goere ved at indsaette de punkter, som ligger paa den ovre og den nedre margen, og ved at traekke de to formler fra hinanden, kan vi komme frem til den formel, som kan ses nedenfor. Her kan vi se at afstanden mellem de to margner ($d$), kan findes ved $\frac{2}{||w||}$. Og naar vi senere hen skal til at optimere $w$, kan det let ses her at for at finde den stoerste afstand, skal vi minimere $w$. \\
+Og da vi gerne vil have de magner med den stoerste afstand fra hinanden kan vi omskrve de forgaaende formler til at kunne beregne afstanden mellem magnerne,dette kan vi goere ved at indsaette de punkter, som ligger paa den ovre og den nedre margen, og ved at traekke de to formler fra hinanden, kan vi komme frem til den formel, som kan ses nedenfor. Her kan vi se at afstanden mellem de to margner ($d$), kan findes ved $\frac{2}{||w||}$. Og naar vi senere hen skal til at optimere $w$, kan det let ses her at for at finde den stoerste afstand, skal vi minimere $w$. 
 \begin{align*}
-w * (x_1 - x_2) = 2 \\
+w \cdot (x_1 - x_2) = 2 \\
 ||w|| \times d = 2 \\
 d = \frac{2}{||w||} \\
 \end{align*}
 
-For at traene vores SVM skal vi estimere $w$ og $b$ saaledes at nedenstaaende formler er overholdt, de skal overholdes paa den maade at de dataset som tilhoerer klassen $1$ skal overholde den foerste formel, og de dataset som tilhoere klassen $-1$ skal overholde den anden formel. \\
-$$w * x_i + b \leq 1 \ if \ y_i = 1$$
-$$w * x_i + b \geq 1 \ if \ y_i = -1$$
+For at traene vores SVM skal vi estimere $w$ og $b$ saaledes at nedenstaaende formler er overholdt, de skal overholdes paa den maade at de dataset som tilhoerer klassen $1$ skal overholde den foerste formel, og de dataset som tilhoere klassen $-1$ skal overholde den anden formel. 
+$$w \cdot x_i + b \leq 1 \ if \ y_i = 1$$
+$$w \cdot x_i + b \geq 1 \ if \ y_i = -1$$
 
-Formlerne ovenfor kan samles til formlen, som kan ses nedenfor. \\
-$$y_i(w * x_i + b) \geq, \ i =1,2,...,N$$
+Formlerne ovenfor kan samles til formlen, som kan ses nedenfor. 
+$$y_i(w \cdot x_i + b) \geq, \ i =1,2,...,N$$
 
-For at opnaa den stoerste afstand mellem de to margner, skal formlen nedenfor maximeres (modsat af formlen for at finde $d$).  \\
+For at opnaa den stoerste afstand mellem de to margner, skal den objektive funktion nedenfor maximeres (modsat af formlen for at finde $d$).  
 $$f(w)=\frac{||w||^2}{2}$$
+
+(Definition)
+$$\min\limits_{w} \frac{||w||^2}{2}$$
 
 (Optimering)
 
-$$L_P = \frac{1}{2} * ||w||^2 - \sum\limits_{i=1}^N \lambda_i (y_i(w * x_i + b) - 1)$$
+For at optimere vores objektive funktion, skal vi bruge \textit{Lagrange multiplier}, \textit{Lagrange multiplier} er en metode der bruges til at finde en funktions minimum eller maximum, og i dette tilfaelde skal vi bruge den til at finde $f(w)=\frac{||w||^2}{2}$ minimum, da dette vil give os den bedste \textit{decision boundary}, vi bruger \textit{Lagranges multiplier} paa grund af vores problem bestaar af en objektiv funktion, som er kvadradisk og vores begraensninger er linaere i parametrene $w$ og $b$, og dette ender ud i at vaere et konveks optimerings problem, og her bliver \textit{Langranges multiplier} brugt som standard.
+
+For at kunne bruge \textit{Langranges multiplier} bliver vi noed til at omskrive vores objektive funktion, til en ny objektiv funktion, som tager hoejde for vores begraensininger, den nye objektive funktion kendes ogsaa som en \textit{Langrangian} funktion.
+$$L_P = \frac{1}{2}||w||^2 - \sum\limits_{i=1}^N \lambda_i (y_i(w \cdot x_i + b) - 1)$$
+
+
+$$\frac{\partial L_p}{\partial w} = 0 \Rightarrow w = \sum\limits_{i=1}^N \lambda_i y_i x_i$$
+
+$$\frac{\partial L_p}{\partial b} = 0 \Rightarrow \sum\limits_{i=1}^N \lambda_i y_i = 0$$
+
+$$\lambda_i \geq 0$$
+$$\lambda_i[y_i(w \cdot x_i + b) - 1] = 0$$
+
+$$L_D = \sum\limits_{i=1}^N \lambda_i - \frac{1}{2}\sum\limits_{i,j} \lambda_i \lambda_j y_i y_j x_j \cdot x_j$$
+
+$$( \sum\limits_{i=1}^N \lambda_i y_i x_i \cdot x) + b = 0$$
+
+$$f(z) = sign(w \cdot z + b) = sign( \sum\limits_{i=1}^N \lambda_i y_i x_i \cdot z + b)$$
 
 \subsubsection{Non-separable case}
-I nogle tilfaelde vil den bedste graense (\textit{dicision boundary}) ikke altid opdele alle vores dataset, men der vil vaere enkelte dataset, som bliver klassificeret forkert, dette kan skyldes forskellige ting saasom fejl i traenings data, eller at der er et enkelt dataset, som ikke holder sig til moenstret for dens klassificering. Men i disse tilfaelde vil vi stadig proeve at opnaa saa stor en afstand mellem vores magner, som muligt, selvom enkelte dataset bliver klassificeret forkert, dette skyldes at hvis vi valgte en graense, som ville opdele vores dataset uden fejl, ofte ville have en meget lille afstand mellems dens magner, og dette vil goere at modellen ville vaere meget udsat for \textit{overfitting}. \\
+I nogle tilfaelde vil den bedste graense (\textit{dicision boundary}) ikke altid opdele alle vores dataset, men der vil vaere enkelte dataset, som bliver klassificeret forkert, dette kan skyldes forskellige ting saasom fejl i traenings data, eller at der er et enkelt dataset, som ikke holder sig til moenstret for dens klassificering. Men i disse tilfaelde vil vi stadig proeve at opnaa saa stor en afstand mellem vores magner, som muligt, selvom enkelte dataset bliver klassificeret forkert, dette skyldes at hvis vi valgte en graense, som ville opdele vores dataset uden fejl, ofte ville have en meget lille afstand mellems dens magner, og dette vil goere at modellen ville vaere meget udsat for \textit{overfitting}. 
 
-Grundet at vi har punkter der ikke er klassificeret rigtigt af vores graensen, vil vores tidligere formler ikke passer paa alle vores dataset, og for at rette dette introducere vi \textit{slack variables} ($\xi$), disse variabler skal placere de dataset der er kvalificeret forkert rigtigt, og dette goeres ved at addere eller substakterre (hvilke der skal bruges kommer an paa hvor datasettet er placeret, og hvor vi vil have det skal klassificeres) med vores nye variable ($\xi$). \\
+Grundet at vi har punkter der ikke er klassificeret rigtigt af vores graensen, vil vores tidligere formler ikke passer paa alle vores dataset, og for at rette dette introducere vi \textit{slack variables} ($\xi$), disse variabler skal placere de dataset der er kvalificeret forkert rigtigt, og dette goeres ved at addere eller substakterre (hvilke der skal bruges kommer an paa hvor datasettet er placeret, og hvor vi vil have det skal klassificeres) med vores nye variable ($\xi$). 
 
- Som det kan ses i vores to nye formler skal vi subtrakterer hvis vores dataset er placeret under graensen, men den skal kvalificeres, som om den laa oven for graensen, dette goer vi ved at subtrakterer hoejre siden af formlen med vores \textit{slack variable}, med en vaerdi som goer at formlen er sand. Det samme gaelder for det omvendte scenarie, men her bruges addition paa hoejre siden af formlen for at faa formlen til at blive sand.  \\
+ Som det kan ses i vores to nye formler skal vi subtrakterer hvis vores dataset er placeret under graensen, men den skal kvalificeres, som om den laa oven for graensen, dette goer vi ved at subtrakterer hoejre siden af formlen med vores \textit{slack variable}, med en vaerdi som goer at formlen er sand. Det samme gaelder for det omvendte scenarie, men her bruges addition paa hoejre siden af formlen for at faa formlen til at blive sand.  
 $$w * x_i + b \geq 1 - \xi_i \ if \ y_i = 1$$
 $$w * x_i + b \leq 1 - \xi_i \ if \ y_i = -1$$
 Bemaerk $\forall i : \xi_i > 0$
 
-Men for ikke bare at vaelge en graense med store magner, og saa bare rette alle de forkerte klassificeret dataset til med \textit{slack variables}, introducere vi en vaegt for hvert dataset, som er kvalificeret forkert, denne vaegt kan ses i den modificeret formel nedenfor, bemaerk at $C$ og $k$ bliver sat a brugeren (ofte vil $k = 1$ grundet simplicitet). Det ses klart at for hvert punkt, som er kvilificeret fokert vil de valgte magner blive rangeret daarligere. \\
+Men for ikke bare at vaelge en graense med store magner, og saa bare rette alle de forkerte klassificeret dataset til med \textit{slack variables}, introducere vi en vaegt for hvert dataset, som er kvalificeret forkert, denne vaegt kan ses i den modificeret formel nedenfor, bemaerk at $C$ og $k$ bliver sat a brugeren (ofte vil $k = 1$ grundet simplicitet). Det ses klart at for hvert punkt, som er kvilificeret fokert vil de valgte magner blive rangeret daarligere. 
 
 $$f(w) = \frac{||w||^2}{2}+C(\sum\limits_{i=1}^N \xi_i)^k$$
 
