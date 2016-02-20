@@ -381,25 +381,41 @@ Lagrange kan nu benyttes på samme måde som i det lineære tilfælde. Også her
 L_D&=\sum_{i=1}^{n}\lambda_i-\frac{1}{2}\sum_{i,j}\lambda_i\lambda_j y_iy_j\Phi(x_i)\cdot\Phi(x_j)
 \end{align*}
 
-Denne optimering kræver som man kan se udregningen af prikproduktet mellem samtlige par af punkter i det transformerede rum. Da dette kan være udregningsmæssigt tungt, og kræver at man kender en transformation der passer på det enkelte problem, vil man typisk bruge en anden tilgang kaldet \textit{kernel trick}. Tilgangen bygger på et matematisk resultat, der tillader os at benytte en klasse af funktioner kaldet kernefunktioner.
+Denne optimering kræver som man kan se udregningen af prikproduktet mellem samtlige par af punkter i det transformerede rum. Da dette kan være udregningsmæssigt tungt, og kræver at man kender en transformation der passer på det enkelte problem, vil man typisk bruge en anden tilgang kaldet \textit{kernel trick}, som tillader os at benytte kernefunktioner til at opnå et ækvivalent resultat.
 
-For at en kernefunktion kan bruges i en ikke-lineær SVM, skal den overholde Mercers teorem. Dette medfører at der findes en transformation $\Phi$ sådan at kernefunktionen regnet på ethvert par af vektorer $u,v$ er ækvivalent til prikproduktet af $u,v$ i det transformerede rum. Altså skal det for kernefunktionen $K$ gælde at:
-$$K(u,v)=\Phi(u)\cdot\Phi(v)$$
 
-Kernefunktionen $K$ kan da erstatte prikproduktet og transformationerne i Lagrange problemet:
+\subsubsection{Kernefunktioner}
+Lad $X=\{x_1..x_n\}\subset \chi_1$ være en mængde af $n$ vektorer i rummet $\chi_1$, og lad $\Phi:\chi_1\rightarrow\chi_2$. Da er en kernefunktion $k$ med feature mapping $\Phi$ en funktion der udregner det indre produkt af ethvert vektorpar $x_i,x_j\in X$ transformeret til $\chi_2$. Altså
+\begin{equation}
+k(x_i,x_j)=\langle\Phi(x_i),\Phi(x_j)\rangle
+\end{equation}
+
+Så definerer vi kernen $K$ som en $n\times n$-matrice med indre produkter af input vektorerne
+\begin{equation}
+K=\left[\begin{array}{r r r}
+\langle\Phi(x_1),\Phi(x_1)\rangle & ... & \langle\Phi(x_1),\Phi(x_n)\rangle\\
+ & ... & \\
+\langle\Phi(x_n),\Phi(x_1)\rangle & ... & \langle\Phi(x_n),\Phi(x_n)\rangle\\
+\end{array}\right]\\
+\end{equation}
+Et indre produkt er per definition symmetrisk, så det følger at
+\begin{equation}
+K_{i,j}=\langle\Phi(x_i),\Phi(x_j)\rangle=\langle\Phi(x_j),\Phi(x_i)\rangle=K_{j,i}
+\end{equation}
+Hvilket viser at $K$ må være symmetrisk over diagonalen. 
+
+Foruden den symmetriske egenskab skal $K$ være positiv semidefinit for at $k$ er en gyldig kernefunktion. $K$ betegnes da som Gram matricen for det indre produkt i $\chi_1$. Dette betyder formelt at
+\begin{equation}
+\forall c\in R^n,c^TKc\geq 0
+\end{equation}
+
+
+
+
+Med denne definition kan $k$ nu erstatte prikproduktet og transformationerne i Lagrange problemet:
 \begin{align*}
 L_D&=\sum_{i=1}^{n}\lambda_i-\frac{1}{2}\sum_{i,j}\lambda_i\lambda_j y_iy_jK(x_i,x_j)
 \end{align*}
 
-\subsubsection{Mercers teorem}
-Vi har indtil videre arbejdet med, at en kernefunktion for ethvert vektorpar $x_i,x_j$ kunne udregne prikproduktet i det transformerede rum $\Phi(x_i)\cdot\Phi(x_j)$. Lad $X=\{x_1..x_n\}$ være en mængde af vektorer. Så skal $K$ kunne udregne felterne i gram matricen $G$
-\begin{align*}
-G&=\left[\begin{array}{r r r}
-\Phi(x_1)\cdot\Phi(x_1) & ... & \Phi(x_1)\cdot\Phi(x_n)\\\
-... & ... & ...\\
-\Phi(x_n)\cdot\Phi(x_1) & ... & \Phi(x_n)\cdot\Phi(x_n)
-\end{array}\right]\\
-\end{align*}
-Da prikproduktet er symmetrisk følger det at $G$ er symmetrisk, og derfor diagonaliserbar. Altså findes der en diagonalmatrix $D$ og en invertibel matrix $P$ sådan at $P^{-1}GP=D\Leftrightarrow PDP^{-1}=G$, hvor $D$ indeholder egenværdier og $P$ indeholder tilhørende egenvektorer for $G$.
 
 \end{document}
