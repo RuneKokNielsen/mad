@@ -292,9 +292,9 @@ En SMV træningsalgoritme er en type klassifikationsteknik til binær klassifika
 
 \subsection{Linear SVM}
 \subsubsection{Separable case}
-$(x_i,y_i) \ i=1,2,...N$ hvor $x_i$ repræsentere det i'te dataset, i disse eksempler vil $y_i \in \{-1,1\}$ dvs. at vi indeler vores data i 2 klasser, enten $-1$ eller $1$. \\
+I vores gennemgang af linear SVM vil vi kigge paa et problem hvor, vi kan klassificere dataset i to klasser, vores inddeling kan beskrives mere formelt som $(x_i,y_i) \ i=1,2,...N$ hvor $x_i$ repræsentere det i'te dataset, i disse eksempler vil $y_i \in \{-1,1\}$ dvs. at vi indeler vores data i 2 klasser, enten $-1$ eller $1$.
 
-For at finde punkter paa vores graense kan vi opstille ligningen nedenfor, og de punkter der er lig med 0 ligger paa graensen. \\
+For at finde punkter paa vores graense kan vi opstille formlen nedenfor, og de punkter der er lig med $0$ vil ligge paa graensen. w \\
 (Indsaet eksempel)
 $$w * x + b = 0$$
 
@@ -338,15 +338,16 @@ $$f(w)=\frac{||w||^2}{2}$$
 (Optimering)
 
 \subsubsection{Non-separable case}
-Det er ikke altid den bedste \textit{dicision boundary} er den som opdeler de givet dataset $100\%$, men nogen gange findes der andre graensen som giver en stoere afstand mellem margnerne, som vil vaere et bedre valg, men grundet eventuelle fejl i test settet, eller bare dataset, som ikke ligger i samme omraade med de andre dataset goer det det ikke muligt at vaelge denne graense. Men selvom her vil vi stadig vaelge den graense med stoerst afstand mellem magnerne, selvom der er enkelte dataset, som bliver klassifiseret forkert, men paa grund af et den store afstand mellem magnerne goer at vores model bliver mindre udsat for \textit{overfitting} vil det vaere et bedre valg. \\
+I nogle tilfaelde vil den bedste graense (\textit{dicision boundary}) ikke altid opdele alle vores dataset, men der vil vaere enkelte dataset, som bliver klassificeret forkert, dette kan skyldes forskellige ting saasom fejl i traenings data, eller at der er et enkelt dataset, som ikke holder sig til moenstret for dens klassificering. Men i disse tilfaelde vil vi stadig proeve at opnaa saa stor en afstand mellem vores magner, som muligt, selvom enkelte dataset bliver klassificeret forkert, dette skyldes at hvis vi valgte en graense, som ville opdele vores dataset uden fejl, ofte ville have en meget lille afstand mellems dens magner, og dette vil goere at modellen ville vaere meget udsat for \textit{overfitting}. \\
 
-Men for de dataset, som ikke bliver klassifiseret rigtigt, kan vi introducere \textit{slack variables}, disse variabler vil placere de misplaceret dataset i den rigtige klassificering. \\
+Grundet at vi har punkter der ikke er klassificeret rigtigt af vores graensen, vil vores tidligere formler ikke passer paa alle vores dataset, og for at rette dette introducere vi \textit{slack variables} ($\xi$), disse variabler skal placere de dataset der er kvalificeret forkert rigtigt, og dette goeres ved at addere eller substakterre (hvilke der skal bruges kommer an paa hvor datasettet er placeret, og hvor vi vil have det skal klassificeres) med vores nye variable ($\xi$). \\
 
+ Som det kan ses i vores to nye formler skal vi subtrakterer hvis vores dataset er placeret under graensen, men den skal kvalificeres, som om den laa oven for graensen, dette goer vi ved at subtrakterer hoejre siden af formlen med vores \textit{slack variable}, med en vaerdi som goer at formlen er sand. Det samme gaelder for det omvendte scenarie, men her bruges addition paa hoejre siden af formlen for at faa formlen til at blive sand.  \\
 $$w * x_i + b \geq 1 - \xi_i \ if \ y_i = 1$$
 $$w * x_i + b \leq 1 - \xi_i \ if \ y_i = -1$$
 where $\forall i : \xi_i > 0$
 
-
+Men for ikke bare at vaelge en graense med store magner, og saa bare rette alle de forkerte klassificeret dataset til med \textit{slack variables}, introducere vi en vaegt for hvert dataset, som er kvalificeret forkert, denne vaegt kan ses i den modificeret formel nedenfor, bemaerk at $C$ og $k$ bliver sat a brugeren (ofte vil $k = 1$ grundet simplicitet). Det ses klart at for hvert punkt, som er kvilificeret fokert vil de valgte magner blive rangeret daarligere. \\
 
 $$f(w) = \frac{||w||^2}{2}+C(\sum\limits_{i=1}^N \xi_i)^k$$
 
