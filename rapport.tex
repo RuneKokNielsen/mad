@@ -288,7 +288,22 @@ Testsættet passer næsten overens, men der er et enkelt punkt som ikke overhold
 
 \section{Support Vector Machines (SVM)}
 
-En SMV træningsalgoritme er en type klassifikationsteknik til binær klassifikation, som er specielt egnet til data af mange dimensioner. Teknikken baseres på at finde et \textit{maximal margin hyperplane} (altså et hyperplan med maksimal margin) (work in progress)
+En SMV træningsalgoritme er en type klassifikationsteknik til binær klassifikation, som er specielt egnet til data af mange dimensioner. Teknikken baseres på at finde et \textit{maximal margin hyperplane}, altså et hyperplan som deler datapunkterne op i to dele svarende til deres kategori, med maksimal margin til de nærmeste punkter. Dette hyperplan betegnes som modellens \textit{decision boundary}.
+
+Formålet med at maksimere margin er at optimere modellens generaliseringsevne, og dermed opnå bedst mulig nøjagtig når nye punkter skal klassificeres. Hvis vores decision boundary har meget lille margin, er der intuitivt ikke plads til meget forskel på dataen sammenlignet med træningssættet. Dette koncept illustreres i eksemplet nedenfor.
+
+Betragt træningssættet af todimensionelle punkter, markeret som plusser og cirkler afhængig af deres klasse.
+
+\begin{center}
+	\includegraphics{maximal_margin_hyperplane_1}
+\end{center}
+
+Nedenfor er indtegnet to hyperplaner (sorte linjer) og deres margin (grå linjer), som begge deler træningssættet op uden fejl. Det er tydeligt at B2 har breddere margin end B1, og B2 er derfor objektivt den bedste løsning til problemet. Undersøger man selv dataen for en naturlig tendens i opdelingen, bliver det også tydeligt at se, at B2 følger denne tendens langt bedre end B1.
+
+\begin{center}
+	\includegraphics{maximal_margin_hyperplane_2}
+\end{center}
+
 
 \subsection{Linear SVM}
 \subsubsection{Separable case}
@@ -354,8 +369,39 @@ Men for ikke bare at vaelge en graense med store magner, og saa bare rette alle 
 $$f(w) = \frac{||w||^2}{2}+C(\sum\limits_{i=1}^N \xi_i)^k$$
 
 \subsection{Non-linear SVM}
-\subsubsection{Kernel trick}
+Det er ikke altid muligt at definere en lineær opdeling af dataen. En naiv løsning på dette problem er, at transformere datapunkterne til et andet rum, hvor en lineær opdeling er mulig.
 
+Antag at vi har en transformation $\Phi(x)$ fra det originale rum til et transformeret rum, hvor en lineær opdeling er mulig. Så kan vi genbruge vores viden fra det lineære tilfælde, og optimeringen er nogenlunde den samme. For at opnå den maksimale margin skal vi igen minimere funktionen 
+$$f(w)=\frac{||w||^2}{2}$$
+Under kravet at
+$$y_i(w\cdot\Phi(x_i)+b)\geq 1,\text{ for }i=1,2..,N$$
+Ligningen er næsten identisk med det lineære tilfælde, men vi optimerer nu med $\Phi(x_i)$ - altså $x_i$ i det transformerede rum.
 
+Lagrange kan nu benyttes på samme måde som i det lineære tilfælde. Også her ska lvi blot benytte de transfomerede punkter.
+
+\begin{align*}
+L_D&=\sum_{i=1}^{n}\lambda_i-\frac{1}{2}\sum_{i,j}\lambda_i\lambda_j y_iy_j\Phi(x_i)\cdot\Phi(x_j)
+\end{align*}
+
+Denne optimering kræver som man kan se udregningen af prikproduktet mellem samtlige par af punkter i det transformerede rum. Da dette kan være udregningsmæssigt tungt, og kræver at man kender en transformation der passer på det enkelte problem, vil man typisk bruge en anden tilgang kaldet \textit{kernel trick}. Tilgangen bygger på et matematisk resultat, der tillader os at benytte en klasse af funktioner kaldet kernefunktioner.
+
+For at en kernefunktion kan bruges i en ikke-lineær SVM, skal den overholde Mercers teorem. Dette medfører at der findes en transformation $\Phi$ sådan at kernefunktionen regnet på ethvert par af vektorer $u,v$ er ækvivalent til prikproduktet af $u,v$ i det transformerede rum. Altså skal det for kernefunktionen $K$ gælde at:
+$$K(u,v)=\Phi(u)\cdot\Phi(v)$$
+
+Kernefunktionen $K$ kan da erstatte prikproduktet og transformationerne i Lagrange problemet:
+\begin{align*}
+L_D&=\sum_{i=1}^{n}\lambda_i-\frac{1}{2}\sum_{i,j}\lambda_i\lambda_j y_iy_jK(x_i,x_j)
+\end{align*}
+
+\subsubsection{Mercers teorem}
+Vi har indtil videre arbejdet med, at en kernefunktion for ethvert vektorpar $x_i,x_j$ kunne udregne prikproduktet i det transformerede rum $\Phi(x_i)\cdot\Phi(x_j)$. Lad $X=\{x_1..x_n\}$ være en mængde af vektorer. Så skal $K$ kunne udregne felterne i gram matricen $G$
+\begin{align*}
+G&=\left[\begin{array}{r r r}
+\Phi(x_1)\cdot\Phi(x_1) & ... & \Phi(x_1)\cdot\Phi(x_n)\\\
+... & ... & ...\\
+\Phi(x_n)\cdot\Phi(x_1) & ... & \Phi(x_n)\cdot\Phi(x_n)
+\end{array}\right]\\
+\end{align*}
+Da prikproduktet er symmetrisk følger det at $G$ er symmetrisk, og derfor diagonaliserbar. Altså findes der en diagonalmatrix $D$ og en invertibel matrix $P$ sådan at $P^{-1}GP=D\Leftrightarrow PDP^{-1}=G$, hvor $D$ indeholder egenværdier og $P$ indeholder tilhørende egenvektorer for $G$.
 
 \end{document}
