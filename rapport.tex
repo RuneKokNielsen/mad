@@ -356,14 +356,14 @@ $$\min\limits_{w} \frac{||w||^2}{2}$$
 
 For at optimere vores objektive funktion, skal vi bruge \textit{Lagrange multiplier}, \textit{Lagrange multiplier} er en metode der bruges til at finde en funktions minimum eller maximum, og i dette tilfaelde skal vi bruge den til at finde $f(w)=\frac{||w||^2}{2}$ minimum, da dette vil give os den bedste \textit{decision boundary}, vi bruger \textit{Lagranges multiplier} paa grund af vores problem bestaar af en objektiv funktion, som er kvadradisk og vores begraensninger er linaere i parametrene $w$ og $b$, og dette ender ud i at vaere et konveks optimerings problem, og her bliver \textit{Langranges multiplier} brugt som standard.
 
-For at kunne bruge \textit{Langranges multiplier} bliver vi noed til at omskrive vores objektive funktion, til en ny objektiv funktion, som tager hoejde for vores begraensininger, den nye objektive funktion kendes ogsaa som en \textit{Langrangian} funktion.
+For at kunne bruge \textit{Langranges multiplier} bliver vi noed til at omskrive vores objektive funktion, til en ny objektiv funktion, som tager hoejde for vores begraensininger, den nye objektive funktion kendes ogsaa som en \textit{Langrangian} funktion, variablen $\lambda_i$ i den nye funktion er kendt som en \textit{Langranges multiplier}. 
 $$L_P = \frac{1}{2}||w||^2 - \sum\limits_{i=1}^N \lambda_i (y_i(w \cdot x_i + b) - 1)$$
+Grunden til at vi har vaeret noedsaget til at aendre vores objektive funktion fra $f(w) = \frac{||w||^2}{2}$ til den overstaaende objektive funktion er, at den tidligere funktion ville det let ses at for at opnaa den minimale vaerdi ville $w = 0$ vaere den bedste loesning, men denne loesning ville ikke holde da vores begraensninger fra $y_i(w \cdot x_i + b) \geq, \ i =1,2,...,N$ ikke ville holde, (....TODO....)
 
-
+For at kunne minimere vores \textit{Lagrangian} funktion, skal vi foerst lave to partielle differentieringer, foerst differentiere vi i forhold til $w$, og derefter differentiere vi i forhold til $b$. Nedenfor kan de to partielle differentieringer ses.
 $$\frac{\partial L_p}{\partial w} = 0 \Rightarrow w = \sum\limits_{i=1}^N \lambda_i y_i x_i$$
-
 $$\frac{\partial L_p}{\partial b} = 0 \Rightarrow \sum\limits_{i=1}^N \lambda_i y_i = 0$$
-
+Selvom vi har fundet de partielt defirentieret funktioner, er det stadig ikke muligt at finde $w$ og $b$, dette skyldes at vores definition (....TODO.... -> Reference til definition) kun indeholder uligheder, og at \textit{Lagrange multiplier} skal bruge ligheder, hvis vores definition havde indeholdt ligheder, ville det havde vaeret muligt at finde vaerdierne til $w$, $b$ og $\lambda$ med de $N$ ligninger som vi har givet. Men for at loese dette problem skal vi transformere vores uligheder til ligheder, og dette kan vi goere med \textit{Karush-Kuhn-Tucker} betingelser, disse betingelser kan ses nedenfor.
 $$\lambda_i \geq 0$$
 $$\lambda_i[y_i(w \cdot x_i + b) - 1] = 0$$
 
