@@ -405,7 +405,7 @@ Igen finder vi de partielt differentieret funktioner af $L_p$.
 $$\frac{\partial L_p}{\partial w_j} = w_j - \sum\limits_{i=1}^N \lambda_i y_i x_{ij} = 0 \Rightarrow w_j = \sum\limits_{i=1}^N \lambda_i y_i x_{ij}$$
 $$\frac{\partial L_p}{\partial b} = - \sum\limits_{i=1}^N \lambda_i y_i = 0 \Rightarrow \sum\limits_{i=1}^N \lambda_i y_i = 0$$
 $$\frac{\partial L_p}{\partial \xi_i} = C - \lambda_i - \mu_i = 0 \Rightarrow \lambda_i + \mu_i = C$$
-Hvis man som sidst indsætter vores nye ligninger ind i vores \textit{Lagrangian} funktion får vi igen et \textit{dual problem}, og dette er det samme som vi fandt frem til sidst. Den skiller sig lidt ud da vi har lidt flere betingelser, sidst havde vi bare at $\lambda_i \geq 0$, her har vi at $C \geq \lambda_i \geq 0$. Men herfra er det samme fremgangsmåde med \textit{quadratic programming} etc, som i det \textit{separable} tilfælde.
+Hvis man som sidst indsætter vores nye ligninger ind i vores \textit{Lagrangian} funktion får vi igen et \textit{dual problem}, og dette er det samme som vi fandt frem til i det \textit{separable} tilfaelde. Den skiller sig lidt ud da vi har lidt flere betingelser, sidst havde vi bare at $\lambda_i \geq 0$, her har vi at $C \geq \lambda_i \geq 0$. Men herfra er det den samme fremgangsmåde med \textit{quadratic programming} etc, som i det \textit{separable} tilfælde.
 $$L_D = \sum\limits_{i=1}^N \lambda_i - \frac{1}{2}\sum\limits_{i,j}\lambda_i \lambda_j y_i y_j x_i \cdot x_j$$
 
 \subsection{Non-linear SVM}
