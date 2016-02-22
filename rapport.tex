@@ -421,7 +421,7 @@ Lad $X=\{x_1..x_n\}\subset \chi_1$ være en mængde af $n$ vektorer i rummet $\c
 k(x_i,x_j)=\langle\Phi(x_i),\Phi(x_j)\rangle
 \end{equation}
 
-Så definerer vi kernen $K$ som en $n\times n$-matrice med indre produkter af input vektorerne
+Så definerer vi kernen $K$ som en $n\times n$-matrice med indre produkter af input vektorerne (en Gram matrice)
 \begin{equation}
 K=\left[\begin{array}{r r r}
 \langle\Phi(x_1),\Phi(x_1)\rangle & ... & \langle\Phi(x_1),\Phi(x_n)\rangle\\
@@ -435,15 +435,15 @@ K_{i,j}=\langle\Phi(x_i),\Phi(x_j)\rangle=\langle\Phi(x_j),\Phi(x_i)\rangle=K_{j
 \end{equation}
 Hvilket viser at $K$ må være symmetrisk over diagonalen. 
 
-Foruden den symmetriske egenskab skal $K$ være positiv semidefinit for at $k$ er en gyldig kernefunktion. $K$ betegnes da som Gram matricen for det indre produkt i $\chi_1$. Dette betyder formelt at
+Desuden vil en Gram matrice være positiv semidefinit. Dette kan bl.a. formaliseres under uligheden:
 \begin{equation}
-\forall c\in R^n,c^TKc\geq 0
+\forall c\in R^n,c^TKc\geq 0,\text{ for }c\neq 0
 \end{equation}
+For en vilkårlig $1 \times n$ matrix (vektor) $c$ (som ikke er en nulvektor) vil prod 
 
 
 
-
-Med denne definition kan $k$ nu erstatte prikproduktet og transformationerne i Lagrange problemet:
+Med denne definition kan $k$ nu erstatte prikproduktet og transformationerne i dual Lagrange problemet fra tidligere:
 \begin{align*}
 L_D&=\sum_{i=1}^{n}\lambda_i-\frac{1}{2}\sum_{i,j}\lambda_i\lambda_j y_iy_jK(x_i,x_j)
 \end{align*}
