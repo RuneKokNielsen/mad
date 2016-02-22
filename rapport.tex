@@ -366,9 +366,11 @@ $$\frac{\partial L_p}{\partial b} = 0 \Rightarrow \sum\limits_{i=1}^N \lambda_i 
 Selvom vi har fundet de partielt defirentieret funktioner, er det stadig ikke muligt at finde $w$ og $b$, dette skyldes at vores definition (....TODO.... -> Reference til definition) kun indeholder uligheder, og at \textit{Lagrange multiplier} skal bruge ligheder, hvis vores definition havde indeholdt ligheder, ville det havde vaeret muligt at finde vaerdierne til $w$, $b$ og $\lambda$ med de $N$ ligninger som vi har givet. Men for at loese dette problem skal vi transformere vores uligheder til ligheder, og dette kan vi goere med \textit{Karush-Kuhn-Tucker} betingelser, disse betingelser kan ses nedenfor.
 $$\lambda_i \geq 0$$
 $$\lambda_i[y_i(w \cdot x_i + b) - 1] = 0$$
+Som det kan ses i vores nye lighed, skal alle $\lambda_i$ vaere $0$ naar $y_i(w \cdot x_i + b) \neq 0$, og udfra dette ved vi at alle de punkter der ligger paa $b_{i1}$ eller $b_{i2}$ har en \textit{Lagrange multiplier} $\lambda_i > 0$.  (TODO COMPLETE)
 
+Vores optimerings problem er stadig kompliceret, grundet vi har $w$, $b$ og $\lambda_i$, vi kan gaa hen or simplificere problemet ved at bruge \textit{dual problem} metoden, denne metode bruges ofte i sammenhaeng med \textit{Lagrange mlutipliers}, metoden transformere vores \textit{Lagrangian} funktion til en funktion, som kun indeholder vores \textit{Lagrange multipliers}. Nedenfor kan vores \textit{dual problem} funktion ses.
 $$L_D = \sum\limits_{i=1}^N \lambda_i - \frac{1}{2}\sum\limits_{i,j} \lambda_i \lambda_j y_i y_j x_j \cdot x_j$$
-
+Der er to store forskelle paa vores primaere \textit{Lagrangian} funktion, og vores nye \textit{dual problem} funktion. 
 $$( \sum\limits_{i=1}^N \lambda_i y_i x_i \cdot x) + b = 0$$
 
 $$f(z) = sign(w \cdot z + b) = sign( \sum\limits_{i=1}^N \lambda_i y_i x_i \cdot z + b)$$
