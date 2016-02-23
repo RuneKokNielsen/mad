@@ -307,16 +307,16 @@ Nedenfor er indtegnet to hyperplaner (sorte linjer) og deres margin (grå linjer
 
 \subsection{Linear SVM}
 \subsubsection{Separable case}
-I vores gennemgang af linear SVM vil vi kigge på et problem hvor vi kan klassificere et dataset i to klasser, vores inddeling kan beskrives mere formelt som $(x_i,y_i) \ i=1,2,...N$ hvor $x_i$ repræsentere det i'te dataset, i disse eksempler vil $y_i \in \{-1,1\}$ dvs. at vi inddeler vores data i to klasser, enten $-1$ eller $1$.
+I vores gennemgang af linear SVM vil vi kigge på et problem, hvor vi kan klassificere et dataset i to klasser. Vores inddeling kan beskrives mere formelt som $(x_i,y_i) \ i=1,2,...N$ hvor $x_i$ repræsenterer det i'te dataset. I disse eksempler vil $y_i \in \{-1,1\}$, dvs. at vi inddeler vores data i to klasser, enten $-1$ eller $1$.
 
-For at finde punkter på vores grænse kan vi opstille ligningen nedenfor, og de punkter der er lig med $0$ vil ligge på grænsen. De to variable $w$ og $b$ er inputs fra modellen, for helt præcist at beskrive dem er $w$ en normal vektor til vores grænse \textit{decision boundary}, og $b$ er den vinkelrette afstand til dens originale punkt.
+For at finde punkter på vores grænse, kan vi opstille ligningen nedenfor, og de punkter, der opfylder ligningen, vil ligge på grænsen. De to variable $w$ og $b$ er parametre i modellen. For helt præcist at beskrive dem er $w$ en normal vektor til vores grænse \textit{decision boundary}, og $b$ er den vinkelrette afstand fra grænsen til origo.
 $$w \cdot x + b = 0$$
-På grafen nedenfor kan et eksempel på et plot af dataset set, hvis der lå punkter på $B1$, ville de opfylde betingelserne for ligningen ovenfor.
+På grafen nedenfor ses et eksempel på et plot af et dataset. Hvis der lå punkter på $B1$, ville de opfylde betingelserne for ligningen ovenfor.
 \begin{center}
 	\includegraphics{svm_plot}
 \end{center}
 
-For punkter der ligger ved siden af grænsen kan vi opstille en gaffelfunktion, som kan ses nedenfor, de punkter der er mindre end $0$ ligger under grænsen, og vil blive klassificeret som $-1$, og de punkter der er større end $0$ ligger over grænsen og vil blive klassificeret som $1$. Og hvis vi kigger på grafen fra tidligere vil cirklerne blive kvalificeret som $1$, og stjernerne blive kvalificeret som $-1$.
+For punkter der ligger ved siden af grænsen kan vi opstille en gaffelfunktion, som kan ses nedenfor. De punkter der er mindre end $0$ ligger under grænsen, og vil blive klassificeret som $-1$, og de punkter der er større end $0$ ligger over grænsen, og vil blive klassificeret som $1$. Hvis vi kigger på grafen fra tidligere vil cirklerne blive kvalificeret som $1$, og stjernerne blive kvalificeret som $-1$.
 $$
    y_i = \left\{
      \begin{array}{lr}
@@ -326,25 +326,25 @@ $$
    \right.
 $$
 
-Vi kan skalere vores $w$ og $b$1 således at vi finder de punkter der ligger på vores margener. Som det kan ses i den tidligere graf vil det punkt som ligger på $b_{11}$ opfylde den første ligning, og det punkt, som ligger på b12 opfylde den anden ligning. 
+Vi kan skalere vores $w$ og $b$ således at vi finder de punkter, der ligger på vores margener. Som det kan ses i den tidligere graf, vil det punkt som ligger på $b_{11}$ opfylde den første ligning, og det punkt, som ligger på b12 opfylde den anden ligning. 
 $$b_{i1}: w \cdot x + b = 1$$
 $$b_{i2}: w \cdot x + b = -1$$
 
-Og da vi gerne vil have de margener med den største afstand fra hinanden kan vi omskrive de forgående ligninger til at kunne beregne afstanden mellem margenerne, dette kan vi gøre ved at indsætte de punkter, som ligger på den ovre og den nedre margen, og ved at trække de to ligninger fra hinanden, kan vi komme frem til den formel, som kan ses nedenfor. Her kan vi se at afstanden mellem de to margener ($d$), kan findes ved $\frac{2}{||w||}$. Og når vi senere hen skal til at optimere $w$, kan det let ses at for at finde den største afstand, skal vi minimere $w$. 
+Da vi gerne vil have de margener med den største afstand fra hinanden, kan vi omskrive de forudgående ligninger til at kunne beregne afstanden mellem margenerne. Dette kan vi gøre ved at indsætte de punkter, som ligger på den øvre og den nedre margen, og ved at trække de to ligninger fra hinanden, kan vi komme frem til den formel, som kan ses nedenfor. Her kan vi se, at afstanden mellem de to margener ($d$), kan findes ved $\frac{2}{||w||}$. Når vi senere hen skal til at optimere $d$, kan det let ses at for at finde den største afstand (altså maksimere $d$), skal vi minimere $w$. 
 \begin{align*}
 w \cdot (x_1 - x_2) = 2 \\
 ||w|| \times d = 2 \\
 d = \frac{2}{||w||} \\
 \end{align*}
 
-For at træne vores SVM skal vi estimere $w$ og $b$ således at nedenstående betingelser er overholdt, de skal overholdes på den måde at de dataset som tilhører klassen $1$ skal overholde den første formel, og de dataset som tilhøre klassen $-1$ skal overholde den anden formel. 
-$$w \cdot x_i + b \leq 1 \ if \ y_i = 1$$
-$$w \cdot x_i + b \geq 1 \ if \ y_i = -1$$
+For at træne vores SVM skal vi estimere $w$ og $b$ således at nedenstående betingelser er overholdt, de skal overholdes på den måde at de datapunkter som tilhører klassen $1$ skal overholde den første formel, og de dataset som tilhører klassen $-1$ skal overholde den anden formel. 
+$$w \cdot x_i + b \geq 1 \ if \ y_i = 1$$
+$$w \cdot x_i + b \leq -1 \ if \ y_i = -1$$
 
 Formlerne ovenfor kan samles til formlen, som kan ses nedenfor, denne formel vil vi bruge i sammenhæng med optimering af $w$ og $b$. 
 $$y_i(w \cdot x_i + b) \geq, \ i =1,2,...,N$$
 
-For at opnå den største afstand mellem de to margener, kan vi opstille en objektive funktion, som kan ses nedenfor. Denne objektive funktion skal minimeres.  
+For at opnå den største afstand mellem de to margener, kan vi opstille en objektiv funktion, som kan ses nedenfor. Da vi ønsker at maksimere $d$, er det klart, at den objektive funktion $f$ skal minimeres.  
 $$f(w)=\frac{||w||^2}{2}$$
 
 (To be completed)
@@ -353,51 +353,51 @@ $$\min\limits_{w} \frac{||w||^2}{2}$$
 $$y_i(w \cdot x_i + b) \geq 1, i = 1,2,...,N$$
 
 \subsubsection{Optimering}
-For at optimere vores objektive funktion, skal vi bruge \textit{Lagrange multiplier}, \textit{Lagrange multiplier} er en metode der bruges til at finde en funktions minimum eller maksimum, og i dette tilfælde skal vi bruge den til at finde $f(w)=\frac{||w||^2}{2}$ minimum, da dette vil give os den bedste \textit{decision boundary}, vi bruger \textit{Lagranges multiplier} på grund af vores problem består af en objektiv funktion, som er kvadratisk og vores begrænsninger er lineære i parametrene $w$ og $b$, og dette ender ud i at være et konveks optimerings problem, og her bliver \textit{Langranges multiplier} brugt som standard.
+For at optimere vores objektive funktion, skal vi bruge \textit{Lagrange multiplier}, \textit{Lagrange multiplier} er en metode der bruges til at finde en funktions minimum eller maksimum, og i dette tilfælde skal vi bruge den til at finde $f(w)=\frac{||w||^2}{2}$ minimum, da dette vil give os den bedste \textit{decision boundary}. Vi bruger \textit{Lagranges multiplier} da vores problem består af en kvadratisk objektiv funktion, og vores begrænsninger er lineære i parametrene $w$ og $b$, hvilket ender ud i at være et konvekst optimeringsproblem, og her bliver \textit{Langranges multiplier} brugt som standard.
 
-For at kunne bruge \textit{Langrange multipliers} bliver vi nød til at omskrive vores objektive funktion, til en ny objektiv funktion, som tager højde for vores begrænsninger, den nye objektive funktion kendes også som en \textit{Langrangian} funktion, variablen $\lambda_i$ i den nye funktion er kendt som en \textit{Langrange multiplier}. 
+For at kunne bruge \textit{Lagrange multipliers}, bliver vi nød til at omskrive vores objektive funktion, til en ny objektiv funktion, som tager højde for vores begrænsninger, den nye objektive funktion kendes også som en \textit{Lagrangian} funktion. Variablen $\lambda_i$ i den nye funktion er kendt som en \textit{Lagrange multiplier}. 
 $$L_P = \frac{1}{2}||w||^2 - \sum\limits_{i=1}^N \lambda_i (y_i(w \cdot x_i + b) - 1)$$
-Grunden til at vi har været nødsaget til at ændre vores objektive funktion fra $f(w) = \frac{||w||^2}{2}$ til den overstående objektive funktion er, at den tidligere funktion ville det let ses at for at opnå den minimale værdi ville $w = 0$ være den bedste løsning, men denne løsning ville ikke holde da vores begrænsninger fra $y_i(w \cdot x_i + b) \geq, \ i =1,2,...,N$ ikke ville holde, og hvis vores ulighed ikke holder, vil vi ikke kunne finde en løsning til problemet. Det er her vores \textit{Langrangian} funktion kommer i spil, da den inkorporere vores betingelser i funktionen, og hvis betingelserne ikke holder, vil værdien af vores funktion stige, og der ved give et dårlige resultat.
+Grunden til at vi har været nødsaget til at ændre vores objektive funktion fra $f(w) = \frac{||w||^2}{2}$ til den overstående objektive funktion er, at den tidligere funktion ville det let ses, at for at opnå den minimale værdi ville $w = 0$ være den bedste løsning, men denne løsning ville ikke holde da vores begrænsninger fra $y_i(w \cdot x_i + b) \geq 1, \ i =1,2,...,N$ ikke ville holde, og hvis vores uligheden ikke holder, vil vi ikke kunne finde en løsning til problemet. Det er her vores \textit{Lagrangian} funktion kommer i spil, da den inkorporerer vores betingelser i funktionen, og hvis betingelserne ikke holder, vil værdien af vores funktion stige, og dermed give et dårlige resultat.
 
-For at kunne minimere vores \textit{Lagrangian} funktion, skal vi først lave to partielle differentieringer, først differentiere vi i forhold til $w$, og derefter differentiere vi i forhold til $b$. Nedenfor kan de to partielle differentieringer ses.
+For at kunne minimere vores \textit{Lagrangian} funktion, skal vi først lave to partielle differentieringer. Først differentierer vi i forhold til $w$, og derefter differentierer vi i forhold til $b$. Da vi ønsker at finde ekstremumspunkter, sættes de partielt differentierede til 0. Dette medfører resultatet nedenfor.
 $$\frac{\partial L_p}{\partial w} = 0 \Rightarrow w = \sum\limits_{i=1}^N \lambda_i y_i x_i$$
 $$\frac{\partial L_p}{\partial b} = 0 \Rightarrow \sum\limits_{i=1}^N \lambda_i y_i = 0$$
-Selvom vi har fundet de partielt differentieret funktioner, er det stadig ikke muligt at finde $w$ og $b$, dette skyldes at vores definition af vores objektive funktion kun indeholder uligheder, og at \textit{Lagrange multiplier} skal bruge ligheder, hvis vores definition havde indeholdt ligheder, ville det havde været muligt at finde værdierne til $w$, $b$ og $\lambda$ med de $N$ ligninger som vi har fundet. Men for at løse dette problem skal vi transformere vores uligheder til ligheder, og dette kan vi gøre med \textit{Karush-Kuhn-Tucker} betingelser, disse betingelser kan ses nedenfor.
+Selvom vi har fundet de partielt differentierede funktioner, er det stadig ikke muligt at finde $w$ og $b$, dette skyldes at vores definition af vores objektive funktion kun indeholder uligheder, og at \textit{Lagrange multiplier} skal bruge ligheder. Hvis vores definition havde indeholdt ligheder, ville det havde været muligt at finde værdierne til $w$, $b$ og $\lambda$ med de $N$ ligninger som vi har fundet. Men for at løse dette problem skal vi transformere vores uligheder til ligheder. Dette kan vi gøre med \textit{Karush-Kuhn-Tucker} betingelserne. Disse betingelser kan ses nedenfor.
 $$\lambda_i \geq 0$$
 $$\lambda_i[y_i(w \cdot x_i + b) - 1] = 0$$
 Som det kan ses i vores nye ligheder, skal alle $\lambda_i$ være $0$ når $y_i(w \cdot x_i + b) \neq 0$, og ud fra dette ved vi at alle de punkter der ligger på $b_{i1}$ eller $b_{i2}$ har en \textit{Lagrange multiplier} $\lambda_i > 0$.  De punkter der ligger på $b_{i1}$ og $b_{i2}$ og opfylder betingelserne er også kendt som \textit{support vectors}.
 
-Vores optimerings problem er stadig kompliceret grundet vi har $w$, $b$ og $\lambda_i$, vi kan gå hen or simplificere problemet ved at bruge \textit{dual problem} metoden, denne metode bruges ofte i sammenhæng med \textit{Lagrange mlutipliers}, metoden transformere vores \textit{Lagrangian} funktion til en funktion, som kun indeholder vores \textit{Lagrange multipliers}. Nedenfor kan vores \textit{dual problem} funktion ses.
+Vores optimeringsproblem er stadig kompliceret grundet at vi har $w$, $b$ og $\lambda_i$. Vi kan simplificere problemet ved at bruge \textit{dual problem} metoden. Denne metode bruges ofte i sammenhæng med \textit{Lagrange mlutipliers}. Metoden transformerer vores \textit{Lagrangian} funktion til en funktion, som kun indeholder vores \textit{Lagrange multipliers}. Ved at indsætte konsekvenserne af de partielt differentierede sat til 0 i $L_P$ opnår vi vores \textit{dual problem} funktion som nedenfor.
 $$L_D = \sum\limits_{i=1}^N \lambda_i - \frac{1}{2}\sum\limits_{i,j} \lambda_i \lambda_j y_i y_j x_j \cdot x_j$$
-Der er to store forskelle på vores primære \textit{Lagrangian} funktion, og vores nye \textit{dual problem} funktion. Den første store forskel er at vores \textit{dual problem} kun indeholder vores trænings data samt vores \textit{Lagrange multipliers}, hvor at i vores primære \textit{Lagrangian} funktion også indeholder vores $w$ og $b$. Den anden store forskel er at vores minimerings problem  er blevet til et maksimerings problem.
-Løsningen af vores \textit{dual problem} vil vi ikke bruge mere tid på, dette skyldes at bogen nævner at det kan løses med \textit{quadratic programming}, men at det er udover bogens indhold. \\
-Efter vi har fundet $\lambda_i$ ved hjælp af \textit{quadratic programming} kan vi finde $w$ og $b$. Vi kan beskrive vores grænse med ligningen nedenfor.
+Der er to store forskelle på vores primære \textit{Lagrangian} funktion, og vores nye \textit{dual problem} funktion. Den første store forskel er at vores \textit{dual problem} kun indeholder vores trænings data samt vores \textit{Lagrange multipliers}, hvor vores primære \textit{Lagrangian} funktion også indeholder vores $w$ og $b$. Den anden store forskel er, at vores minimeringsproblem  er blevet til et maksimeringsproblem.
+Løsningen af vores \textit{dual problem} kræver at vi finder værdierne af $\lambda_i$, hvilket opnås gennem $\textit{quadratic programming}$. Detaljerne ligger undertiden uden for emnet i denne rapport.\\
+Efterat  vi har fundet $\lambda_i$ ved hjælp af \textit{quadratic programming} kan vi finde $w$ og $b$. Vi kan beskrive vores grænse med ligningen nedenfor.
 $$( \sum\limits_{i=1}^N \lambda_i y_i x_i \cdot x) + b = 0$$
 
-Når vi endelig er færdig med at beregne alle vores parametre for vores grænse, kan vi stille en funktionen op, som kan ses nedenunder, den funktion kan beregne hvilke klassifisering det givet dataset $z$ tilhøre, hivs $f(z) = 1$ vil $z$ blive klassificeret som $1$ ellers vil $z$ blive kvalificeret som $-1$. 
+Når vi endelig er færdig med at beregne alle vores parametre for vores grænse, kan vi stille en funktionen op, som kan ses nedenunder, den funktion kan beregne hvilken klassifisering et givet datapunkt $z$ tilhører. Hvis $f(z) = 1$ vil $z$ blive klassificeret som $1$ ellers vil $z$ blive kvalificeret som $-1$. 
 $$f(z) = sign(w \cdot z + b) = sign( \sum\limits_{i=1}^N \lambda_i y_i x_i \cdot z + b)$$
 
 \subsubsection{Non-separable case}
-I nogle tilfælde vil den bedste grænse (\textit{dicision boundary}) ikke altid opdele alle vores dataset, men der vil være enkelte dataset, som bliver klassificeret forkert, dette kan skyldes forskellige ting såsom fejl i trænings data, eller at der er et enkelt dataset, som ikke holder sig til mønstret for dens klassificering. Men i disse tilfælde vil vi stadig prøve at opnå så stor en afstand mellem vores magner som muligt, selvom enkelte dataset bliver klassificeret forkert, dette skyldes at hvis vi valgte en grænse, som ville opdele vores dataset uden fejl, ofte ville have en meget lille afstand mellems dens magner, og dette vil gøre at modellen ville være meget udsat for \textit{overfitting}. På grafen nedenfor ses et eksempel hvor at $B2$ ville være den oplagte grænse at vælge, da den opdeler alt data korrekt, men vi også vælge $B1$ grundet at den har en større afstand mellem sine margener, og chancen for \textit{overfitting} ville være mindre. 
+I nogle tilfælde vil den bedste grænse (\textit{dicision boundary}) ikke altid klassificere alle punkter i vores dataset korrekt. Dette kan skyldes forskellige ting såsom fejl i træningsdata, eller at der er et enkelt dataset, som ikke holder sig til mønstret for dens klassificering. I disse tilfælde vil vi stadig prøve at opnå så stor en afstand mellem vores margener som muligt, selvom enkelte dataset bliver klassificeret forkert. Dette skyldes at hvis vi valgte en grænse, som ville opdele vores træningssæt uden fejl, ville grænsen ofte have en meget lille afstand mellems dens margener, og dette vil gøre at modellen ville være meget udsat for \textit{overfitting}. På grafen nedenfor ses et eksempel, hvor at $B2$ ville være den oplagte grænse at vælge, da den opdeler alt data korrekt, men vi også vælge $B1$ grundet at den har en større afstand mellem sine margener, og risikoen for \textit{overfitting} ville være mindre. 
 \begin{center}
 	\includegraphics{svm_plot_1}
 \end{center}
-Grundet at vi har punkter der ikke er klassificeret rigtigt af vores grænsen, vil vores tidligere ligninger ikke passer på alle vores dataset, og for at rette dette introducere vi \textit{slack variables} ($\xi$), disse variabler skal placere de dataset der er kvalificeret forkert rigtigt, og dette gøres ved at addere eller substakterre (hvilke der skal bruges kommer an på hvor datasettet er placeret) med vores nye variable ($\xi$). 
+Grundet at vi har punkter der ikke er klassificeret rigtigt af vores grænse, vil vores tidligere ligninger ikke passe på alle vores dataset. For at rette dette introducerer vi \textit{slack variables} ($\xi$). Disse variabler skal placere de datapunkter der er kvalificeret forkert rigtigt, og dette gøres ved at addere eller substaktere (hvilke der skal bruges kommer an på hvor datapunktet er placeret) med vores nye variable ($\xi$). 
 
- Som det kan ses i vores to nye ligninger skal vi subtrakterer hvis vores dataset er placeret under grænsen, men den skal kvalificeres, som om den lå oven for grænsen, dette gør vi ved at subtrakterer højre siden af ligningen med vores \textit{slack variable}, med en værdi som gør at formlen er sand. Det samme gælder for det omvendte scenarie, men her bruges addition på højre siden af ligningen for at få ligningen til at blive sand.  
+ Som det kan ses i vores to nye ligninger skal vi subtrakterer hvis vores dataset er placeret under grænsen, men den skal kvalificeres, som om den lå oven for grænsen, dette gør vi ved at subtrakterer højresiden af ligningen med vores \textit{slack variable}, med en værdi som gør at formlen er sand. Det samme gælder for det omvendte scenarie, men her bruges addition på højre siden af ligningen for at få ligningen til at blive sand.  
 $$w * x_i + b \geq 1 - \xi_i \ if \ y_i = 1$$
 $$w * x_i + b \leq 1 - \xi_i \ if \ y_i = -1$$
 Bemærk $\forall i : \xi_i > 0$
 
-Men for ikke bare at vælge en grænse med store magner, og så bare rette alle de forkerte klassificeret dataset til med \textit{slack variables}, introducere vi en vægt for hvert dataset, som er kvalificeret forkert, denne vægt kan ses i den modificeret objektive funktion nedenfor, bemærk at $C$ og $k$ bliver sat a brugeren (ofte vil $k = 1$ grundet simplicitet). Det ses klart at for hvert punkt, som er kvalificeret forkert vil de valgte margener blive rangeret dårligere. 
+For ikke bare at vælge en grænse med store margener, og så bare rette alle de forkerte klassificeret dataset til med \textit{slack variables}, introducerer vi en vægt for hvert datapunkt, som er kvalificeret forkert. Denne vægt kan ses i den modificerede objektive funktion nedenfor, bemærk at $C$ og $k$ bliver sat a brugeren (ofte vil $k = 1$ grundet simplicitet). Det ses klart at for hvert punkt, som er kvalificeret forkert, vil de valgte margener blive rangeret dårligere. 
 $$f(w) = \frac{||w||^2}{2}+C(\sum\limits_{i=1}^N \xi_i)^k$$
 
 \subsubsection{Optimering}
 Optimering med vores \textit{slack variable} er næsten ens med vores optimering uden vores ekstra variable. Igen vil vi starte med at lave vores objektive funktion om til en \textit{Lagrangian} funktion.
 $$L_P = \frac{1}{2}||w||^2 + C \sum\limits_{i=1}^N \xi_i - \sum\limits_{i=1}^N \lambda_i (y_i(w \cdot x_i + b) - 1 + \xi_i) - \sum\limits_{i=1}^N \mu_i \xi_i$$
-For at forstå funktionen er det nemmest hvis man deler den op, funktionen kan deles op i fire dele, hvor de to første dele er vores objektive funktion, som vi prøver at minimere, den tredje del  repræsentere vores uligheder, er den sidste og fjerde del er kravet om at $\xi$ ikke må være negativt. 
+For at forstå funktionen er det nemmest hvis man deler den op. Funktionen kan deles op i fire dele, hvor de to første dele er vores objektive funktion, som vi prøver at minimere, den tredje del  repræsenterer vores uligheder, er den sidste og fjerde del er kravet om at $\xi$ ikke må være negativt. 
 
-Og igen skal vi transformere vores uligheder til ligheder, og her vil vi igen bruge \textit{Karush-Kuhn-Tucker's} metode til at transformere dem, nedenfor kan vores nye betingelser findes.
+Igen skal vi transformere vores uligheder til ligheder, og her vil vi igen bruge \textit{Karush-Kuhn-Tucker's} metode til at transformere dem. Nedenfor kan vores nye betingelser findes.
 $$\xi_i \geq 0, \lambda_i \geq 0, \mu_i \geq 0$$
 $$\lambda_i(y_i(w \cdot x_i + b) - 1 + \xi_i) = 0$$
 $$\mu_i \xi_i = 0$$
@@ -405,7 +405,7 @@ Igen finder vi de partielt differentieret funktioner af $L_p$.
 $$\frac{\partial L_p}{\partial w_j} = w_j - \sum\limits_{i=1}^N \lambda_i y_i x_{ij} = 0 \Rightarrow w_j = \sum\limits_{i=1}^N \lambda_i y_i x_{ij}$$
 $$\frac{\partial L_p}{\partial b} = - \sum\limits_{i=1}^N \lambda_i y_i = 0 \Rightarrow \sum\limits_{i=1}^N \lambda_i y_i = 0$$
 $$\frac{\partial L_p}{\partial \xi_i} = C - \lambda_i - \mu_i = 0 \Rightarrow \lambda_i + \mu_i = C$$
-Hvis man som sidst indsætter vores nye ligninger ind i vores \textit{Lagrangian} funktion får vi igen et \textit{dual problem}, og dette er det samme som vi fandt frem til i det \textit{separable} tilfaelde. Den skiller sig lidt ud da vi har lidt flere betingelser, sidst havde vi bare at $\lambda_i \geq 0$, her har vi at $C \geq \lambda_i \geq 0$. Men herfra er det den samme fremgangsmåde med \textit{quadratic programming} etc, som i det \textit{separable} tilfælde.
+Hvis man som sidst indsætter vores nye ligninger ind i vores \textit{Lagrangian} funktion får vi igen et \textit{dual problem}, og dette er det samme som vi fandt frem til i det \textit{separable} tilfaelde. Den skiller sig lidt ud da vi har lidt flere betingelser, sidst havde vi bare at $\lambda_i \geq 0$, her har vi at $C \geq \lambda_i \geq 0$. Herfra er det den samme fremgangsmåde med \textit{quadratic programming} etc, som i det \textit{separable} tilfælde.
 $$L_D = \sum\limits_{i=1}^N \lambda_i - \frac{1}{2}\sum\limits_{i,j}\lambda_i \lambda_j y_i y_j x_i \cdot x_j$$
 
 \subsection{Non-linear SVM}
