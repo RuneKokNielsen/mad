@@ -445,8 +445,8 @@ $$\frac{\partial L_p}{\partial \xi_i} = C - \lambda_i - \mu_i = 0 \Rightarrow \l
 Hvis man som sidst indsætter vores nye ligninger ind i vores \textit{Lagrangian} funktion får vi igen et \textit{dual problem}, og dette er det samme som vi fandt frem til i det \textit{separable} tilfaelde. Den skiller sig lidt ud da vi har lidt flere betingelser, sidst havde vi bare at $\lambda_i \geq 0$, her har vi at $C \geq \lambda_i \geq 0$. Herfra er det den samme fremgangsmåde med \textit{quadratic programming} etc, som i det \textit{separable} tilfælde.
 $$L_D = \sum\limits_{i=1}^N \lambda_i - \frac{1}{2}\sum\limits_{i,j}\lambda_i \lambda_j y_i y_j x_i \cdot x_j$$
 
-\subsection{Non-linear SVM}
-Det er ikke altid muligt at definere en lineær opdeling af datæn. En naiv løsning på dette problem er, at transformere datapunkterne til et andet rum, hvor en lineær opdeling er mulig.
+\subsection{Ikke-lineær SVM}
+Det er ikke altid muligt at definere en lineær opdeling af dataen. En naiv løsning på dette problem er, at transformere datapunkterne til et andet rum, hvor en lineær opdeling er mulig.
 
 Antag at vi har en transformation $\Phi(x)$ fra det originale rum til et transformeret rum, hvor en lineær opdeling er mulig. Så kan vi genbruge vores viden fra det lineære tilfælde, og optimeringen er nogenlunde den samme. For at opnå den maksimale margin skal vi igen minimere funktionen 
 $$f(w)=\frac{||w||^2}{2}$$
@@ -487,7 +487,7 @@ Desuden vil en Gram matrice være positiv semidefinit. Dette kan bl.a. formalise
 \begin{equation}
 \forall c\in R^n,c^TKc\geq 0,\text{ for }c\neq 0
 \end{equation}
-For en vilkårlig $1 \times n$ matrix (vektor) $c$ (som ikke er en nulvektor) vil prod 
+Altså: for enhver vilkårlig ikke-nulvektor $c$ vil produktet af $c^TKc$ altså være ikke-negativt. Det følger at kernefunktionen $k$ er positiv semi-definit, hvilket er en central egenskab ved kernefunktioner.
 
 
 
