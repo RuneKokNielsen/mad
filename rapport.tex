@@ -181,7 +181,7 @@ Dette ser undertiden fint ud, men prøver man sætte et næbdyr ind i denne mode
 \subsection{Beslutningstræer (Decision trees)}
 Et eksempel på en klassificeringsteknik er gennem brug af beslutningstræer. Et beslutningstræ består af knuder og blade samt en rodknude. Et datapunkt kan da klassificeres ved at traversere træet startende i roden.
 
-Hver knude består af et spørgsmål, som har en definitiv mængde svar, der kan besvares ud fra egenskaberne i et givent datapunkt. Ud fra svaret (altså datapunktets egenskaber) peger knuden videre til en ny knude eller et blad. Et blad repræsenterer den endelige kategori. I eksemplet i figur 1, kan der ses et eksempel på hvordan et \textit{decision tree} fungere, i dette eksempel antager vi, vi har fået en mængde, som indeholder enten biler, fly eller både, vi starter med at spørge om det givet datapunkt har hjul, hvis nej må det være en båd, hvis ja kan det enten være en bil eller et fly, og derfor spørger vi igen, denne gang om det givet datapunkt har vinger, hvis ja er det et fly, og hvis nej må det være en bil, på denne måde har vi sikret os at vores datapunkt er kommet i den rigtige kategori.
+Hver knude består af et spørgsmål, som har en definitiv mængde svar, der kan besvares ud fra egenskaberne i et givent datapunkt. Ud fra svaret (altså datapunktets egenskaber) peger knuden videre til en ny knude eller et blad. Et blad repræsenterer den endelige kategori. I eksemplet i figur 1, kan der ses et eksempel på hvordan et beslutningstræ fungerer. I dette eksempel antager vi, at vi har fået en mængde, som indeholder enten biler, fly eller både. Vi starter med at spørge om det givet datapunkt har hjul, hvis nej må det være en båd, hvis ja kan det enten være en bil eller et fly, og derfor spørger vi igen, denne gang om det givet datapunkt har vinger, hvis ja er det et fly, og hvis nej må det være en bil. På denne måde har vi sikret os at vores datapunkt er kommet i den rigtige kategori.
 
 \begin{figure}[H]
 \begin{center}
@@ -207,7 +207,7 @@ Hver knude består af et spørgsmål, som har en definitiv mængde svar, der kan
 \caption{\textit{Decision tree} eksempel}
 \end{figure}
 
-Et (muligvis suboptimalt) beslutningstræ kan bl.a. konstrueres fra et træningssæt med Hunts algoritme. Algoritmen starter med en mængde af alle datapunkter i træningssættet. Hvis alle punkter i mængden har samme kategori bliver denne mængde et blad i træet. Ellers stilles et spørgsmål om punkterne i mængden, og disse punkter uddeles samles i delmængder ud fra, hvordan de besvarer spørgsmålet. Spørgsmålet bliver en knude i træet, som peger på de nye delmængder, og algoritmen køres rekursivt på delmængderne.
+Et (muligvis suboptimalt) beslutningstræ kan konstrueres fra et træningssæt med Hunts algoritme. Algoritmen starter med en mængde af alle datapunkter i træningssættet. Hvis alle punkter i mængden har samme kategori, bliver denne mængde et blad i træet. Ellers stilles et spørgsmål om punkterne i mængden, og disse punkter samles i delmængder ud fra, hvordan de besvarer spørgsmålet. Spørgsmålet bliver en knude i træet, som peger på de nye delmængder, og algoritmen køres rekursivt på delmængderne. Effektiviteten og præcisionen af en sådan algoritme afhænger dermed af, at den kan stille de rigtige spørgsmål.
 
 
 \subsubsection{Eksempel på modeludledning}
