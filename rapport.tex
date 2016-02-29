@@ -96,9 +96,9 @@ Der findes adskillige teknikker til at bestemme en klassificeringsmodel. En såd
 
 Det er sjældent muligt at klassificere ethvert givent punkt korrekt ud fra de tilgængelige egenskaber, og vi har derfor brug for en måde at afgøre nøjagtigheden af den resulterende model. Denne nøjagtighed estimeres ved at klassificere et testsæt med modellen, og se på hvor stor en andel af datapunkterne der har fået den rigtige kategori. For at vise modellens nøjagtighed kan man beregne dens \textit{accuracy}, hvilket fortæller hvor præcis den er, eller man kan beregne dens \textit{error rate}, hvilke er det modsatte af \textit{accuracy} dvs. hvor mange forkerte punkter modellen har produceret.\\
 For at beregne nøjagtigheden af en model, benytter vi et testsæt. Ligesom træningssættet er testsættet en mængde af datapunkter med kendte kategorier. Udregningerne består da i at klassificere punkterne i testsættet ved hjælp af modellen, og sammenligne punkternes kategorier som udregnet af modellen med deres egentlige kategorier, som vi kender i forvejen.\\
-Det er essentielt at testsættet ikke overlapper med træningssættet, da dette vil tildele en for høj nøjagtighed til modellen. Har man f.eks. et meget lille træningssæt kan man nemt lave en model, som tilfældigvis passer perfekt på træningssættet, men som i realiteten er helt forkert. Tester man modellen på et testsæt som næsten overlapper fuldstændigt med træningssættet vil de overlappende punkter højst sandsynligt klassificeres korrekt, hvilket resulterer i meget høj nøjagtighed, selvom modellen i virkeligheden kun passer netop på træningssættet. 
+Det er essentielt at testsættet ikke overlapper med træningssættet, da dette vil tildele en for høj nøjagtighed til modellen. Har man f.eks.\ et meget lille træningssæt kan man nemt lave en model, som tilfældigvis passer perfekt på træningssættet, men som i realiteten er helt forkert. Tester man modellen på et testsæt som næsten overlapper fuldstændigt med træningssættet vil de overlappende punkter højst sandsynligt klassificeres korrekt, hvilket resulterer i meget høj nøjagtighed, selvom modellen i virkeligheden kun passer netop på træningssættet. 
 
-For at beregne nøjagtiheden og fejlraten bruger vi en \textit{confusion matrix}. I bel 1 ses en \textit{confusion matrix}, det ses i kolonnerne hvad modellen har tildelt klassen, og i rækkerne ses hvad dens rigtige klasser er. \\
+For at udregne nøjagtiheden og fejlraten af klassificeringen bruger vi en \textit{confusion matrix}. En \textit{confusion matrix} ser formelt ud som i tabel 1 nedenfor. Her angiver $f_{ij}$ antallet af datapunkter i testsættet som tilhører klasse $i$, og blev klassificeret som klasse $j$. I det optimale tilfælde, hvor alle datapunkter klassificeres korrekt, har vi intuitivt $f_{ij}=0$ for $i\neq j$, hvilket manifesteres i en diagonal matrice.\\
 
 \begin{table}[H]
 \begin{center}
@@ -113,26 +113,31 @@ For at beregne nøjagtiheden og fejlraten bruger vi en \textit{confusion matrix}
     \cline{2-6}
     \multicolumn{1}{c|}{} & .. & .. & .. & .. & .. \\
     \cline{2-6}
-    \multicolumn{1}{c|}{} & Class = m & $f_{m0}$ & $f_{m1}$ & .. & $f_{mn}$ \\
+    \multicolumn{1}{c|}{} & Class = n & $f_{n0}$ & $f_{n1}$ & .. & $f_{nn}$ \\
     \cline{2-6}
 \end{tabular}
 \caption{\textit{Confusion matrix}}
 \end{center}
 \end{table}
 
-For at beregne vores \textit{accuracy} og \textit{error rate} bruger vi vores tabel, og har således en formel for hver målenhed, som kan ses nedenfor. \\
+For at beregne vores \textit{accuracy} og \textit{error rate} kan vi finde antallet af korrekte- og forkerte forudsigelser ved at summere tallene på hhv. uden for diagonalen, og dividere værdierne med det totale antal klassificeringer. Vi får:\\
 
 \begin{align*}
 Accuracy &= \frac{Antallet \ af \ korrekte \ forudsigelser}{Det \ totale \ antal \ forudsigelser} \\
-         &= \frac{f_{00} + f_{11} + f_{mn}}{f_{00} + f_{01} + f_{0n} + f_{10} + f_{11} + f_{1m} + f_{m0} + f_{m1} + f_{mn}}
+         &= \frac{\sum_{i=1}^{n}f_{ii}}{\sum_{i=1}^{n}\sum_{j=1}^{n}f_{ij}}
 \end{align*}
 
 \begin{align*}
 Error \ rate &= \frac{Antallet \ af \ forkerte \ forudsigelser}{Det \ totale \ antal \ forudsigelser} \\
-           &= \frac{f_{01} + f_{0n} + f_{10} + f_{1n} + f_{m0} + f_{m1}}{f_{00} + f_{01} + f_{0n} + f_{10} + f_{11} + f_{1m} + f_{m0} + f_{m1} + f_{mn}}
+           &= \frac{\sum_{i=1}^{n}\sum_{j=1}^{n}e(i,j)}{\sum_{i=1}^{n}\sum_{j=1}^{n}f_{ij}}\\
+           \text{hvor }e(i,j)&=
+           \begin{cases} f_{ij} & \text{for } i\neq j \\
+           0                                    & \text{ellers}      %
+           \end{cases}
 \end{align*}
 
-Her gælder det at jo højere \textit{accuracy} desto bedre, og det modsatte gælder for \textit{error rate}. \\
+
+Her gælder det klart at jo højere \textit{accuracy} desto bedre, og det modsatte gælder for \textit{error rate}. \\
 
 \subsubsection{Problemer ved klassificering}
 Det er ikke altid muligt at lave en perfekt klassificeringsmodel, som klassificerer ethvert givent punkt korrekt. F.eks. kunne datæn være utilstrækkelig til, at ramme alle tænkelige eksempler korrekt. Betragt træningssættet nedenfor. 
