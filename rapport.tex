@@ -204,90 +204,122 @@ Hver knude består af et spørgsmål, som har en definitiv mængde svar, der kan
               edge from parent node [right] {Ja} };
 \end{tikzpicture}
 \end{center}
-\caption{\textit{Decision tree} eksempel}
+\caption{Beslutningstræ}
 \end{figure}
 
 Et (muligvis suboptimalt) beslutningstræ kan konstrueres fra et træningssæt med Hunts algoritme. Algoritmen starter med en mængde af alle datapunkter i træningssættet. Hvis alle punkter i mængden har samme kategori, bliver denne mængde et blad i træet. Ellers stilles et spørgsmål om punkterne i mængden, og disse punkter samles i delmængder ud fra, hvordan de besvarer spørgsmålet. Spørgsmålet bliver en knude i træet, som peger på de nye delmængder, og algoritmen køres rekursivt på delmængderne. Effektiviteten og præcisionen af en sådan algoritme afhænger dermed af, at den kan stille de rigtige spørgsmål.
 
 
 \subsubsection{Eksempel på modeludledning}
-For at illustrere brugen af decision trees vil vi her vise et eksempel på, hvordan man ud fra et todimensionelt træningssæt og testsæt kan bygge og efterteste en klassificeringsmodel. Betragt følgende træningssæt:
+For at illustrere brugen af decision trees vil vi her vise et eksempel på, hvordan man ud fra et todimensionelt træningssæt og testsæt kan bygge og efterteste en klassificeringsmodel. Betragt træningssættet til venstre i figur 2 nedenfor. Tegner vi punkterne ind i et koordinatsystem opnår vi figuren til højre, hvor blå cirkler er A, røde plusser er B og gule stjerner er C.
 
-\begin{tabular}{c|c|c}
-	X & Y & Klasse\\
-	\hline
-	0.8 & 0.9 & A\\
-	0.6 & 0.1 & B\\
-	0.2 & 0.3 & C\\
-	0.1 & 0.8 & C\\
-	0.4 & 0.2 & B\\
-	0.4 & 0.5 & A\\
-	0.03 & 0.6 & C\\
-	0.5 & 0. 3 & B\\
-	0.6 & 0.7 & A\\
-	0.45 & 0.8 & A\\
-	0.8 & 0.7 & B\\
-	0.28 & 0.3 & C\\
-	0.1 & 0.05 & C
-\end{tabular} 
+\begin{figure}[H]
+	\begin{minipage}[t]{0.27\linewidth}
+		\begin{flushleft}
+			\begin{tabular}{c|c|c}
+				X & Y & Klasse\\
+				\hline
+				0.8 & 0.9 & A\\
+				0.6 & 0.1 & B\\
+				0.2 & 0.3 & C\\
+				0.1 & 0.8 & C\\
+				0.4 & 0.2 & B\\
+				0.4 & 0.5 & A\\
+				0.03 & 0.6 & C\\
+				0.5 & 0. 3 & B\\
+				0.6 & 0.7 & A\\
+				0.45 & 0.8 & A\\
+				0.8 & 0.7 & B\\
+				0.28 & 0.3 & C\\
+				0.1 & 0.05 & C
+			\end{tabular}
+		\end{flushleft}
+	\end{minipage}
+	\begin{minipage}[t]{0.25\linewidth}
+		\begin{flushright}
+			\includegraphics[width=9cm]{decision_tree_example_plot}
+		\end{flushright}
+	\end{minipage}
+	\caption{\textit{Til venstre: eksempel på træningssæt. Til højre: plot af træningssættet.}}
+\end{figure}
+\begin{figure}[H]
+	\begin{minipage}[t]{0.5\linewidth}
+		\begin{flushleft}
+			\ \\ \ \\
+			Der er klare tendenser i, hvordan punkterne har fordelt sig. Ved at indtegne et par linjer kan vi tydeligt illustrere dette (figur 3).
+		\end{flushleft}
+	\end{minipage}
+	\begin{minipage}[t]{0.25\linewidth}
+		\begin{flushright}
+			\includegraphics[width=8cm]{decision_tree_example_plot_splitted}
+		\end{flushright}
+	\end{minipage}
+	\caption{\textit{Til højre: opdelt plot (se figur 2)}}
+\end{figure}
 
-Tegner vi disse punkter ind i en graf ser det således ud:
-\begin{center}
-	\includegraphics{decision_tree_example_plot}
-\end{center}
-Hvor blå cirkler er A, røde plusser er B og gule stjerner er C. Der er klare tendenser i, hvordan punkterne har fordelt sig. Ved at indtegne et par linjer kan vi tydeligt illustrere dette:
-\begin{center}
-	\includegraphics{decision_tree_example_plot_splitted}
-\end{center}
+
+
 Ud fra denne opdeling kunne det tyde på, at $f(x,y)=C$ for $x<0.3$, $f(x,y)=A$ for $0.3<x<y$ og $f(x,y)=B$ for $0.3<x$ og $y<x$. Med disse observationer kan vi bygge et beslutningstræ med Hunts algoritme.
 
-Lad $D_t$ være hele træningssættet. Så indeholder $D_t$ punkter af alle klasser, vælger vi en (\textit{attribute test condition}) ad adskille punkterne på. For at få det mindste træ starter vi med at teste om $x<0.3$, hvilket giver også en mængde $D_{t1}=\{p\ |\ class(p)=C\}$ for ja og $D_{t2}=\{p\ |\ class(p)\neq C\}$ for $0.3<x$. Da $D_{t1}$ kun indeholder en klasse bliver dette til et $C-$blad i træet, mens vi må teste rekursivt på $D_{t2}$.
+Lad $D_t$ være hele træningssættet. Så indeholder $D_t$ punkter af alle klasser. Vi vælger nu en (\textit{attribute test condition}) at adskille punkterne på. For at få det mindste træ, starter vi med at teste om $x<0.3$, hvilket giver os en mængde $D_{t1}=\{p\ |\ class(p)=C\}$ for $0.3<x$ og $D_{t2}=\{p\ |\ class(p)\neq C\}$ for $x<0.3$. Da $D_{t1}$ kun indeholder en klasse bliver dette til et $C-$blad i træet, mens vi må teste rekursivt på $D_{t2}$.
 
-Vi tester $D_{t2}$ for egenskaben $x<y$ og får en gruppe $D_{t3}=\{p\ | class(p)=A\}$ for ja og $D_{t4}=\{p\ |\ class(p)=B\}$ for nej. Da begge disse grupper er rene (kun indeholder en punkter af en klasse) bliver disse til blade, og vi kan nu tegne vores beslutningstræ.
+Vi tester $D_{t2}$ for egenskaben $x<y$ og får en gruppe $D_{t3}=\{p\ | class(p)=A\}$ for $x<y$ og $D_{t4}=\{p\ |\ class(p)=B\}$ for $y<x$. Da begge disse grupper er rene (kun indeholder punkter af samme klasse) bliver disse til blade, og vi kan nu tegne vores beslutningstræ.
 
-\begin{center}
-	\begin{tikzpicture}
-	[
-	grow                    = down,
-	sibling distance        = 6em,
-	level distance          = 6em,
-	edge from parent/.style = {draw, -latex},
-	every node/.style       = {font=\footnotesize}
-	]
-	\node [node_] {$x<0.3$}
-	child { node [leaf_] {C}
-		edge from parent node [left] {Ja} }
-	child { node [node_] {$x<y$}
-		child { node [leaf_] {A}
-			edge from parent node [left]{Ja} }       
-		child { node [leaf_] {B}
-			edge from parent node [right]{Nej} }
-		edge from parent node [right] {Nej} };
-	\end{tikzpicture}
-\end{center}
-Det er nu lykkedes at bygge en model, som kan opdele træningssættet korrekt. Dette er dog ingen garanti for, modellen er korrekt. Modellen er bygget ud fra nogen antagelser, som holder gennem træningssættet, men det betyder ikke, at det holder i praksis. For at undersøge modellens nøjagtighed vil vi bruge den til at klassificere testsættet nedenfor.
+\begin{figure}[H]
+	\begin{center}
+		\begin{tikzpicture}
+		[
+		grow                    = down,
+		sibling distance        = 6em,
+		level distance          = 6em,
+		edge from parent/.style = {draw, -latex},
+		every node/.style       = {font=\footnotesize}
+		]
+		\node [node_] {$x<0.3$}
+		child { node [leaf_] {C}
+			edge from parent node [left] {Ja} }
+		child { node [node_] {$x<y$}
+			child { node [leaf_] {A}
+				edge from parent node [left]{Ja} }       
+			child { node [leaf_] {B}
+				edge from parent node [right]{Nej} }
+			edge from parent node [right] {Nej} };
+		\end{tikzpicture}
+	\end{center}
+	\caption{\textit{Endeligt beslutningstræ}}
+\end{figure}
 
-\begin{tabular}{c|c|c}
-	X & Y & Klasse\\
-	\hline
-	0.2 & 0.01 & C\\
-	0.28 & 0.1 & C\\
-	0.1 & 0.2 & C\\
-	0.4 & 0.5 & A\\
-	0.5 & 0.8 & A\\
-	0.9 & 0.95 & A\\
-	0.5 & 0.4 & B\\
-	0.8 & 0.2 & B\\
-	0.6 & 0.5 & A\\
-	0.7 & 0.1 & B\\
-	0.5 & 0.12 & B\\
-	0.12 & 0.75 & C
-\end{tabular} 
+Det er nu lykkedes at bygge en model, som kan opdele træningssættet korrekt. Dette er dog ingen garanti for, at modellen er korrekt. Modellen er bygget ud fra nogle antagelser, som holder gennem træningssættet, men det betyder ikke, at det holder i praksis. For at undersøge modellens nøjagtighed, vil vi bruge den til at klassificere et testsæt. I figur 5 har vi plottet et testsæt med opdelingen fra tidligere.
 
-Tegner vi punkterne ind i en graf med grænserne sat som før får vi følgende resultat:
-\begin{center}
-	\includegraphics{decision_tree_example_plot_test}
-\end{center}
+\begin{figure}[H]
+	\begin{minipage}[t]{0.27\linewidth}
+		\begin{flushleft}
+			\begin{tabular}{c|c|c}
+				X & Y & Klasse\\
+				\hline
+				0.2 & 0.01 & C\\
+				0.28 & 0.1 & C\\
+				0.1 & 0.2 & C\\
+				0.4 & 0.5 & A\\
+				0.5 & 0.8 & A\\
+				0.9 & 0.95 & A\\
+				0.5 & 0.4 & B\\
+				0.8 & 0.2 & B\\
+				0.6 & 0.5 & A\\
+				0.7 & 0.1 & B\\
+				0.5 & 0.12 & B\\
+				0.12 & 0.75 & C
+			\end{tabular} 
+		\end{flushleft}
+	\end{minipage}
+	\begin{minipage}[t]{0.1\linewidth}
+		\begin{flushright}
+			\includegraphics[width=9cm]{decision_tree_example_plot_test}
+		\end{flushright}
+	\end{minipage}
+	\caption{\textit{Til venstre: Testsæt Til højre: Plot af testsæt}}
+\end{figure}
+
 Testsættet passer næsten overens, men der er et enkelt punkt som ikke overholder vores antagelse, så modellen er ikke perfekt. Helt konkret kan vi udregne en nøjagtighed baseret på vores resultat med testsættet. Ud af 12 punkter blev 11 punkter klassificeret korrekt, så vi regner os frem til en nøjagtihed $acc_M=\frac{11}{12}\approx0.92$
 
 
