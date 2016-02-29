@@ -342,52 +342,91 @@ Betragt træningssættet af todimensionelle punkter, markeret som plusser og cir
 \end{figure}
 
 
-\subsection{Linear SVM}
-\subsubsection{Separable case}
-I vores gennemgang af linear SVM vil vi kigge på et problem, hvor vi kan klassificere et dataset i to klasser. Vores inddeling kan beskrives mere formelt som $(x_i,y_i) \ i=1,2,...N$ hvor $x_i$ repræsenterer det i'te dataset. I disse eksempler vil $y_i \in \{-1,1\}$, dvs. at vi inddeler vores data i to klasser, enten $-1$ eller $1$.
+\subsection{Lineær SVM}
+\subsubsection{Separerbare tilfælde}
+I vores gennemgang af lineære SVM vil vi arbejde med bineær inddeling af datasæt. Vores inddeling kan beskrives mere formelt som $(x_i,y_i) \ i=1,2,...N$, hvor $x_i$ er et datapunkt og $y_i$ er punktets klasse. Af hensyn til udregningerne definerer vi $y_i \in \{-1,1\}$.
 
-For at finde punkter på vores grænse, kan vi opstille ligningen nedenfor, og de punkter, der opfylder ligningen, vil ligge på grænsen. De to variable $w$ og $b$ er parametre i modellen. For helt præcist at beskrive dem er $w$ en normal vektor til vores grænse \textit{decision boundary}, og $b$ er den vinkelrette afstand fra grænsen til origo.
-$$w \cdot x + b = 0$$
-På grafen nedenfor ses et eksempel på et plot af et dataset. Hvis der lå punkter på $B1$, ville de opfylde betingelserne for ligningen ovenfor.
+Hyperplanet, som udgør grænsen i en opdeling, beskriver vi med ligning (\ref{eq:hyperplane_equation}), hvor $w$ er en normalvektor til hyperplanet, $b$ er den vinkelrette afstand fra hyperplanet til origo, og $x$ er et punkt på hyperplanet.
+\begin{equation}
+\label{eq:hyperplane_equation}
+w \cdot x + b = 0
+\end{equation}
+
+På figur \ref{fig:hyperplane_example} ses et eksempel på et plot af et datasæt. Hvis der lå punkter på $B1$, ville det opfylde betingelserne for $x$ i (\ref{eq:hyperplane_equation}).
 \begin{center}
-	\includegraphics{svm_plot}
+\begin{figure}[H]
+\includegraphics[width=8cm]{svm_plot}
+\caption{Separeret data}
+\label{fig:hyperplane_example}
+\end{figure}
 \end{center}
 
-For punkter der ligger ved siden af grænsen kan vi opstille en gaffelfunktion, som kan ses nedenfor. De punkter der er mindre end $0$ ligger under grænsen, og vil blive klassificeret som $-1$, og de punkter der er større end $0$ ligger over grænsen, og vil blive klassificeret som $1$. Hvis vi kigger på grafen fra tidligere vil cirklerne blive kvalificeret som $1$, og stjernerne blive kvalificeret som $-1$.
-$$
-   y_i = \left\{
-     \begin{array}{lr}
-       1, & if \ w \cdot x_i + b > 0 \\
-       -1, & if \ w \cdot x_i + b < 0
-     \end{array}
-   \right.
-$$
 
-Vi kan skalere vores $w$ og $b$ således at vi finder de punkter, der ligger på vores margener. Som det kan ses i den tidligere graf, vil det punkt som ligger på $b_{11}$ opfylde den første ligning, og det punkt, som ligger på b12 opfylde den anden ligning. 
-$$b_{i1}: w \cdot x + b = 1$$
-$$b_{i2}: w \cdot x + b = -1$$
+For at klassificere et punkt må vi afgøre, hvilken side af grænsen punktet befinder sig. Dette kan formaliseres med gaffelfunktionen (\ref{eq:point_classification}). 
+\begin{equation}
+\label{eq:point_classification}
+y_i = \left\{
+\begin{array}{lr}
+1, & if \ w \cdot x_i + b > 0 \\
+-1, & if \ w \cdot x_i + b < 0
+\end{array}
+\right.
+\end{equation}
+Punkter som opfylder $w\cdot x_i + b <0$ ligger under grænsen, og vil blive klassificeret som $-1$, mens punkter der opfylder $w\cdot x_i +b >0$ ligger over grænsen, og vil blive klassificeret som $1$. Hvis vi kigger på figur \ref{fig:hyperplane_example} vil cirklerne blive kvalificeret som $1$, og stjernerne blive klassificeret som $-1$.
 
-Da vi gerne vil have de margener med den største afstand fra hinanden, kan vi omskrive de forudgående ligninger til at kunne beregne afstanden mellem margenerne. Dette kan vi gøre ved at indsætte de punkter, som ligger på den øvre og den nedre margen, og ved at trække de to ligninger fra hinanden, kan vi komme frem til den formel, som kan ses nedenfor. Her kan vi se, at afstanden mellem de to margener ($d$), kan findes ved $\frac{2}{||w||}$. Når vi senere hen skal til at optimere $d$, kan det let ses at for at finde den største afstand (altså maksimere $d$), skal vi minimere $w$. 
-\begin{align*}
-w \cdot (x_1 - x_2) = 2 \\
-||w|| \times d = 2 \\
-d = \frac{2}{||w||} \\
-\end{align*}
+Lad $x_1$ og $x_2$ være de punkter, der ligger nærmest hyperplanet, sådan at $x_1$ ligger over hyperplanet og $x_2$ under. Så ligger $x_1$ og $x_2$ på marginerne hhv. $b_{11}$ og $b_{12}$ (se figur \ref{fig:hyperplane_example}). Ved at skalere $w$ og $b$ kan kan vi beskrive marginerne som (\ref{eq:margin_1}) og (\ref{eq:margin_2}). Da vil (\ref{eq:margin_1}) være opfyldt for $x=x_1$ og (\ref{eq:margin_2}) for $x=x_2$.
+\begin{equation}
+\label{eq:margin_1}
+b_{11}: w\cdot x + b = 1
+\end{equation}
+\begin{equation}
+\label{eq:margin_2}
+b_{12}: w\cdot x + b = -1
+\end{equation}
 
-For at træne vores SVM skal vi estimere $w$ og $b$ således at nedenstående betingelser er overholdt, de skal overholdes på den måde at de datapunkter som tilhører klassen $1$ skal overholde den første formel, og de dataset som tilhører klassen $-1$ skal overholde den anden formel. 
-$$w \cdot x_i + b \geq 1 \ if \ y_i = 1$$
-$$w \cdot x_i + b \leq -1 \ if \ y_i = -1$$
+Da målet er at maksimere margin, skal vi være i stand til at udregne afstanden $d$ mellem de to marginer $b_{11}$ og $b_{22}$. Ved at indsætte $x_1$ og $x_2$ i marginernes ligninger og trække dem fra hinanden kan vi netop udregne afstanden mellem dem. Vi observerer først
+\begin{align}
+(w\cdot x_1 + b) - (w\cdot x_2 +b) &= 1 - (-1)\\
+w\cdot x_1 - w\cdot x_2 &= 2\\
+w\cdot(x_1-x_2)&=2
+\label{eq:d_1}
+\end{align}
+Bemærker at venstre side af (\ref{eq:d_1}) er prikproduktet mellem to euklediske vektorer. Vi kan da udnytte at $A\cdot B = ||A||\times||B||\times\cos\theta$, hvor $A$ og $B$ er euklediske vektorer, og $\theta$ er vinklen mellem dem:
+\begin{equation}
+||w||\times||x_1-x_2||\cos\theta=2
+\end{equation}
+Vi benytter nu at den skalare projektion af $A$ på $B$ er givet ved $A_B=||A||\cos\theta$, og at bredden $d$ netop er projektionen af $(x_1-x_2)$ på $w$. Vi får altså:
+\begin{align}
+||w||\times (x_1-x_2)_B&=2\\
+||w||\times d &= 2\\
+\label{eq:d_2}
+d&=\frac{2}{||w||}
+\end{align}
 
-Formlerne ovenfor kan samles til formlen, som kan ses nedenfor, denne formel vil vi bruge i sammenhæng med optimering af $w$ og $b$. 
-$$y_i(w \cdot x_i + b) \geq, \ i =1,2,...,N$$
 
-For at opnå den største afstand mellem de to margener, kan vi opstille en objektiv funktion, som kan ses nedenfor. Da vi ønsker at maksimere $d$, er det klart, at den objektive funktion $f$ skal minimeres.  
-$$f(w)=\frac{||w||^2}{2}$$
+For at træne vores SVM skal vi maksimere $d$, sådan at betingelserne i (\ref{eq:req_1}) og (\ref{eq:req_2}) er opfyldt for alle $x_i$.
+\begin{align}
+\label{eq:req_1}
+w \cdot x_i + b \geq 1 \text{ for } \ y_i = 1\\
+\label{eq:req_2}
+w \cdot x_i + b \leq -1 \text{ for } y_i = -1
+\end{align}
 
-(To be completed)
-Learning task:
-$$\min\limits_{w} \frac{||w||^2}{2}$$
-$$y_i(w \cdot x_i + b) \geq 1, i = 1,2,...,N$$
+Da fortegnet på $y_i$ vil svare til fortegnet af $w\cdot x_i+b$ og $||w\cdot x_i+b||\geq 1$ kan vi samle (\ref{eq:req_1}) og (\ref{eq:req_2}) i en enkel betingelse:
+\begin{equation}
+\label{eq:req_final}
+y_i(w \cdot x_i + b) \geq 1, \ i =1,2,...,N
+\end{equation}
+
+Fra (\ref{eq:d_2}) er det klart, at for at maksimere $d$ må vi minimere $w$. Vi opstiller nu den objektive funktion i (\ref{eq:objective_function}).
+\begin{equation}
+\label{eq:objective_function}
+f(w)=\frac{||w||^2}{2}
+\end{equation}
+
+Vi definerer nu optimeringen af det separerbare lineære SVM som en betinget minimeringen af $w$ i (\ref{eq:objective_function}) under betingelsen(\ref{eq:req_final}).
+
+
 
 \subsubsection{Optimering}
 For at optimere vores objektive funktion, skal vi bruge \textit{Lagrange multiplier}, \textit{Lagrange multiplier} er en metode der bruges til at finde en funktions minimum eller maksimum, og i dette tilfælde skal vi bruge den til at finde $f(w)=\frac{||w||^2}{2}$ minimum, da dette vil give os den bedste \textit{decision boundary}. Vi bruger \textit{Lagranges multiplier} da vores problem består af en kvadratisk objektiv funktion, og vores begrænsninger er lineære i parametrene $w$ og $b$, hvilket ender ud i at være et konvekst optimeringsproblem, og her bliver \textit{Langranges multiplier} brugt som standard.
