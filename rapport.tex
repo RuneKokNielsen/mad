@@ -384,7 +384,7 @@ b_{11}: w\cdot x + b = 1
 b_{12}: w\cdot x + b = -1
 \end{equation}
 
-Da målet er at maksimere margin, skal vi være i stand til at udregne afstanden $d$ mellem de to marginer $b_{11}$ og $b_{22}$. Ved at indsætte $x_1$ og $x_2$ i marginernes ligninger og trække dem fra hinanden kan vi netop udregne afstanden mellem dem. Vi observerer først
+Da målet er at maksimere margin, skal vi være i stand til at udregne afstanden $d$ mellem de to marginer $b_{11}$ og $b_{12}$. Ved at indsætte $x_1$ og $x_2$ i marginernes ligninger og trække dem fra hinanden kan vi netop udregne afstanden mellem dem. Vi observerer først
 \begin{align}
 (w\cdot x_1 + b) - (w\cdot x_2 +b) &= 1 - (-1)\\
 w\cdot x_1 - w\cdot x_2 &= 2\\
@@ -397,7 +397,6 @@ Bemærker at venstre side af (\ref{eq:d_1}) er prikproduktet mellem to eukledisk
 \end{equation}
 Vi benytter nu at den skalare projektion af $A$ på $B$ er givet ved $A_B=||A||\cos\theta$, og at bredden $d$ netop er projektionen af $(x_1-x_2)$ på $w$. Vi får altså:
 \begin{align}
-||w||\times (x_1-x_2)_B&=2\\
 ||w||\times d &= 2\\
 \label{eq:d_2}
 d&=\frac{2}{||w||}
