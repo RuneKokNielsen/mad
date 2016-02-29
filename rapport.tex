@@ -325,21 +325,21 @@ Testsættet passer næsten overens, men der er et enkelt punkt som ikke overhold
 
 \section{Support Vector Machines (SVM)}
 
-En SMV træningsalgoritme er en type klassifikationsteknik til binær klassifikation, som er specielt egnet til data af mange dimensioner. Teknikken baseres på at finde et \textit{maximal margin hyperplane}, altså et hyperplan som deler datapunkterne op i to dele svarende til deres kategori, med maksimal margin til de nærmeste punkter. Dette hyperplan betegnes som modellens \textit{decision boundary}.
+En SVM træningsalgoritme er en type klassifikationsteknik til binær klassifikation, som er specielt egnet til kontinuert data af mange dimensioner. Teknikken baseres på at finde et \textit{maximal margin hyperplane}, altså et hyperplan som deler datapunkterne op i to dele svarende til deres kategori, med maksimal margin til de nærmeste punkter. Dette hyperplan betegnes som modellens \textit{decision boundary}.
 
-Formålet med at maksimere margin er at optimere modellens generaliseringsevne, og dermed opnå bedst mulig nøjagtig når nye punkter skal klassificeres. Hvis vores decision boundary har meget lille margin, er der intuitivt ikke plads til meget forskel på datæn sammenlignet med træningssættet. Dette koncept illustreres i eksemplet nedenfor.
+Formålet med at maksimere margin er at optimere modellens generaliseringsevne, og dermed opnå bedst mulig nøjagtighed, når nye punkter skal klassificeres. Hvis vores decision boundary har meget lille margin, er der intuitivt ikke plads til meget forskel på dataen sammenlignet med træningssættet. Dette koncept illustreres i eksemplet nedenfor.
 
-Betragt træningssættet af todimensionelle punkter, markeret som plusser og cirkler afhængig af deres klasse.
+Betragt træningssættet af todimensionelle punkter, markeret som plusser og cirkler afhængig af deres klasse (figur 6 til venstre). På figur 6 til højre er indtegnet to hyperplaner (sorte linjer) og deres margin (grå linjer), som begge deler træningssættet op uden fejl. Det er tydeligt at B2 har bredere margin end B1, og B2 er derfor objektivt den bedste løsning til problemet. Undersøger man selv dataen for en naturlig tendens i opdelingen, bliver det også tydeligt at se, at B2 følger denne tendens langt bedre end B1.
 
-\begin{center}
-	\includegraphics{maximal_margin_hyperplane_1}
-\end{center}
-
-Nedenfor er indtegnet to hyperplaner (sorte linjer) og deres margin (grå linjer), som begge deler træningssættet op uden fejl. Det er tydeligt at B2 har breddere margin end B1, og B2 er derfor objektivt den bedste løsning til problemet. Undersøger man selv datæn for en naturlig tendens i opdelingen, bliver det også tydeligt at se, at B2 følger denne tendens langt bedre end B1.
-
-\begin{center}
-	\includegraphics{maximal_margin_hyperplane_2}
-\end{center}
+\begin{figure}[H]
+	\begin{minipage}[t]{0.6\linewidth}
+		\includegraphics[width=7cm]{maximal_margin_hyperplane_1}
+	\end{minipage}
+	\begin{minipage}[t]{0.1\linewidth}
+		\includegraphics[width=7cm]{maximal_margin_hyperplane_2}
+	\end{minipage}
+	\caption{\textit{Til venstre: Træningssæt. Til højre: Opdeling af sættet med hyperplaner.}}
+\end{figure}
 
 
 \subsection{Linear SVM}
