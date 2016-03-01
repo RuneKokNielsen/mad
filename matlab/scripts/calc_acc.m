@@ -3,11 +3,11 @@ function result = calc_acc(graph,lk,n,pick_kernel)
 tlk = transpose(lk);
 
 if pick_kernel == 1
-    h_WL = 7;
+    h_WL = 7; %Number of iterations.
     K_WL = WL(graph, h_WL, 0);
     result = runntimes(K_WL{1,h_WL + 1}, tlk, n);
 elseif pick_kernel == 2
-    h_RG = 0;
+    h_RG = 0; %Maximal tree height.
     K_RG = RGkernel(graph, h_RG);
     result = runntimes(K_RG, tlk, n);
 elseif pick_kernel == 3 
