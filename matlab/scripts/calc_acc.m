@@ -21,7 +21,7 @@ elseif pick_kernel == 4
        degrees{col} = sum(full(graph(col).('am')),2);
        maxDegree = max([maxDegree, max(degrees{col})]);
     end
-    K_RW = lRWkernel(graph, 10^(1/maxDegree^2), 0);
+    K_RW = lRWkernel(graph, 1/maxDegree^2, 0);
     result = runntimes(K_RW, tlk, n);
 elseif pick_kernel == 5
     K_sp = spkernel(graph, 0);
