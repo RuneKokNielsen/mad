@@ -590,8 +590,22 @@ Desuden vil en Gram matrice være positiv semidefinit. Dette kan bl.a. formalise
 \begin{equation}
 \forall c\in R^n,c^TKc\geq 0,\text{ for }c\neq 0
 \end{equation}
-Altså: for enhver vilkårlig ikke-nulvektor $c$ vil produktet af $c^TKc$ altså være ikke-negativt. Det følger at kernefunktionen $k$ er positiv semi-definit, hvilket er en central egenskab ved kernefunktioner.
+Altså: for enhver vilkårlig ikke-nulvektor $c$ vil produktet af $c^TKc$ være ikke-negativt. Det følger at kernefunktionen $k$ er positiv semi-definit, hvilket er en central egenskab ved kernefunktioner.
 
+
+Lad nu $k(x_i,x_j)\rightarrow\mathbb{R}$ være en symmetrisk funktion på $x_i,x_j\in \chi_1$. Altså $k(x,y)=k(y,x)$ for alle $x,y$, og antag at $k$ leder til en positiv semi-definit Gram matrice $K$.
+\begin{equation}
+K=\left[\begin{array}{r r r}
+k(x_1,x_1) & ... &k(x_1,x_n)\\
+& ... & \\
+k(x_n,x_1) & ... &k(x_n,x_n)\\
+\end{array}\right]\\
+\end{equation}
+
+En Gram matrice består som bekendt af indre produkter af vektorer i et rum $\chi_2$. Vi får altså at $k(x_i,x_j)=\langle y_i,y_j \rangle$, hvor $x_i,x_j\in\chi_1$ og $y_i,y_j\in\chi_2$. Da må der findes en transformation $\Phi:\chi_1\rightarrow\chi_2$ sådan at $\Phi(x_i)=y_i$. Dette giver netop ligheden:
+\begin{equation}
+k(x_i,x_j) = \langle y_i, y_j \rangle = \langle \Phi(x_i),\Phi(x_j) \rangle
+\end{equation}
 
 
 Med denne definition kan $k$ nu erstatte prikproduktet og transformationerne i dual Lagrange problemet fra tidligere:
@@ -613,10 +627,14 @@ GraphHopper & $83.9444 (\pm 0.5705)$ & $36.2833 (\pm 0.4856)$ & - & $72.5985 (\p
 Graphlet count & $74.1667 (\pm 0.6991)$ & $32.2000 (\pm 0.4394)$ & $79.2735 (\pm 0.1514)$ & $65.9538 (\pm 0.0937)$ & $66.6383 (\pm 0.1072)$ \\
 Random walk & $85.1667 (\pm 0.6032)$ & - & - & - & - \\
 Shortest path & $85.6667 (\pm 0.7258)$ & $41.5500 (\pm 0.4888)$ & - & $73.1946 (\pm 0.1146)$ & $73.1311 (\pm 0.0798)$ \\
+Baseline$_1$ & $85.5556(\pm 0.4057)$ & $41.4333(\pm 0.2462)$ & $78.4017(\pm 0.1995)$ & $69.6740(\pm 0.0905)$ & $68.9782(\pm 0.1183)$
 \end{tabular}
 }
 \caption{\textit{Resultater}}
 \end{center}
 \end{table}
 
+Gaussian kernel brugt i baseline:
+$$k(x_i,x_j)=e^{\frac{-||x_i-x_j||^2}{\sigma^2}}$$
+Hvor $\sigma$ er en parameter i kernen.
 \end{document}
