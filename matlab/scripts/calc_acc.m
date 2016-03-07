@@ -33,8 +33,11 @@ elseif pick_kernel == 7
     K_DD = degree_distributions(graphs);
     result = runntimes(K_DD, tlk, n);
 elseif pick_kernel == 8
-    K_B1 = baseline_1(graphs,50);
+    K_B1 = baseline_1(graphs, 50);
     result = runntimes(K_B1, tlk, n);
+elseif pick_kernel == 9
+    K_B2 = baseline_2(graphs, 50);
+    result = runntimes(K_B2, tlk, n);
 else
     error('Pick Kernel');
 end
