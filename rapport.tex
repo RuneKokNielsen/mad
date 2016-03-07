@@ -356,7 +356,7 @@ På figur \ref{fig:hyperplane_example} ses et eksempel på et plot af et datasæ
 \begin{center}
 \begin{figure}[H]
 \includegraphics[width=8cm]{svm_plot}
-\caption{Separeret data}
+\caption{\textit{Separeret data}}
 \label{fig:hyperplane_example}
 \end{figure}
 \end{center}
@@ -428,60 +428,125 @@ Vi definerer nu optimeringen af det separerbare lineære SVM som en betinget min
 
 
 \subsubsection{Optimering}
-For at optimere vores objektive funktion, skal vi bruge \textit{Lagrange multiplier}, \textit{Lagrange multiplier} er en metode der bruges til at finde en funktions minimum eller maksimum, og i dette tilfælde skal vi bruge den til at finde $f(w)=\frac{||w||^2}{2}$ minimum, da dette vil give os den bedste \textit{decision boundary}. Vi bruger \textit{Lagranges multiplier} da vores problem består af en kvadratisk objektiv funktion, og vores begrænsninger er lineære i parametrene $w$ og $b$, hvilket ender ud i at være et konvekst optimeringsproblem, og her bliver \textit{Langranges multiplier} brugt som standard.
+For at optimere vores objektive funktion, skal vi bruge \textit{Lagrange multiplier}, \textit{Lagrange multiplier} er en metode der bruges til at finde en funktions minimum eller maksimum, og i dette tilfælde skal vi bruge den til at finde (\ref{eq:objective_function})'s minimum, da dette vil give os den bedste \textit{decision boundary}. Vi bruger \textit{Lagranges multiplier} da vores problem består af en kvadratisk objektiv funktion, og vores begrænsninger er lineære i parametrene $w$ og $b$, hvilket ender ud i at være et konvekst optimeringsproblem, og her bliver \textit{Langranges multiplier} brugt som standard.
 
-For at kunne bruge \textit{Lagrange multipliers}, bliver vi nød til at omskrive vores objektive funktion, til en ny objektiv funktion, som tager højde for vores begrænsninger, den nye objektive funktion kendes også som en \textit{Lagrangian} funktion. Variablen $\lambda_i$ i den nye funktion er kendt som en \textit{Lagrange multiplier}. 
-$$L_P = \frac{1}{2}||w||^2 - \sum\limits_{i=1}^N \lambda_i (y_i(w \cdot x_i + b) - 1)$$
-Grunden til at vi har været nødsaget til at ændre vores objektive funktion fra $f(w) = \frac{||w||^2}{2}$ til den overstående objektive funktion er, at den tidligere funktion ville det let ses, at for at opnå den minimale værdi ville $w = 0$ være den bedste løsning, men denne løsning ville ikke holde da vores begrænsninger fra $y_i(w \cdot x_i + b) \geq 1, \ i =1,2,...,N$ ikke ville holde, og hvis vores uligheden ikke holder, vil vi ikke kunne finde en løsning til problemet. Det er her vores \textit{Lagrangian} funktion kommer i spil, da den inkorporerer vores betingelser i funktionen, og hvis betingelserne ikke holder, vil værdien af vores funktion stige, og dermed give et dårlige resultat.
+Det ses let at i vores objektive funktion (\ref{eq:objective_function}), at for at opnå den minimale værdi ville $w = 0$ være den bedste løsning, men denne løsning ville ikke holde da vores betingelser i uligheden fra (\ref{eq:req_final}) ikke vil blive overholdt, og hvis uligheden ikke bliver overholdt, vil det ikke være muligt finde en løsning til problemet. For at løse dette problem, vil vi transformere vores objektive funktion \ref{eq:objective_function} til en \textit{Lagrangian} funktion, en \textit{Lagrangian} funktion inkorporerer vores ulighed fra (\ref{eq:req_final}) i vores objektive funktion (\ref{eq:objective_function}), og hvis uligheden ikke bliver overholdt, vil værdien af funktionen stige, og dermed give et dårligere resultat. Ved at have omskrevet vores objektive funktion (\ref{eq:objective_function}) til en \textit{Lagrangian} funktion, vil det også være muligt for os at bruge \textit{Lagrange multipliers}, og det ses også i funktionen (\ref{eq:L_P}), som er vores \textit{Lagragian} funktion hvor vores uligheder er blevet inkorporeret, at der er blevet indsat et $\lambda$, som er vores \textit{Lagrange multiplier}.
+\begin{equation}
+\label{eq:L_P}
+L_P = \frac{1}{2}||w||^2 - \sum\limits_{i=1}^N \lambda_i (y_i(w \cdot x_i + b) - 1)
+\end{equation}
 
 For at kunne minimere vores \textit{Lagrangian} funktion, skal vi først lave to partielle differentieringer. Først differentierer vi i forhold til $w$, og derefter differentierer vi i forhold til $b$. Da vi ønsker at finde ekstremumspunkter, sættes de partielt differentierede til 0. Dette medfører resultatet nedenfor.
-$$\frac{\partial L_p}{\partial w} = 0 \Rightarrow w = \sum\limits_{i=1}^N \lambda_i y_i x_i$$
-$$\frac{\partial L_p}{\partial b} = 0 \Rightarrow \sum\limits_{i=1}^N \lambda_i y_i = 0$$
+\begin{equation}
+\label{eq:partial_L_pw}
+\frac{\partial L_p}{\partial w} = 0 \Rightarrow w = \sum\limits_{i=1}^N \lambda_i y_i x_i
+\end{equation}
+\begin{equation}
+\label{eq:partial_L_pb}
+\frac{\partial L_p}{\partial b} = 0 \Rightarrow \sum\limits_{i=1}^N \lambda_i y_i = 0
+\end{equation}
 Selvom vi har fundet de partielt differentierede funktioner, er det stadig ikke muligt at finde $w$ og $b$, dette skyldes at vores definition af vores objektive funktion kun indeholder uligheder, og at \textit{Lagrange multiplier} skal bruge ligheder. Hvis vores definition havde indeholdt ligheder, ville det havde været muligt at finde værdierne til $w$, $b$ og $\lambda$ med de $N$ ligninger som vi har fundet. Men for at løse dette problem skal vi transformere vores uligheder til ligheder. Dette kan vi gøre med \textit{Karush-Kuhn-Tucker} betingelserne. Disse betingelser kan ses nedenfor.
-$$\lambda_i \geq 0$$
-$$\lambda_i[y_i(w \cdot x_i + b) - 1] = 0$$
+\begin{equation}
+\label{eq:constraint_lambda_i1}
+\lambda_i \geq 0
+\end{equation}
+\begin{equation}
+\label{eq:constraint_lambda_i2}
+\lambda_i[y_i(w \cdot x_i + b) - 1] = 0
+\end{equation}
 Som det kan ses i vores nye ligheder, skal alle $\lambda_i$ være $0$ når $y_i(w \cdot x_i + b) \neq 0$, og ud fra dette ved vi at alle de punkter der ligger på $b_{i1}$ eller $b_{i2}$ har en \textit{Lagrange multiplier} $\lambda_i > 0$.  De punkter der ligger på $b_{i1}$ og $b_{i2}$ og opfylder betingelserne er også kendt som \textit{support vectors}.
 
 Vores optimeringsproblem er stadig kompliceret grundet at vi har $w$, $b$ og $\lambda_i$. Vi kan simplificere problemet ved at bruge \textit{dual problem} metoden. Denne metode bruges ofte i sammenhæng med \textit{Lagrange mlutipliers}. Metoden transformerer vores \textit{Lagrangian} funktion til en funktion, som kun indeholder vores \textit{Lagrange multipliers}. Ved at indsætte konsekvenserne af de partielt differentierede sat til 0 i $L_P$ opnår vi vores \textit{dual problem} funktion som nedenfor.
-$$L_D = \sum\limits_{i=1}^N \lambda_i - \frac{1}{2}\sum\limits_{i,j} \lambda_i \lambda_j y_i y_j x_j \cdot x_j$$
+\begin{equation}
+\label{eq:L_D}
+L_D = \sum\limits_{i=1}^N \lambda_i - \frac{1}{2}\sum\limits_{i,j} \lambda_i \lambda_j y_i y_j x_j \cdot x_j
+\end{equation}
 Der er to store forskelle på vores primære \textit{Lagrangian} funktion, og vores nye \textit{dual problem} funktion. Den første store forskel er at vores \textit{dual problem} kun indeholder vores trænings data samt vores \textit{Lagrange multipliers}, hvor vores primære \textit{Lagrangian} funktion også indeholder vores $w$ og $b$. Den anden store forskel er, at vores minimeringsproblem  er blevet til et maksimeringsproblem.
 Løsningen af vores \textit{dual problem} kræver at vi finder værdierne af $\lambda_i$, hvilket opnås gennem $\textit{quadratic programming}$. Detaljerne ligger undertiden uden for emnet i denne rapport.\\
-Efterat  vi har fundet $\lambda_i$ ved hjælp af \textit{quadratic programming} kan vi finde $w$ og $b$. Vi kan beskrive vores grænse med ligningen nedenfor.
-$$( \sum\limits_{i=1}^N \lambda_i y_i x_i \cdot x) + b = 0$$
+Efter at  vi har fundet $\lambda_i$ ved hjælp af \textit{quadratic programming} kan vi finde $w$ og $b$. Vi kan beskrive vores grænse med ligningen nedenfor.
+\begin{equation}
+\label{eq:final_opt}
+( \sum\limits_{i=1}^N \lambda_i y_i x_i \cdot x) + b = 0
+\end{equation}
 
 Når vi endelig er færdig med at beregne alle vores parametre for vores grænse, kan vi stille en funktionen op, som kan ses nedenunder, den funktion kan beregne hvilken klassifisering et givet datapunkt $z$ tilhører. Hvis $f(z) = 1$ vil $z$ blive klassificeret som $1$ ellers vil $z$ blive kvalificeret som $-1$. 
-$$f(z) = sign(w \cdot z + b) = sign( \sum\limits_{i=1}^N \lambda_i y_i x_i \cdot z + b)$$
+\begin{equation}
+\label{eq:calc_class}
+f(z) = sign(w \cdot z + b) = sign( \sum\limits_{i=1}^N \lambda_i y_i x_i \cdot z + b)
+\end{equation}
 
-\subsubsection{Non-separable case}
-I nogle tilfælde vil den bedste grænse (\textit{dicision boundary}) ikke altid klassificere alle punkter i vores dataset korrekt. Dette kan skyldes forskellige ting såsom fejl i træningsdata, eller at der er et enkelt dataset, som ikke holder sig til mønstret for dens klassificering. I disse tilfælde vil vi stadig prøve at opnå så stor en afstand mellem vores margener som muligt, selvom enkelte dataset bliver klassificeret forkert. Dette skyldes at hvis vi valgte en grænse, som ville opdele vores træningssæt uden fejl, ville grænsen ofte have en meget lille afstand mellems dens margener, og dette vil gøre at modellen ville være meget udsat for \textit{overfitting}. På grafen nedenfor ses et eksempel, hvor at $B2$ ville være den oplagte grænse at vælge, da den opdeler alt data korrekt, men vi også vælge $B1$ grundet at den har en større afstand mellem sine margener, og risikoen for \textit{overfitting} ville være mindre. 
-\begin{center}
-	\includegraphics{svm_plot_1}
-\end{center}
-Grundet at vi har punkter der ikke er klassificeret rigtigt af vores grænse, vil vores tidligere ligninger ikke passe på alle vores dataset. For at rette dette introducerer vi \textit{slack variables} ($\xi$). Disse variabler skal placere de datapunkter der er kvalificeret forkert rigtigt, og dette gøres ved at addere eller substaktere (hvilke der skal bruges kommer an på hvor datapunktet er placeret) med vores nye variable ($\xi$). 
+\subsubsection{Ikke-separerbare tilfælde}
+I nogle tilfælde vil den bedste grænse (\textit{decision boundary}) ikke altid klassificere alle punkter i det givet dataset korrekt. Dette kan skyldes forskellige ting såsom fejl i træningsdata, eller at der er et enkelt dataset, som ikke holder sig til mønstret for dens klassificering. I disse tilfælde vil vi stadig prøve at opnå så stor en afstand mellem vores margener som muligt, selvom enkelte dataset bliver klassificeret forkert. Dette skyldes at hvis vi valgte en grænse, som ville opdele vores træningssæt uden fejl, ville grænsen ofte have en meget lille afstand mellems dens margener, og dette vil gøre at modellen ville være meget udsat for \textit{overfitting}. På grafen nedenfor ses et eksempel, hvor at $B2$ ville være den oplagte grænse at vælge, da den opdeler alt data korrekt, men vi også vælge $B1$ grundet at den har en større afstand mellem sine margener, og risikoen for \textit{overfitting} ville være mindre. 
+\begin{figure}[H]
+	\begin{minipage}[t]{0.6\linewidth}
+		\includegraphics[width=7cm]{svm_plot_1}
+	\end{minipage}
+	\begin{minipage}[t]{0.1\linewidth}
+		\includegraphics[width=7cm]{svm_plot_1_2}
+	\end{minipage}
+\caption{\textit{Til venstre: Opdeling af et ikke-sparerebart tilfælde}}
+\label{fig:hyperplane_example_1}
+\end{figure}
+Grundet at vi har punkter der ikke er klassificeret rigtigt af vores grænse, vil vores tidligere ligninger ikke passe på alle vores dataset. For at rette dette introducerer vi \textit{slack variables} ($\xi$). Disse variabler skal estimere hvor stor afstand der er til det korrekte hyperplan, og dette gøres ved at addere eller subtrahere (hvilke der skal bruges kommer an på hvor datapunktet er placeret) med vores nye variable ($\xi$). 
 
- Som det kan ses i vores to nye ligninger skal vi subtrakterer hvis vores dataset er placeret under grænsen, men den skal kvalificeres, som om den lå oven for grænsen, dette gør vi ved at subtrakterer højresiden af ligningen med vores \textit{slack variable}, med en værdi som gør at formlen er sand. Det samme gælder for det omvendte scenarie, men her bruges addition på højre siden af ligningen for at få ligningen til at blive sand.  
-$$w * x_i + b \geq 1 - \xi_i \ if \ y_i = 1$$
-$$w * x_i + b \leq 1 - \xi_i \ if \ y_i = -1$$
+ Som det kan ses i vores to nye ligninger skal vi subtrahere hvis vores dataset er placeret under grænsen, men den skal kvalificeres, som om den lå oven for grænsen, dette gør vi ved at subtraherer  højresiden af ligningen med vores \textit{slack variable}, med en værdi som gør at formlen er sand. Det samme gælder for det omvendte scenarie, men her bruges addition på højre siden af ligningen for at få ligningen til at blive sand.  
+\begin{equation}
+\label{eq:slack_hyperplane_1}
+w \cdot x_i + b \geq 1 - \xi_i \ hvis \ y_i = 1
+\end{equation}
+\begin{equation}
+\label{eq:slack_hyperplane_2}
+w \cdot x_i + b \leq -1 +\xi_i \ hvis \ y_i = -1
+\end{equation}
 Bemærk $\forall i : \xi_i > 0$
 
 For ikke bare at vælge en grænse med store margener, og så bare rette alle de forkerte klassificeret dataset til med \textit{slack variables}, introducerer vi en vægt for hvert datapunkt, som er kvalificeret forkert. Denne vægt kan ses i den modificerede objektive funktion nedenfor, bemærk at $C$ og $k$ bliver sat a brugeren (ofte vil $k = 1$ grundet simplicitet). Det ses klart at for hvert punkt, som er kvalificeret forkert, vil de valgte margener blive rangeret dårligere. 
-$$f(w) = \frac{||w||^2}{2}+C(\sum\limits_{i=1}^N \xi_i)^k$$
+\begin{equation}
+\label{eq:slack_objective_function}
+f(w) = \frac{||w||^2}{2}+C(\sum\limits_{i=1}^N \xi_i)^k
+\end{equation}
 
 \subsubsection{Optimering}
 Optimering med vores \textit{slack variable} er næsten ens med vores optimering uden vores ekstra variable. Igen vil vi starte med at lave vores objektive funktion om til en \textit{Lagrangian} funktion.
-$$L_P = \frac{1}{2}||w||^2 + C \sum\limits_{i=1}^N \xi_i - \sum\limits_{i=1}^N \lambda_i (y_i(w \cdot x_i + b) - 1 + \xi_i) - \sum\limits_{i=1}^N \mu_i \xi_i$$
+\begin{equation}
+\label{eq:slack_L_P}
+L_P = \frac{1}{2}||w||^2 + C \sum\limits_{i=1}^N \xi_i - \sum\limits_{i=1}^N \lambda_i (y_i(w \cdot x_i + b) - 1 + \xi_i) - \sum\limits_{i=1}^N \mu_i \xi_i
+\end{equation}
 For at forstå funktionen er det nemmest hvis man deler den op. Funktionen kan deles op i fire dele, hvor de to første dele er vores objektive funktion, som vi prøver at minimere, den tredje del  repræsenterer vores uligheder, er den sidste og fjerde del er kravet om at $\xi$ ikke må være negativt. 
 
 Igen skal vi transformere vores uligheder til ligheder, og her vil vi igen bruge \textit{Karush-Kuhn-Tucker's} metode til at transformere dem. Nedenfor kan vores nye betingelser findes.
-$$\xi_i \geq 0, \lambda_i \geq 0, \mu_i \geq 0$$
-$$\lambda_i(y_i(w \cdot x_i + b) - 1 + \xi_i) = 0$$
-$$\mu_i \xi_i = 0$$
+\begin{equation}
+\label{eq:slack_constraint_lambda_i1}
+\xi_i \geq 0, \lambda_i \geq 0, \mu_i \geq 0
+\end{equation}
+\begin{equation}
+\label{eq:slack_constraint_lambda_i2}
+\lambda_i(y_i(w \cdot x_i + b) - 1 + \xi_i) = 0
+\end{equation}
+\begin{equation}
+\label{eq:slack_constraint_lambda_i3}
+\mu_i \xi_i = 0
+\end{equation}
+
 Igen finder vi de partielt differentieret funktioner af $L_p$.
-$$\frac{\partial L_p}{\partial w_j} = w_j - \sum\limits_{i=1}^N \lambda_i y_i x_{ij} = 0 \Rightarrow w_j = \sum\limits_{i=1}^N \lambda_i y_i x_{ij}$$
-$$\frac{\partial L_p}{\partial b} = - \sum\limits_{i=1}^N \lambda_i y_i = 0 \Rightarrow \sum\limits_{i=1}^N \lambda_i y_i = 0$$
-$$\frac{\partial L_p}{\partial \xi_i} = C - \lambda_i - \mu_i = 0 \Rightarrow \lambda_i + \mu_i = C$$
-Hvis man som sidst indsætter vores nye ligninger ind i vores \textit{Lagrangian} funktion får vi igen et \textit{dual problem}, og dette er det samme som vi fandt frem til i det \textit{separable} tilfaelde. Den skiller sig lidt ud da vi har lidt flere betingelser, sidst havde vi bare at $\lambda_i \geq 0$, her har vi at $C \geq \lambda_i \geq 0$. Herfra er det den samme fremgangsmåde med \textit{quadratic programming} etc, som i det \textit{separable} tilfælde.
-$$L_D = \sum\limits_{i=1}^N \lambda_i - \frac{1}{2}\sum\limits_{i,j}\lambda_i \lambda_j y_i y_j x_i \cdot x_j$$
+\begin{equation}
+\label{eq:slack_partial_L_pw}
+\frac{\partial L_p}{\partial w_j} = w_j - \sum\limits_{i=1}^N \lambda_i y_i x_{ij} = 0 \Rightarrow w_j = \sum\limits_{i=1}^N \lambda_i y_i x_{ij}
+\end{equation}
+\begin{equation}
+\label{eq:slack_partial_L_pb}
+\frac{\partial L_p}{\partial b} = - \sum\limits_{i=1}^N \lambda_i y_i = 0 \Rightarrow \sum\limits_{i=1}^N \lambda_i y_i = 0
+\end{equation}
+\begin{equation}
+\label{eq:slack_partial_L_pxi}
+\frac{\partial L_p}{\partial \xi_i} = C - \lambda_i - \mu_i = 0 \Rightarrow \lambda_i + \mu_i = C
+\end{equation}
+
+Hvis man som sidst indsætter vores nye ligninger ind i vores \textit{Lagrangian} funktion får vi igen et \textit{dual problem}, og dette er det samme som vi fandt frem til i det \textit{separable} tilfaelde. Den skiller sig lidt ud da vi har lidt flere betingelser, sidst havde vi bare at $\lambda_i \geq 0$, her har vi at $C \geq \lambda_i \geq 0$. Herfra er det den samme fremgangsmåde med \textit{quadratic programming} etc, som i det \textit{separable} tilfælde, se (\ref{eq:final_opt}) og (\ref{eq:calc_class}).
+\begin{equation}
+\label{eq:slack_L_D}
+L_D = \sum\limits_{i=1}^N \lambda_i - \frac{1}{2}\sum\limits_{i,j}\lambda_i \lambda_j y_i y_j x_i \cdot x_j
+\end{equation}
 
 \subsection{Ikke-lineær SVM}
 Det er ikke altid muligt at definere en lineær opdeling af dataen. En naiv løsning på dette problem er, at transformere datapunkterne til et andet rum, hvor en lineær opdeling er mulig.
@@ -534,22 +599,22 @@ Med denne definition kan $k$ nu erstatte prikproduktet og transformationerne i d
 L_D&=\sum_{i=1}^{n}\lambda_i-\frac{1}{2}\sum_{i,j}\lambda_i\lambda_j y_iy_jK(x_i,x_j)
 \end{align*}
 
-\section{Results: Working title}
+\section{Eksperimenter}
 \begin{table}[H]
 \begin{center}
 \scalebox{0.7} {
 \begin{tabular}{c|c|c|c|c|c}
-Method/Dataset & MUTAG & ENZYMES & DD & NCI1 & NCI109 \\
+Metoder/Dataset & MUTAG & ENZYMES & DD & NCI1 & NCI109 \\
 \hline
 Weisfeiler-Lehman & $83.4444 (\pm 0.5844)$ & $36.8000 (\pm 0.3304)$ & $74.7350 (\pm 0.1498)$ & $82.0779 (\pm 0.0991)$ &  $82.3641 (\pm 0.0973)$ \\
 Ramon \& Gartner & $83.0556 (\pm 0.5693)$ & - & -& - & - \\
-GraphHopper & $83.9444 (\pm 0.5705)$ & $36.2833 (\pm 0.4856)$ & - & - & - \\
+GraphHopper & $83.9444 (\pm 0.5705)$ & $36.2833 (\pm 0.4856)$ & - & $72.5985 (\pm 0.1323)$ & $71.4029 (\pm 0.1026)$ \\
 Graphlet count & $74.1667 (\pm 0.6991)$ & $32.2000 (\pm 0.4394)$ & $79.2735 (\pm 0.1514)$ & $65.9538 (\pm 0.0937)$ & $66.6383 (\pm 0.1072)$ \\
 Random walk & $85.1667 (\pm 0.6032)$ & - & - & - & - \\
-Shortest path & $85.6667 (\pm 0.7258)$ & - & - & $73.1946 (\pm 0.1146)$ & $73.1311 (\pm 0.0798)$ \\
+Shortest path & $85.6667 (\pm 0.7258)$ & $41.5500 (\pm 0.4888)$ & - & $73.1946 (\pm 0.1146)$ & $73.1311 (\pm 0.0798)$ \\
 \end{tabular}
 }
-\caption{\textit{Results}}
+\caption{\textit{Resultater}}
 \end{center}
 \end{table}
 

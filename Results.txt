@@ -16,7 +16,7 @@ GraphHopper: \\
 MUTAG: $83.9444 (\pm 0.5705)(std: 1.8040)$ \\
 DD: - \\
 ENZYMES: - \\
-NCI1: $$ \\
+NCI1: $72.5985 (\pm 0.1323)(std: 0.4183)$ \\
 NCI109: - \\
 
 Graphlet count: \\
