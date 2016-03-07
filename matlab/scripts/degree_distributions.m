@@ -1,17 +1,21 @@
+function result = degree_distributions(graph)
+
 %Script parameters
-fileName = '../data/DD.mat';
-dataSet = 'DD';
+%fileName = 'MUTAG.mat';
+%dataSet = 'MUTAG';
 fieldName = 'am';
 
 
-data = importdata(fileName);
-[rows,cols] = size(data.(dataSet));
+%data = importdata(fileName);
+%[rows,cols] = size(data.(dataSet));
+cols = size(graph,2);
 maxDegree = 0;
 degrees = cell(1,cols);
 %Calculates vector of degrees of each row in the adjacency matrix for each row
 %in the data set. Also determines the highest degree across all rows.
 for col = 1:cols
-   degrees{col} = sum(full(data.(dataSet)(col).(fieldName)),2);
+   %degrees{col} = sum(full(data.(dataSet)(col).(fieldName)),2);
+   degrees{col} = sum(full(graph(col).(fieldName)),2);
    maxDegree = max([maxDegree, max(degrees{col})]);
 end
 
@@ -35,6 +39,7 @@ for x = 1:cols
     end
 end
 
+result = kernelMatrix;
 
 
 

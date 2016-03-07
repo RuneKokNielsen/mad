@@ -29,6 +29,9 @@ elseif pick_kernel == 5
 elseif pick_kernel == 6
     K_GH = GraphHopper_dataset(graph, 'dirac', 0, 0);
     result = runntimes(K_GH, tlk, n);
+elseif pick_kernel == 7
+    K_DD = degree_distributions(graph);
+    result = runntimes(K_DD, tlk, n);
 else
     error('Pick Kernel');
 end
