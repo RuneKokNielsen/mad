@@ -1,4 +1,4 @@
-function result = degree_distributions(graphs)
+function result = degree_distributions(graphs, width)
 
 %Script parameters
 %fileName = 'MUTAG.mat';
@@ -35,7 +35,8 @@ end
 kernelMatrix = zeros(cols, cols);
 for x = 1:cols
     for y = 1:cols
-        kernelMatrix(x, y) = dot(distributions(:,x), distributions(:,y));
+        %kernelMatrix(x, y) = dot(distributions(:,x), distributions(:,y));
+        kernelMatrix(x, y) = gaussianKernel(distributions(:,x), distributions(:,y), width);
     end
 end
 

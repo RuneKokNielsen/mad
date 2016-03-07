@@ -1,6 +1,7 @@
 function result = calc_acc(graphs,lk,n,pick_kernel)
 
 tlk = transpose(lk);
+width = 50;
 
 if pick_kernel == 1
     h_WL = 10; %Number of iterations.
@@ -30,13 +31,13 @@ elseif pick_kernel == 6
     K_GH = GraphHopper_dataset(graphs, 'dirac', 0, 0);
     result = runntimes(K_GH, tlk, n);
 elseif pick_kernel == 7
-    K_DD = degree_distributions(graphs);
+    K_DD = degree_distributions(graphs, width);
     result = runntimes(K_DD, tlk, n);
 elseif pick_kernel == 8
-    K_B1 = baseline_1(graphs, 50);
+    K_B1 = baseline_1(graphs, width);
     result = runntimes(K_B1, tlk, n);
 elseif pick_kernel == 9
-    K_B2 = baseline_2(graphs, 50);
+    K_B2 = baseline_2(graphs, width);
     result = runntimes(K_B2, tlk, n);
 else
     error('Pick Kernel');
