@@ -484,7 +484,7 @@ I nogle tilfælde vil den bedste grænse (\textit{decision boundary}) ikke altid
 	\begin{minipage}[t]{0.1\linewidth}
 		\includegraphics[width=7cm]{svm_plot_1_2}
 	\end{minipage}
-\caption{\textit{Til venstre: Opdeling af et ikke-sparerebart tilfælde}}
+\caption{\textit{Til venstre: Opdeling af et ikke-sparerebart tilfælde. Til højre: Opdeling af et ikke-sparerebart tilfælde, med fejl kvalificeret punkter.}}
 \label{fig:hyperplane_example_1}
 \end{figure}
 Grundet at vi har punkter der ikke er klassificeret rigtigt af vores grænse, vil vores tidligere ligninger ikke passe på alle vores dataset. For at rette dette introducerer vi \textit{slack variables} ($\xi$). Disse variabler skal estimere hvor stor afstand der er til det korrekte hyperplan, og dette gøres ved at addere eller subtrahere (hvilke der skal bruges kommer an på hvor datapunktet er placeret) med vores nye variable ($\xi$). 
