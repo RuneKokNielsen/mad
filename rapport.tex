@@ -16,6 +16,7 @@
 \usepackage{scrextend}
 \usepackage{multirow}
 \usepackage{float}
+\usepackage{algpseudocode}
 
 \tikzset{main node/.style={circle,fill=blue!20,draw,minimum size=1cm,inner sep=0pt},
 }
@@ -487,7 +488,7 @@ I nogle tilfælde vil den bedste grænse (\textit{decision boundary}) ikke altid
 	\begin{minipage}[t]{0.1\linewidth}
 		\includegraphics[width=7cm]{svm_plot_1_2}
 	\end{minipage}
-\caption{\textit{Til venstre: Opdeling af et ikke-sparerebart tilfælde}}
+\caption{\textit{Til venstre: Opdeling af et ikke-sparerebart tilfælde. Til højre: Opdeling af et ikke-sparerebart tilfælde, med fejl kvalificeret punkter.}}
 \label{fig:hyperplane_example_1}
 \end{figure}
 Grundet at vi har punkter der ikke er klassificeret rigtigt af vores grænse, vil vores tidligere ligninger ikke passe på alle vores dataset. For at rette dette introducerer vi \textit{slack variables} ($\xi$). Disse variabler skal estimere hvor stor afstand der er til det korrekte hyperplan, og dette gøres ved at addere eller subtrahere (hvilke der skal bruges kommer an på hvor datapunktet er placeret) med vores nye variable ($\xi$). 
@@ -713,7 +714,49 @@ k_{node}(v_1,v_2)&=
 hvor $\eps$ er en parameter i træningsmodellen, som afgøres med cross validation. Hele denne $k_{walk}^{(1)}$ kerne giver altså en sammenligning af kanternes længde, hvis deres endepunkter er identiske, og 0 ellers.
 
 
+\subsection{Krydsvalidering}
+Vi saa tidligere i afsnittet om ikke-separabare tilfaelde en objektiv formel (\ref{eq:slack_objective_function}/\ref{eq:slack_objective_function_cross_validation}), denne formel bestemmer hvor meget miskvalificeret punkter skal straffes, dvs. at jo mindre $C$ er, jo mindre bliver miskvalificeret punkter straffet, og det giver os en \textit{decision boundary}, som har en lav chance for at \textit{overfitting}. For at finde det bedste $C$, bruger vi krydsvalidering, og mere praecist \textit{k-fold cross validation}.
+\begin{equation}
+f(w) = \frac{||w||^2}{2}+C(\sum\limits_{i=1}^N \xi_i)^k
+\label{eq:slack_objective_function_cross_validation}
+\end{equation}
+\textit{k-fold cross validation} er en \textit{non-exhaustive} krydsvaliderings metode, at den er \textit{non-exhaustive} betyder at den ikke altid tester alle muligheder for at splitte det originale input. For at forklare hvordan \textit{k-fold cross validation} virker, vil vi gennemgaa den, som en \textit{10-fold cross validation}(mere praecist kommer vi til at gennemgaa \textit{libsvm}'s \textit{10-fold cross validation}), som betyder at den splitter det givet datasaet op i $10$ dele, hvor to af delene bliver taget ud, en af disse dele vil blive brugt som et testsaet, og det andet vil blive brugt som et valideringssaet, dette betyder at vi har $k-2$ traeningssaet, og i dette tilfaelde vil vi saa have $8$ traeningssaet. Fordi vi proever at finde den bedste $C$-vaerdi, vil vi i hver iteration teste alle de $C$-vaerdier vi oensker testet, dette virker paa den maade at vi traener vores model med en $C$-vaerdi, og bagefter tester vi modellen paa vores valideringssaet, og finder dens \textit{accuracy}, dette bliver gjort med alle de $C$-vaerdier vi har angivet. Efter vi har testet alle vores $C$-vaerdier finder vi den bedste $C$-vaerdi med den bedste \textit{accuracy}, og den bedste $C$-vaerdi vil derefter blive traenet paa alle vores traeningssaet samt vores valideringssaet, da det ikke skal bruges mere i denne iteration, og efter at have traenet vores model, tester vi modellen paa vores testsaet, og gemmer vores \textit{accuracy}. Dette bliver gjort $10$ gange, og hver gang vil valideringssaettet og traeningssaettet blive aendret, i figur \ref{fig:cross_validation} kan det ses hvordan testsaettet(graa) og valideringssaettet(roed) bliver rykket, efter den har itteraret $10$ gange finder vi gennemsnittet af vores \textit{accuracy}, dette gennemsnit vil vaere vaere vores models gennemsnitlige \textit{accuracy}. I figur \ref{fig:cross_validation} kan en simplificeret udgave af \textit{libsvm}'s \textit{10-fold cross validation} ses. \\
+Ofte vil man ikke se \textit{k-fold cross validation} med et valideringssaet, grundet der ikke altid er behov for at saette en ukendt variable.
+
+\begin{figure}[H]
+	\begin{minipage}{0.5\linewidth}
+		\includegraphics[width=6cm]{10-fold-cross-validation_3}
+	\end{minipage}
+	\begin{minipage}{0.7\linewidth}
+		\begin{algorithmic}[1]
+			\Function{10-fold Cross Validation}{$K, lk$}
+				\State k = 10
+				\State $C$-values = [...]
+				\State result = []
+				\For{$i = 1 \textrm{ to } k$}
+					\State validationSet = movePointerAndGetValidationSet(K)
+					\State testSet = movePointerAndGetTestSet(K)
+					\State imResult = []
+					\For{$j = 1 \textrm{ to } size($C$-values)$}
+						\State model = svmtrain((K - validationSet) - testSet, (lk - validationSet) - testSet , $C$-values[i])
+						\State imResult[i] = svmpredict(mode, testSet).getAccuracy()
+					\EndFor
+					\State optimalC = $C$values[max(imResult).getPlace()]
+					\State model = svmtrain(K - testSet, lk - testSet, optimalC)
+					\State result[k] = svmpredict(model, testSet).getAccuracy()
+				\EndFor
+				\State \Return{mean(result)}
+			\EndFunction
+		\end{algorithmic}
+	\end{minipage}
+\caption{\textit{Til venstre: De forksellige iterationer i 10-fold cross validation. Til højre: Simplificeret pseudokode af libsvm's 10-fold cross validation.}}
+\label{fig:cross_validation}
+\end{figure}
+
+
 \subsection{Eksperimenter}
+Vores primaere maal med vores eksperimenter, er at tjekke om vores to simple grafkerner, kan maale sig med de stoerrer og mere komplekse grafkerner. Til at tjekke dette har vi brugt fem forskellige datasaet (MUTAG, ENZYMES, DD, NCI1, NCI109), og til at beregne vores forskellige grafkerners \textit{accuracy} har vi brugt \textit{libsvm}'s \textit{10-fold cross validation}, som vi har beskrevet i afsnittet Krydsvalidering, vi har valgt at koere vores krydsvalidering $10$ gange og bruge gennemsnittet, for at faa en mere realistisk \textit{accuracy}.
+
 \begin{table}[H]
 \begin{center}
 \scalebox{0.7} {
