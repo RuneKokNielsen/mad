@@ -116,7 +116,7 @@ K1 = [(1:size(K,1))', normalizekm(K)];
 end  
 mean_accuracy =  mean(result) 
 std_accuracy = std(result)
-
+optimalSigmas
 
 end
 
