@@ -101,6 +101,7 @@ mathescape
 \section{Introduktion}
 Denne rapport omhandler klassificering af grafer gennem \textit{support vector machines} (SVM) motiveret af et abstract \cite{trivial-kernels}, som udfordrer etablerede grafkernemetoder ved at foreslå en række simplere metoder, der ifølge deres resultater er tilstrækkelige. Da rapporten er en afløsningsopgave i fagområdet \textit{Modellering og Analyse af Data}, vil vi først beskrive den grundlæggende teori i klassificering og SVM. Herefter fokuserer vi på klassificering af grafer gennem SVM ved at beskrive nogle eksempler på grafkerner. Til sidst gentager vi eksperimenterne fra \cite{trivial-kernels} og sammenligner resultaterne.
 
+
 \section{Klassificering}
 Formålet med klassificering er at putte datapunkter bestående af et antal egenskaber i passende kategorier fra en prædifineret mængde af diskrete, beskrivende kategorier. Disse datapunkter er også kendt som tupler bestående af $(x,y)$, hvor $x$ er de givne egenskaber, og $y$ er punktets kategori. Klassificering består i definitionen af at finde en passende klassificeringsmodel, hvilket er en funktion $f$ der tager et datapunkt $x$ og returnerer den tilhørende kategori $y$.
 
@@ -642,7 +643,7 @@ Vi har nu vist at der for en symmetrisk funktion $k=(x_i,x_j)$ vil eksistere en 
 
 
 \section{Grafkerner}
-I dette afsnit vil vi kigge specifikt på kernefunktioner til sammenligning af grafer. Vi starter med et eksempel på en etableret grafkerne, og introducerer efterfølgende eksempler på en ny type simple grafkerner. Vi kommer herefter ind på krydsvalidering ved estimering af en models nøjagtighed, og præsenterer til sidst resultaterne af vores eksperimenter, hvor vi sammenligner præstationen af de uortodokse kerner overfor de etablerede kerner samt de postulerede resultater fra \cite{trivial-kernels}.
+I dette afsnit vil vi kigge specifikt på kernefunktioner til sammenligning af grafer. Vi starter med et eksempel på en etableret grafkerne, og introducerer efterfølgende eksempler på en række simple grafkerner baseret på \cite{trivial-kernels}. Vi kommer herefter ind på krydsvalidering ved estimering af en models nøjagtighed, og præsenterer til sidst resultaterne af vores eksperimenter, hvor vi sammenligner præstationen af de uortodokse kerner overfor de etablerede kerner samt de postulerede resultater fra \cite{trivial-kernels}.
 
 \subsection{Shortest-path}
 Shortest-path kernen er en veletableret kerne til sammenligning af grafer. Den præsenteres her på baggrund af definitionen i \cite{shortest-path}. 
@@ -724,7 +725,14 @@ k_{node}(v_1,v_2)&=
 \end{align}
 hvor $\eps$ er en parameter i træningsmodellen. Hele denne $k_{walk}^{(1)}$ kerne giver altså en sammenligning af kanternes længde, hvis deres endepunkter er identiske, og 0 ellers.
 
-\subsection{Baseline}
+\subsection{Simple grafkerner}
+Vi vil her gennemgå tre simple grafkerner, som vi vil inddrage i vores eksperimenter. Heraf er to af kernerne ($baseline_1,baseline_2$) baseret direkte på definitionen i \cite{trivial-kernels}.
+
+\subsubsection{$baseline_1$}
+
+\subsubsection{$baseline_2$}
+
+\subsubsection{$degree\ distributions$}
 
 \subsection{Krydsvalidering}
 Vi så tidligere i afsnittet om ikke-separerbare tilfælde en objektiv formel (\ref{eq:slack_objective_function},\ref{eq:slack_objective_function_cross_validation}). Parameteren C i denne formel bestemmer, hvor meget miskvalificerede punkter straffes. 
@@ -798,8 +806,7 @@ Metoder/Dataset & MUTAG & ENZYMES & DD & NCI1 & NCI109 \\
 \hline
 Baseline$_1$ & $83.1111(\pm 0.4983)$ & $40.3500(\pm 0.3596)$ & $77.5043(\pm 0.2788)$ & $69.1411(\pm 0.1199)$ & $69.0073(\pm 0.4728)$ \\
 Baseline$_2$ & $81.8889 (\pm 0.6264)$ & $22.0167 (\pm 0.5530)$ & $75.0256 (\pm 0.1876)$ & $62.5547 (\pm 00.1239)$ & $62.3883 (\pm 0.0862)$ \\
-Degree Distribution & $83.9444 (std.\pm 2.6248)$ & $22.9333 (\pm 0.3559)$ & $69.0427 (\pm 0.2407)$ & $59.0633 (\pm 0.1039)$ & $58.4248 (\pm 0.1828)$ \\
-Degree Dist (Gaussian) & $86.1667 (\pm 0.1747)$ & $31.1667 (\pm 05890)$  & $75.3333 (\pm 0.2226)$ & $64.4696 (\pm 0.1405)$ & $64.1772 (\pm 0.1225)$ \\
+Degree Distributions &$83.9444 (std.\pm 2.6248)$ &  $32.9833 (std.\pm 1.4582)$  & $75.3333 (\pm 0.2226)$ & $64.4696 (\pm 0.1405)$ & $64.1772 (\pm 0.1225)$ \\
 Weisfeiler-Lehman & $83.5000 (\pm 0.9905)$ & $49.0667 (\pm 0.3867)$ & $78.6923 (\pm 0.1035)$ & $85.0097 (\pm 0.0603)$ &  $85.1845 (\pm 0.0771)$ \\
 Ramon \& Gartner & $83.0556 (\pm 0.5693)$ & - & - & - & - \\
 GraphHopper & $83.9444 (\pm 0.5705)$ & $36.2833 (\pm 0.4856)$ & - & $72.5985 (\pm 0.1323)$ & $71.4029 (\pm 0.1026)$ \\
