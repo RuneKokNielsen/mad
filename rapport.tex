@@ -18,6 +18,7 @@
 \usepackage{float}
 \usepackage{algpseudocode}
 
+
 \tikzset{main node/.style={circle,fill=blue!20,draw,minimum size=1cm,inner sep=0pt},
 }
 
@@ -715,13 +716,33 @@ hvor $\eps$ er en parameter i træningsmodellen, som afgøres med cross validati
 
 
 \subsection{Krydsvalidering}
-Vi saa tidligere i afsnittet om ikke-separabare tilfaelde en objektiv formel (\ref{eq:slack_objective_function}/\ref{eq:slack_objective_function_cross_validation}), denne formel bestemmer hvor meget miskvalificeret punkter skal straffes, dvs. at jo mindre $C$ er, jo mindre bliver miskvalificeret punkter straffet, og det giver os en \textit{decision boundary}, som har en lav chance for at \textit{overfitting}. For at finde det bedste $C$, bruger vi krydsvalidering, og mere praecist \textit{k-fold cross validation}.
+Vi så tidligere i afsnittet om ikke-separerbare tilfælde en objektiv formel (\ref{eq:slack_objective_function},\ref{eq:slack_objective_function_cross_validation}). Parameteren C i denne formel bestemmer, hvor meget miskvalificerede punkter straffes. 
 \begin{equation}
 f(w) = \frac{||w||^2}{2}+C(\sum\limits_{i=1}^N \xi_i)^k
 \label{eq:slack_objective_function_cross_validation}
 \end{equation}
-\textit{k-fold cross validation} er en \textit{non-exhaustive} krydsvaliderings metode, at den er \textit{non-exhaustive} betyder at den ikke altid tester alle muligheder for at splitte det originale input. For at forklare hvordan \textit{k-fold cross validation} virker, vil vi gennemgaa den, som en \textit{10-fold cross validation}(mere praecist kommer vi til at gennemgaa \textit{libsvm}'s \textit{10-fold cross validation}), som betyder at den splitter det givet datasaet op i $10$ dele, hvor to af delene bliver taget ud, en af disse dele vil blive brugt som et testsaet, og det andet vil blive brugt som et valideringssaet, dette betyder at vi har $k-2$ traeningssaet, og i dette tilfaelde vil vi saa have $8$ traeningssaet. Fordi vi proever at finde den bedste $C$-vaerdi, vil vi i hver iteration teste alle de $C$-vaerdier vi oensker testet, dette virker paa den maade at vi traener vores model med en $C$-vaerdi, og bagefter tester vi modellen paa vores valideringssaet, og finder dens \textit{accuracy}, dette bliver gjort med alle de $C$-vaerdier vi har angivet. Efter vi har testet alle vores $C$-vaerdier finder vi den bedste $C$-vaerdi med den bedste \textit{accuracy}, og den bedste $C$-vaerdi vil derefter blive traenet paa alle vores traeningssaet samt vores valideringssaet, da det ikke skal bruges mere i denne iteration, og efter at have traenet vores model, tester vi modellen paa vores testsaet, og gemmer vores \textit{accuracy}. Dette bliver gjort $10$ gange, og hver gang vil valideringssaettet og traeningssaettet blive aendret, i figur \ref{fig:cross_validation} kan det ses hvordan testsaettet(graa) og valideringssaettet(roed) bliver rykket, efter den har itteraret $10$ gange finder vi gennemsnittet af vores \textit{accuracy}, dette gennemsnit vil vaere vaere vores models gennemsnitlige \textit{accuracy}. I figur \ref{fig:cross_validation} kan en simplificeret udgave af \textit{libsvm}'s \textit{10-fold cross validation} ses. \\
-Ofte vil man ikke se \textit{k-fold cross validation} med et valideringssaet, grundet der ikke altid er behov for at saette en ukendt variable.
+For at optimere $C$ kan man træne sin SVM med en mængde af mulige $C$-værdier. Hvis man ønsker at forudsige modellens nøjagtighed på endnu ukendte værdier kan man dog ikke blot optimere på hele inputsættet, da man udsætter modellen for \textit{overfitting}. For at komme denne faldgruppe til livs benyttes krydsvalidering til at lave en realistisk forudsigelse af nøjagtigheden. Krydsvalidering kan også bruges til at optimere andre parametre i modellen - f.eks. benytter vi krydsvalidering til at optimere $\sigma$ i en Gaussisk kerne i vores eksperimenter med $baseline_1$ og $baseline_2$. I dette afsnit vil vi gennemgå $\textit{k-fold cross validation}$.
+
+\textit{k-fold cross validation} er en \textit{non-exhaustive} krydsvalideringsmetode. Egenskaben \textit{non-exhaustive} betyder at valideringen ikke altid tester alle mulige delinger af inputsættet.\\
+$k$ angiver hvor mange dele inputsættet deles op i samt antallet af iterationer i algoritmen. I hver iterationer benyttes en $k$'te del som testsæt, en $k$'te del som valideringssæt og de resterende $k-2$ dele som træningssæt. For et inputsæt $M$ i $k$ dele $M_1..M_k$ hvor $x\in M_i \land x\in M_j \Rightarrow i=j$ og $|M_i|=|M_j|=|M|/k$ samt en given iteration $i=1,2,..k$ kan man f.eks. vælge et testsæt:
+\begin{equation}
+\label{eq:cv_test}
+Test_i = M_{k+1-1}
+\end{equation}
+Et valideringssæt:
+\begin{equation}
+\label{eq:cv_val}
+Val_i = M_{k-(i\ mod\ k)}
+\end{equation}
+Vi får da et træningssæt:
+\begin{equation}
+Train_i = M\setminus \left(Test_i\cup Val_i\right)
+\end{equation}
+
+Vi vil her gennemgå \textit{10-fold cross-validation} til optimering af $C$ baseret på implementationen i \cite{libsvm}.\\
+Foruden parameteren $k=10$ benytter algoritmen en endelig mængde $M_C=\{C_1,C_2,..C_m\}$ af mulige værdier for $C$, som vi ønsker at teste for. I hver iteration $i=1,2,..k$ af krydsvalideringen træner vi på $Train_i$ med hvert $C_j\in M_C$, og tester på $Val_i$. Vi vælger da det $C$ som gav den højeste nøjagtighed på valideringssættet, og træner nu på $Train_i\cup Val_i$ med dette $C$, hvorefter i vi tester på $Test_i$, og opnår en nøjagtighed $acc_i$. Efter sidste iteration udregnes gennemsnittet af $acc_1,acc_2,..acc_k$, hvilket vil være det endelige estimering af modellens nøjagtighed.
+
+I figur \ref{fig:cross_validation} (venstre) illustreres hvordan testsættet (gråt) og valideringssættet (rødt) bliver rykket i hver iteration efter formlerne i \ref{eq:cv_test} hhv. \ref{eq:cv_val} for $k=10$. I figur \ref{fig:cross_validation} (højre) ses pseudokode for \textit{10-fold cross validation}. \\
 
 \begin{figure}[H]
 	\begin{minipage}{0.5\linewidth}
@@ -786,7 +807,8 @@ Shortest path & $85.6667 (\pm 0.7258)$ & $41.5500 (\pm 0.4888)$ & - & $73.1946 (
 	Karsten M. Borgwardt, Hans-Peter Kriegel
 	\emph{Shortest-path kernels on graphs},
 	Institute for Computer Science, Ludwig-Maximilians-University Munich, 2005
-	
+	\bibitem{libsvm}
+	(Software) Chih-Chung Chang, Chih-Jen Lin, \textit{LIBSVM v3.21}, 2015\\ \verb|https://www.csie.ntu.edu.tw/~cjlin/libsvm/text|
 \end{thebibliography}
 
 
