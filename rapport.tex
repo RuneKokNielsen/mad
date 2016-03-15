@@ -89,10 +89,16 @@ mathescape
 \DeclareMathOperator{\Ran}{Ran}
 \DeclareMathOperator{\Dom}{Dom}
 
-
+\renewcommand*\contentsname{Indholdsfortegnelse}
 \begin{document}
 
 \maketitle
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduktion}
 
 \section{Klassificering}
 Formålet med klassificering er at putte datapunkter bestående af et antal egenskaber i passende kategorier fra en prædifineret mængde af diskrete, beskrivende kategorier. Disse datapunkter er også kendt som tupler bestående af $(x,y)$, hvor $x$ er de givne egenskaber, og $y$ er punktets kategori. Klassificering består i definitionen af at finde en passende klassificeringsmodel, hvilket er en funktion $f$ der tager et datapunkt $x$ og returnerer den tilhørende kategori $y$.
@@ -634,7 +640,7 @@ Så får vi
 
 
 \section{Grafkerner}
-I dette afsnit vil vi kigge specifikt på kernefunktioner til sammenligning af grafer. Vi starter med et eksempel på en etableret grafkerne, og introducerer efterfølgende eksempler på en ny type af meget simple grafkerner. Til sidst præsenteres resultaterne af vores testkørsler, hvor vi sammenligner præstationen af de uortodokse kerner overfor de etablerede kerner.
+I dette afsnit vil vi kigge specifikt på kernefunktioner til sammenligning af grafer. Vi starter med et eksempel på en etableret grafkerne, og introducerer efterfølgende eksempler på en ny type simple grafkerner. Vi kommer herefter ind på krydsvalidering ved estimering af en models nøjagtighed, og præsenterer til sidst resultaterne af vores eksperimenter, hvor vi sammenligner præstationen af de uortodokse kerner overfor de etablerede kerner samt de postulerede resultater fra \cite{trivial-kernels}.
 
 \subsection{Shortest-path}
 Shortest-path kernen er en veletableret kerne til sammenligning af grafer. Den præsenteres her på baggrund af definitionen i \cite{shortest-path}. 
@@ -714,6 +720,7 @@ k_{node}(v_1,v_2)&=
 \end{align}
 hvor $\eps$ er en parameter i træningsmodellen, som afgøres med cross validation. Hele denne $k_{walk}^{(1)}$ kerne giver altså en sammenligning af kanternes længde, hvis deres endepunkter er identiske, og 0 ellers.
 
+\subsection{Baseline}
 
 \subsection{Krydsvalidering}
 Vi så tidligere i afsnittet om ikke-separerbare tilfælde en objektiv formel (\ref{eq:slack_objective_function},\ref{eq:slack_objective_function_cross_validation}). Parameteren C i denne formel bestemmer, hvor meget miskvalificerede punkter straffes. 
@@ -776,7 +783,8 @@ I figur \ref{fig:cross_validation} (venstre) illustreres hvordan testsættet (gr
 
 
 \subsection{Eksperimenter}
-Vores primaere maal med vores eksperimenter, er at tjekke om vores to simple grafkerner, kan maale sig med de stoerrer og mere komplekse grafkerner. Til at tjekke dette har vi brugt fem forskellige datasaet (MUTAG, ENZYMES, DD, NCI1, NCI109), og til at beregne vores forskellige grafkerners \textit{accuracy} har vi brugt \textit{libsvm}'s \textit{10-fold cross validation}, som vi har beskrevet i afsnittet Krydsvalidering, vi har valgt at koere vores krydsvalidering $10$ gange og bruge gennemsnittet, for at faa en mere realistisk \textit{accuracy}.
+For at verificere resultaterne i \cite{trivial-kernels} har vi selv gennemført eksperimenterne.
+Vores primære mål med eksperimenterne er at verificere, at de to simple grafkerner beskrevet i \cite{trivial-kernels} kan måle sig med de etablerede og mere komplekse grafkerner. Til at tjekke dette har vi brugt fem forskellige datasaet (MUTAG, ENZYMES, DD, NCI1, NCI109). For at estimere grafkernernes nøjagtighed har vi brugt \textit{10-fold cross-validation} gennem \cite{libsvm} som beskrevet i afsnittet om krydsvalidering. 
 
 \begin{table}[H]
 \begin{center}
@@ -797,16 +805,25 @@ Shortest path & $85.6667 (\pm 0.7258)$ & $41.5500 (\pm 0.4888)$ & - & $73.1946 (
 \end{tabular}
 }
 \caption{\textit{Resultater}}
+
 \end{center}
 \end{table}
+
+
+\subsubsection{Kommentarer til resultater}
+
+\section{Konklusion}
+
 
 
 \renewcommand\refname{Referencer}
 \begin{thebibliography}{9}
 	\bibitem{shortest-path}
-	Karsten M. Borgwardt, Hans-Peter Kriegel
+	Karsten M. Borgwardt, Hans-Peter Kriegel, 
 	\emph{Shortest-path kernels on graphs},
 	Institute for Computer Science, Ludwig-Maximilians-University Munich, 2005
+	\bibitem{trivial-kernels}
+	Yuliia Orlova, Morteza Alamgir, Ulrike von Luxburg, \textit{Graph kernel benchmark data sets are trivial!}, Department of Computer Science, University of Hamburg, 2015
 	\bibitem{libsvm}
 	(Software) Chih-Chung Chang, Chih-Jen Lin, \textit{LIBSVM v3.21}, 2015\\ \verb|https://www.csie.ntu.edu.tw/~cjlin/libsvm/text|
 \end{thebibliography}
