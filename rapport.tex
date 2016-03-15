@@ -560,7 +560,7 @@ L_D = \sum\limits_{i=1}^N \lambda_i - \frac{1}{2}\sum\limits_{i,j}\lambda_i \lam
 \end{equation}
 
 \subsection{Ikke-lineær SVM}
-Det er ikke altid muligt at definere en lineær opdeling af dataen. En naiv løsning på dette problem er, at transformere datapunkterne til et andet rum, hvor en lineær opdeling er mulig.
+Det er ikke altid muligt at definere en lineær opdeling af dataen. Den tilgængelige data er ej heller nødvendigvis på vektorform - dataen kan f.eks. bestå af grafer. Den naive løsning på dette problem er at transformere datapunkterne til et andet rum, hvor en lineær opdeling er mulig.
 
 Antag at vi har en transformation $\Phi(x)$ fra det originale rum til et transformeret rum, hvor en lineær opdeling er mulig. Så kan vi genbruge vores viden fra det lineære tilfælde, og optimeringen er nogenlunde den samme. For at opnå den maksimale margin skal vi igen minimere funktionen 
 $$f(w)=\frac{||w||^2}{2}$$
@@ -601,17 +601,18 @@ Desuden vil en Gram matrice være positiv semidefinit. Dette kan bl.a. formalise
 \begin{equation}
 \forall c\in R^n,c^TKc\geq 0,\text{ for }c\neq 0
 \end{equation}
-Altså: for enhver vilkårlig ikke-nulvektor $c$ vil produktet af $c^TKc$ være ikke-negativt. Det følger at kernefunktionen $k$ er positiv semi-definit, hvilket er en central egenskab ved kernefunktioner.
+Altså: for enhver gyldig kernematrice $K$ og en vilkårlig ikke-nulvektor $c$ vil produktet af $c^TKc$ være ikke-negativt. Det følger at kernefunktionen $k$ er positiv semi-definit, hvilket er en central egenskab ved kernefunktioner.
 
 Med denne definition kan $k$ nu erstatte prikproduktet og transformationerne i dual Lagrange problemet fra tidligere:
 \begin{align*}
-L_D&=\sum_{i=1}^{n}\lambda_i-\frac{1}{2}\sum_{i,j}\lambda_i\lambda_j y_iy_jK(x_i,x_j)
+L_D&=\sum_{i=1}^{n}\lambda_i-\frac{1}{2}\sum_{i,j}\lambda_i\lambda_j y_iy_jk(x_i,x_j)
 \end{align*}
 
 
 \subsubsection{Mercers teorem}
 Lad $k:X\times X\rightarrow \mathbb{R}$ være en symmetrisk, positivt semidefinit funktion på $X={x_1,..x_n}$. Så ønsker vi at vise at der findes en transformation $\Phi:X\rightarrow H$ hvor $H$ er et Hilbert rum sådan at 
 \begin{equation}
+\label{eq:mercers}
 \langle\phi(x_i),\phi(x_j)\rangle=k(x_i,x_j)
 \end{equation}
 
@@ -623,7 +624,7 @@ k(x_1,x_1) & ... &k(x_1,x_n)\\
 k(x_n,x_1) & ... &k(x_n,x_n)\\
 \end{array}\right]\\
 \end{equation}
-Da $K$ er symmetrisk ved vi fra spektralsætningen at $K$ er diagonaliserbar med en ortogonal matrix $V$ sådan at $\Lambda=V^TKV$, hvor $\Lambda$ er en diagonalmatrix, hvor $\Lambda_{tt}$ er egenværdi $\lambda_t$ for $K$, og hvor kolonne $t$ i $V$ er den tilhørende egenvektorer $v_t=(t_{ti})_{i=1}^n$.
+Da $K$ er symmetrisk ved vi fra spektralsætningen at $K$ er diagonaliserbar med en ortogonal matrix $V$ sådan at $\Lambda=V^TKV$, hvor $\Lambda$ er en diagonalmatrix, hvor $\Lambda_{tt}$ er egenværdi $\lambda_t$ for $K$, og hvor kolonne $t$ i $V$ er den tilhørende egenvektorer $v_t$.
 
 Betragt nu transformationen 
 \begin{equation}
@@ -635,7 +636,7 @@ Så får vi
 &=\sum_{t=1}^n\sqrt{\lambda_t}v_{ti}\sqrt{\lambda_t}v_{tj}=\sum_{t=1}^{n}\lambda_tv_iv_j\\
 &=K_{ij}=k(x_i,x_j)
 \end{align}
-
+Vi har nu vist at der for en symmetrisk funktion $k=(x_i,x_j)$ vil eksistere en transformation $\Phi$ sådan at (\ref{eq:mercers}) er opfyldt.
 
 
 
@@ -645,7 +646,7 @@ I dette afsnit vil vi kigge specifikt på kernefunktioner til sammenligning af g
 \subsection{Shortest-path}
 Shortest-path kernen er en veletableret kerne til sammenligning af grafer. Den præsenteres her på baggrund af definitionen i \cite{shortest-path}. 
 
-Lad $G_1=(V_1,E_1)$ og $G_2(V_2,E_2)$ være to grafer, som vi ønsker at sammenligne, hvor $\{v_{i1},v_{i2}..,v_{in}\}\in V_i$ og $\{e_{i1},e_{i2}..,e_{im}\}\in E_i$ er knuder hhv. kanter i $G_i$.
+Lad $G_1=(V_1,E_1)$ og $G_2=(V_2,E_2)$ være to grafer, som vi ønsker at sammenligne, hvor $\{v_{i1},v_{i2}..,v_{in}\}\in V_i$ og $\{e_{i1},e_{i2}..,e_{im}\}\in E_i$ er knuder hhv. kanter i $G_i$.
 
 Det første skridt i algoritmen er at transformere graferne $G_1,G_2$ til shortest-path grafer $S_1,S_2$. Vi definerer en shortest-path graf således:
 
@@ -699,26 +700,28 @@ thick,main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}]
 \label{fig:shortest-path-graph}
 \end{figure}
 
-Denne transformation er et \textit{all pairs shortest path} problem, som kan løses med flere algoritmer. \cite{shortest-path} foreslår Floyd-transformation ved hjælp af Floyd-Warshall algoritmen.
+Denne transformation er et \textit{all pairs shortest path} problem, som kan løses med flere algoritmer. Artikel \cite{shortest-path} foreslår Floyd-transformation ved hjælp af Floyd-Warshall algoritmen.
 
-Med de to transformerede grafer $S_1=(V_1,E_1)$ og $S_2=(V_2,E_2)$ defineres kernen nu således:
+Med de to transformerede grafer $S_1=(V_1,E_1')$ og $S_2=(V_2,E_2')$ defineres kernen nu således:
 \begin{equation}
-k_{shortest-paths}(S_1,S_2)=\sum_{e_1\in E_1}\sum_{e_2\in E_2}k^{(1)}_{walk}(e_1,e_2)
+k_{shortest-paths}(S_1,S_2)=\sum_{e_1\in E_1'}\sum_{e_2\in E_2'}k^{(1)}_{walk}(e_1,e_2)
 \end{equation}
-hvor $k^{(1)}_{walk}$ er en kerne på \textit{edge walks} af længde 1. I praksis sammenligner algoritmen hvert par af kanter $e_1\in E_2,\ e_1\in E_2$ og summerer deres lighed til en total lighed af graferne. Sammenligningen af kanterne sker gennem en $k^{(1)}_{walk}$ kerne. En sådan kerne kan sammenligne kanterne samt deres endepunkter. Dette kunne være på formen:
+hvor $k^{(1)}_{walk}$ er en kerne på \textit{edge walks} af længde 1. I praksis sammenligner algoritmen hvert par af kanter $e_1\in E_1',\ e_2\in E_2'$ og summerer deres similaritet til en total similaritet af graferne. Sammenligningen af kanterne sker gennem en $k^{(1)}_{walk}$ kerne. En sådan kerne kan sammenligne kanterne samt deres endepunkter. Dette kunne være på formen:
 \begin{equation}
 k^{(1)}_{walk}(e_1,e_2) = k_{edge}(e_1,e_2)k_{node}(v_{11},v_{21})k_{node}(v_{21},v_{22})
 \end{equation}
-hvor $e_1=(v_{11},v_{12}),e_2=(v_{21},v_{22})$. Her kunne $k_{edge}$ f.eks. være en Gaussisk kerne der sammenligner længden af kanterne, og $k_{node}$ være en binær kerne som kræver, at endepunkterne er ens. Lad $len(e)$ angive længden af en kant $e$ og $attr(v)$ angive egenskaber for en knude. Så kunne man opstille kernerne:
+hvor $e_1=(v_{11},v_{12}),e_2=(v_{21},v_{22})$. Hvis vi antager at grafernes knuder har diskrete værdier, kunne man f.eks. lade $k_{edge}$ være en Gaussisk kerne (\ref{eq:k_edge}) der sammenligner længden af kanterne, og $k_{node}$ være en binær kerne (\ref{eq:k_node}), som kræver at endepunkterne er ens. Lad $len(e)$ angive længden af en kant $e$ og $attr(v)$ angive en knudes (diskrete) egenskaber. Så kunne man opstille kernerne:
 \begin{align}
+\label{eq:k_edge}
 k_{edge}(e_1,e_2)&=exp\left(-\frac{(length(e_1)-length(e_2))^2}{\eps}\right)\\
+\label{eq:k_node}
 k_{node}(v_1,v_2)&=
 \begin{cases}
 1 & \text{for }attr(v_1)=attr(v_2)\\
 0 & \text{ellers}
 \end{cases}
 \end{align}
-hvor $\eps$ er en parameter i træningsmodellen, som afgøres med cross validation. Hele denne $k_{walk}^{(1)}$ kerne giver altså en sammenligning af kanternes længde, hvis deres endepunkter er identiske, og 0 ellers.
+hvor $\eps$ er en parameter i træningsmodellen. Hele denne $k_{walk}^{(1)}$ kerne giver altså en sammenligning af kanternes længde, hvis deres endepunkter er identiske, og 0 ellers.
 
 \subsection{Baseline}
 
