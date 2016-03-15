@@ -769,7 +769,7 @@ I figur \ref{fig:cross_validation} (venstre) illustreres hvordan testsættet (gr
 						\State model = svmtrain((K - validationSet) - testSet, (lk - validationSet) - testSet , $C$-values[i])
 						\State imResult[i] = svmpredict(mode, testSet).getAccuracy()
 					\EndFor
-					\State optimalC = $C$values[max(imResult).getPlace()]
+					\State optimalC = $C$values[max(imResult).getIndex()]
 					\State model = svmtrain(K - testSet, lk - testSet, optimalC)
 					\State result[k] = svmpredict(model, testSet).getAccuracy()
 				\EndFor
