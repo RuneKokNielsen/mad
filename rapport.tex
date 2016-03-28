@@ -726,9 +726,16 @@ k_{node}(v_1,v_2)&=
 hvor $\eps$ er en parameter i træningsmodellen. Hele denne $k_{walk}^{(1)}$ kerne giver altså en sammenligning af kanternes længde, hvis deres endepunkter er identiske, og 0 ellers.
 
 \subsection{Simple grafkerner}
-Vi vil her gennemgå tre simple grafkerner, som vi vil inddrage i vores eksperimenter. Heraf er to af kernerne ($baseline_1,baseline_2$) baseret direkte på definitionen i \cite{trivial-kernels}.
+Vi vil her gennemgå tre simple grafkerner, som vi vil inddrage i vores eksperimenter. Heraf er to af kernerne ($baseline_1,baseline_2$) baseret direkte på definitionerne i \cite{trivial-kernels}.
 
 \subsubsection{$baseline_1$}
+Denne kerne fokuserer udelukkende på egenskaberne i grafernes knuder, og ignorerer som sådan deres interne struktur. Dette opnås ved at bygge et histogram over hver grafs knudeegenskaber, og sammenligne de to histogrammer i en Gaussisk kerne.\\
+Lad $G_1$ og $G_2$ være to grafer, hvor hver knude har en diskret egenskab. Lad da $l(G_1)$ og $l(G_2)$ være histogrammer for egenskaberne af knuderne i $G_1$ hhv. $G_2$. Så kan vi beskrive kernefunktionen i (\ref{eq:k_baseline_1}), hvor $\epsilon$ er en parameter i modellen, som vælges med krydsvalidering på træningssættet.
+\begin{equation}
+\label{eq:k_baseline_1}
+k_{baseline_1}(G_1,G_2)=exp\left(-\frac{\left(l(G_1)- l(G_2)\right)\cdot\left(l(G_1)- l(G_2)\right)}{\epsilon}\right)
+\end{equation}
+
 
 \subsubsection{$baseline_2$}
 Vores $baseline_2$ er baseret paa ?? $baseline_2$, den gaussiske kerne vi bruger, er beskrevet ??. $Baseline_2$ er den simpelste grafkerne vi bruger, den sammenligner de givets grafer maengde af noder i en gaussisk kerne, graffernes labels bruges ikke. Inden at vi kan sammenligne grafferne, skal vi transformere dem om til en vektor, som indeholder maengden af graffernes noder, i figur ?? kan der ses hvor simpel denne transformation er.
@@ -750,6 +757,24 @@ Vores $baseline_2$ er baseret paa ?? $baseline_2$, den gaussiske kerne vi bruger
 \end{figure}
 
 \subsubsection{$degree\ distributions$}
+Hvor $baseline_1$ kun benytter egenskaberne af knuderne, baseres denne kerne udelukkende  på den interne struktur i graferne. I vores implementation sammenligner kernen grafernes $degree\ distributions$ (gradfordelinger) i en Gaussisk kerne.
+
+Lad $G_j=(V_j,E_j)$ være en graf. Lad da $nb(v)$ være mængden af naboknuder til knuden $v\in V_j$. Så definerer vi graden af $v$
+\begin{equation}
+d(v) = |nb(v)|
+\end{equation}
+Da er gradfordelingen for $G_j$, $dd(G_j)$, en $m$-vektor, hvor
+\begin{align}
+m&=max(d(v) | v\in V_j)\\
+dd(G_j)_h&=|(v | v\in V_j \land d(v) = h)|
+\end{align}
+
+Med denne definition af gradfordelinger kan vi sammenligne to grafer $G_1=(V_1,E_1),G_2=(V_2,E_2)$ med den Gaussiske kerne i (\ref{eq:k_degree_distributions}), hvor $\epsilon$ vælges med krydsvalidering.
+\begin{equation}
+\label{eq:k_degree_distributions}
+k_{degree\_distributions}(G_1,G_2)=exp\left(-\frac{(dd(G_1)-dd(G_2))\cdot(dd(G_i)-dd(G_2))}{\epsilon}\right)
+\end{equation}
+
 
 \subsection{Krydsvalidering}
 Vi så tidligere i afsnittet om ikke-separerbare tilfælde en objektiv formel (\ref{eq:slack_objective_function},\ref{eq:slack_objective_function_cross_validation}). Parameteren C i denne formel bestemmer, hvor meget miskvalificerede punkter straffes. 
@@ -830,7 +855,6 @@ GraphHopper & \boldmath$83.9444 (\pm 1.8040)$ & $36.2833 (\pm 1.5356)$ & - & $72
 Graphlet count & $74.1667 (\pm 2.2106)$ & $32.2000 (\pm 1.3896)$ & \boldmath$79.2735 (\pm 0.4789)$ & $65.9538 (\pm 0.2965)$ & $66.6383 (\pm 0.3391)$ \\
 Random walk & $85.1667 (\pm 1.9075)$ & $36.2833 (\pm 1.5357)$ & - & - & - \\
 Shortest path & \boldmath$85.6667 (\pm 2.2951)$ & $41.5500 (\pm 1.5457)$ & - & $73.1946 (\pm 0.3625)$ & $73.1311 (\pm 0.2525)$ \\
-
 \end{tabular}
 }
 \caption{\textit{Resultater}}
