@@ -726,13 +726,38 @@ k_{node}(v_1,v_2)&=
 hvor $\eps$ er en parameter i træningsmodellen. Hele denne $k_{walk}^{(1)}$ kerne giver altså en sammenligning af kanternes længde, hvis deres endepunkter er identiske, og 0 ellers.
 
 \subsection{Simple grafkerner}
-Vi vil her gennemgå tre simple grafkerner, som vi vil inddrage i vores eksperimenter. Heraf er to af kernerne ($baseline_1,baseline_2$) baseret direkte på definitionen i \cite{trivial-kernels}.
+Vi vil her gennemgå tre simple grafkerner, som vi vil inddrage i vores eksperimenter. Heraf er to af kernerne ($baseline_1,baseline_2$) baseret direkte på definitionerne i \cite{trivial-kernels}.
 
 \subsubsection{$baseline_1$}
+Denne kerne fokuserer udelukkende på egenskaberne i grafernes knuder, og ignorerer som sådan deres interne struktur. Dette opnås ved at bygge et histogram over hver grafs knudeegenskaber, og sammenligne de to histogrammer i en Gaussisk kerne.\\
+Lad $G_1$ og $G_2$ være to grafer, hvor hver knude har en diskret egenskab. Lad da $l(G_1)$ og $l(G_2)$ være histogrammer for egenskaberne af knuderne i $G_1$ hhv. $G_2$. Så kan vi beskrive kernefunktionen i (\ref{eq:k_baseline_1}), hvor $\epsilon$ er en parameter i modellen, som vælges med krydsvalidering på træningssættet.
+\begin{equation}
+\label{eq:k_baseline_1}
+k_{baseline_1}(G_1,G_2)=exp\left(-\frac{\left(l(G_1)- l(G_2)\right)\cdot\left(l(G_1)- l(G_2)\right)}{\epsilon}\right)
+\end{equation}
+
 
 \subsubsection{$baseline_2$}
 
 \subsubsection{$degree\ distributions$}
+Hvor $baseline_1$ kun benytter egenskaberne af knuderne, baseres denne kerne udelukkende  på den interne struktur i graferne. I vores implementation sammenligner kernen grafernes $degree\ distributions$ (gradfordelinger) i en Gaussisk kerne.
+
+Lad $G_j=(V_j,E_j)$ være en graf. Lad da $nb(v)$ være mængden af naboknuder til knuden $v\in V_j$. Så definerer vi graden af $v$
+\begin{equation}
+d(v) = |nb(v)|
+\end{equation}
+Da er gradfordelingen for $G_j$, $dd(G_j)$, en $m$-vektor, hvor
+\begin{align}
+m&=max(d(v) | v\in V_j)\\
+dd(G_j)_h&=|(v | v\in V_j \land d(v) = h)|
+\end{align}
+
+Med denne definition af gradfordelinger kan vi sammenligne to grafer $G_1=(V_1,E_1),G_2=(V_2,E_2)$ med den Gaussiske kerne i (\ref{eq:k_degree_distributions}), hvor $\epsilon$ vælges med krydsvalidering.
+\begin{equation}
+\label{eq:k_degree_distributions}
+k_{degree\_distributions}(G_1,G_2)=exp\left(-\frac{(dd(G_1)-dd(G_2))\cdot(dd(G_i)-dd(G_2))}{\epsilon}\right)
+\end{equation}
+
 
 \subsection{Krydsvalidering}
 Vi så tidligere i afsnittet om ikke-separerbare tilfælde en objektiv formel (\ref{eq:slack_objective_function},\ref{eq:slack_objective_function_cross_validation}). Parameteren C i denne formel bestemmer, hvor meget miskvalificerede punkter straffes. 
@@ -804,7 +829,7 @@ Vores primære mål med eksperimenterne er at verificere, at de to simple grafke
 \begin{tabular}{c|c|c|c|c|c}
 Metoder/Dataset & MUTAG & ENZYMES & DD & NCI1 & NCI109 \\
 \hline
-Baseline$_1$ & \boldmath$83.1111(\pm 0.4983)$ & $40.3500(\pm 0.3596)$ & $77.5043(\pm 0.2788)$ & $69.1411(\pm 0.1199)$ & $69.0073(\pm 0.4728)$ \\
+Baseline$_1$ & \boldmath$82.1111(std. \pm 1.4768)$ & $39.3500(std.\pm 1.2728)$ & $77.2479(std. \pm 0.7821)$ & $69.4404(std. \pm 0.5193)$ & $68.6456(std.\pm 0.6569)$ \\
 Baseline$_2$ & $81.5556 (std. \pm 1.1355)$ & $21.3000 (std. \pm 1.7964)$ & $75.1538 (std. \pm 0.7320)$ & $62.3771 (std. \pm 0.6772)$ & $62.3956 (std. \pm 0.4050)$ \\
 Degree Distributions &\boldmath$83.9444 (std.\pm 2.6248)$ &  $32.9833 (std.\pm 1.4582)$  & $74.8974 (std.\pm 0.6979)$ & $66.2238 (std. \pm 0.4372)$ & $65.2549 (std. \pm 0.5032)$ \\
 Weisfeiler-Lehman & \boldmath$83.5000 (std. \pm 3.1322)$ & \boldmath$49.0667 (std. \pm 1.2229)$ & \boldmath$78.6923 (std. \pm 0.3273)$ & \boldmath$85.0097 (std. \pm 0.1907)$ &  \boldmath$85.1845 (std. \pm 0.2438)$ \\
