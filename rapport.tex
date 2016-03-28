@@ -731,9 +731,23 @@ Vi vil her gennemgå tre simple grafkerner, som vi vil inddrage i vores eksperim
 \subsubsection{$baseline_1$}
 
 \subsubsection{$baseline_2$}
-Hvor $V$ er en vektor, som indeholder antallet af noder for de givet grafer.
+Vores $baseline_2$ er baseret paa ?? $baseline_2$, den gaussiske kerne vi bruger, er beskrevet ??. $Baseline_2$ er den simpelste grafkerne vi bruger, den sammenligner de givets grafer maengde af noder i en gaussisk kerne, graffernes labels bruges ikke. Inden at vi kan sammenligne grafferne, skal vi transformere dem om til en vektor, som indeholder maengden af graffernes noder, i figur ?? kan der ses hvor simpel denne transformation er.
 
-$$k_{baseline_2}(V_1, V_2) = \sum\limits_{v_1 \in V_1}{\sum\limits_{v_2 \in V_2}{k_{gauss}(v_1, v_2, \sigma)}}$$
+\begin{figure}[H]
+	\begin{minipage}{0.7\linewidth}
+		\begin{algorithmic}[1]
+			\Function{$baseline_2$Transformation}{$graphs$}
+				\State vector = []
+				\For{$i = 1 \textrm{ to } size(graphs)$}
+					\State vector[i] = size(graphs[i])
+				\EndFor
+				\State \Return{vector}
+			\EndFunction
+		\end{algorithmic}
+	\end{minipage}
+\caption{\textit{Pseudokode af transformationen i $baseline_2$}}
+\label{fig:baseline_2}
+\end{figure}
 
 \subsubsection{$degree\ distributions$}
 
