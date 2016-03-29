@@ -774,8 +774,8 @@ f(w) = \frac{||w||^2}{2}+C(\sum\limits_{i=1}^N \xi_i)^k
 \end{equation}
 For at optimere $C$ kan man træne sin SVM med en mængde af mulige $C$-værdier. Hvis man ønsker at forudsige modellens nøjagtighed på endnu ukendte værdier kan man dog ikke blot optimere på hele inputsættet, da man udsætter modellen for \textit{overfitting}. For at komme denne faldgruppe til livs benyttes krydsvalidering til at lave en realistisk forudsigelse af nøjagtigheden. Krydsvalidering kan også bruges til at optimere andre parametre i modellen - f.eks. benytter vi krydsvalidering til at optimere $\sigma$ i en Gaussisk kerne i vores eksperimenter med $baseline_1$ og $baseline_2$. I dette afsnit vil vi gennemgå $\textit{k-fold cross validation}$.
 
-\textit{k-fold cross validation} er en \textit{non-exhaustive} krydsvalideringsmetode. Egenskaben \textit{non-exhaustive} betyder at valideringen ikke altid tester alle mulige delinger af inputsættet.\\
-$k$ angiver hvor mange dele inputsættet deles op i samt antallet af iterationer i algoritmen. I hver iterationer benyttes en $k$'te del som testsæt, en $k$'te del som valideringssæt og de resterende $k-2$ dele som træningssæt. For et inputsæt $M$ i $k$ dele $M_1..M_k$ hvor $x\in M_i \land x\in M_j \Rightarrow i=j$ og $|M_i|=|M_j|=|M|/k$ samt en given iteration $i=1,2,..k$ kan man f.eks. vælge et testsæt:
+Krydsvalideringsmetoden\textit{k-fold cross validation} er \textit{non-exhaustive}. Dette betyder at valideringen ikke altid tester alle mulige delinger af inputsættet.\\
+Parameteren $k$ angiver hvor mange dele inputsættet deles op i samt antallet af iterationer i algoritmen. I hver iterationer benyttes en $k$'te del som testsæt, en $k$'te del som valideringssæt og de resterende $k-2$ dele som træningssæt. For et inputsæt $M$ i $k$ dele $M_1..M_k$ hvor $x\in M_i \land x\in M_j \Rightarrow i=j$ og $|M_i|=|M_j|=|M|/k$ samt en given iteration $i=1,2,..k$ kan man f.eks. vælge et testsæt:
 \begin{equation}
 \label{eq:cv_test}
 Test_i = M_{k+1-1}
@@ -834,6 +834,9 @@ Vores primære mål med eksperimenterne er at verificere, at de to simple grafke
 \subsubsection{Afgrænsning}
 Vi har udregnet resultaterne af 9 forskellige kerner. Af disse har vi sat os ind i $baseline_1$, $baseline_2$, $degree\ distributions$, $Weisfeiler-Lehman$ og $Shortest\ path$, mens de resterende kerner blot er med som sammenligning. Tomme felter (markeret med '-') i tabel \ref{table:results} angiver at vi har sprunget de pågældende udregninger over pga. tidsforbruget.
 
+\subsubsection{Kørsel}
+Alle eksperimenter er kørt i Matlab gennem \textit{libsvm} \cite{libsvm}. De simple kerner ($baseline_1$, $baseline_2$, $degree\ distributions$) har vi selv implementeret i Matlab, mens eksperimenterne med de resterende kerner benytter eksisterende implementationer.
+
 \begin{table}[H]
 \begin{center}
 \scalebox{0.7} {
@@ -867,6 +870,8 @@ Gennemgående giver \textit{Weisfeiler-Lehman} de bedste resultater på alle de 
 \section{Konklusion}
 Vi har sat os ind i materialet omkring grafkerner og klassificering af grafer ved hjælp af SVM, og har gentaget en række eksperimenter fra \cite{trivial-kernels}. Vores resultater underbygger generelt de postulerede resultater (se \ref{section:result_comments}), og vi støtter konklusionen i \cite{trivial-kernels} om, at man skal overveje om et problem kan løses ved hjælp af en simpel kerne, fremfor at overkomplicere problemet og gå direkte til mere avancerede kerner.
 
+\section{Arbejdsfordeling}
+Med henblik på at få indsigt i hele teorien, har vi såvidt muligt arbejdet sammen om at skrive og forfine disse afsnit. Ligeledes har vi begge arbejdet på implementationerne i Matlab. Selve kørslerne af eksperimenterne har vi fordelt vilkårligt mellem os.
 
 
 \renewcommand\refname{Referencer}
