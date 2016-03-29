@@ -795,26 +795,27 @@ Foruden parameteren $k=10$ benytter algoritmen en endelig mængde $M_C=\{C_1,C_2
 I figur \ref{fig:cross_validation} (venstre) illustreres hvordan testsættet (gråt) og valideringssættet (rødt) bliver rykket i hver iteration efter formlerne i \ref{eq:cv_test} hhv. \ref{eq:cv_val} for $k=10$. I figur \ref{fig:cross_validation} (højre) ses pseudokode for \textit{10-fold cross validation}. \\
 
 \begin{figure}[H]
-	\begin{minipage}{0.5\linewidth}
-		\includegraphics[width=6cm]{10-fold-cross-validation_3}
+	\begin{minipage}{0.3\linewidth}
+		\includegraphics[width=3cm]{10-fold-cross-validation_3}
 	\end{minipage}
-	\begin{minipage}{0.7\linewidth}
+	\begin{minipage}{2\linewidth}
+		\scriptsize
 		\begin{algorithmic}[1]
 			\Function{10-fold Cross Validation}{$K, lk$}
-				\State k = 10
-				\State $C$-values = [...]
-				\State result = []
+				\State k=10
+				\State $C$-values=[...]
+				\State result=[]
 				\For{$i = 1 \textrm{ to } k$}
-					\State validationSet = movePointerAndGetValidationSet(K)
-					\State testSet = movePointerAndGetTestSet(K)
-					\State imResult = []
+					\State validationSet=movePointerAndGetValidationSet(K)
+					\State testSet=movePointerAndGetTestSet(K)
+					\State imResult=[]
 					\For{$j = 1 \textrm{ to } size($C$-values)$}
-						\State model = svmtrain((K - validationSet) - testSet, (lk - validationSet) - testSet , $C$-values[i])
-						\State imResult[i] = svmpredict(mode, testSet).getAccuracy()
+						\State model=svmtrain((K-validationSet)-testSet,(lk-validationSet)-testSet,$C$-values[i])
+						\State imResult[i]=svmpredict(mode,testSet).getAccuracy()
 					\EndFor
-					\State optimalC = $C$values[max(imResult).getIndex()]
-					\State model = svmtrain(K - testSet, lk - testSet, optimalC)
-					\State result[k] = svmpredict(model, testSet).getAccuracy()
+					\State optimalC=$C$values[max(imResult).getIndex()]
+					\State model=svmtrain(K-testSet,lk-testSet,optimalC)
+					\State result[k]=svmpredict(model,testSet).getAccuracy()
 				\EndFor
 				\State \Return{mean(result)}
 			\EndFunction
@@ -827,7 +828,10 @@ I figur \ref{fig:cross_validation} (venstre) illustreres hvordan testsættet (gr
 
 \subsection{Eksperimenter}
 For at verificere resultaterne i \cite{trivial-kernels} har vi selv gennemført eksperimenterne.
-Vores primære mål med eksperimenterne er at verificere, at de to simple grafkerner beskrevet i \cite{trivial-kernels} kan måle sig med de etablerede og mere komplekse grafkerner. Til at tjekke dette har vi brugt fem forskellige datasaet (MUTAG, ENZYMES, DD, NCI1, NCI109). For at estimere grafkernernes nøjagtighed har vi brugt \textit{10-fold cross-validation} gennem \cite{libsvm} som beskrevet i afsnittet om krydsvalidering. 
+Vores primære mål med eksperimenterne er at verificere, at de to simple grafkerner beskrevet i \cite{trivial-kernels} kan måle sig med de etablerede og mere komplekse grafkerner. Til at tjekke dette har vi brugt fem forskellige datasaet (MUTAG, ENZYMES, DD, NCI1, NCI109). For at estimere grafkernernes nøjagtighed har vi brugt \textit{10-fold cross-validation} gennem \cite{libsvm} som beskrevet i afsnittet om krydsvalidering.
+
+\subsubsection{Afgrænsning}
+Vi har udregnet resultaterne af 9 forskellige kerner. Af disse har vi sat os ind i $baseline_1$, $baseline_2$, $degree\ distributions$, $Weisfeiler-Lehman$ og $Shortest\ path$, mens de resterende kerner blot er med som sammenligning. Tomme felter (markeret med '-') i tabel \ref{table:results} angiver at vi har sprunget de pågældende udregninger over pga. tidsforbruget.
 
 \begin{table}[H]
 \begin{center}
@@ -846,9 +850,12 @@ Random walk & $85.1667 (\pm 1.9075)$ & $36.2833 (\pm 1.5357)$ & - & - & - \\
 Shortest path & \boldmath$85.6667 (\pm 2.2951)$ & $41.5500 (\pm 1.5457)$ & - & $73.1946 (\pm 0.3625)$ & $73.1311 (\pm 0.2525)$ \\
 \end{tabular}
 }
-\caption{\textit{Resultater}}
+
+
 
 \end{center}
+\caption{\textit{Resultater}}
+\label{table:results}
 \end{table}
 
 
