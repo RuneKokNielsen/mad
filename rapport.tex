@@ -99,16 +99,17 @@ mathescape
 \newpage
 
 \section{Introduktion}
-Denne rapport omhandler klassificering af grafer gennem \textit{support vector machines} (SVM) motiveret af et abstract \cite{trivial-kernels}, som udfordrer etablerede grafkernemetoder ved at foreslå en række simplere metoder, der ifølge deres resultater er tilstrækkelige. Da rapporten er en afløsningsopgave i fagområdet \textit{Modellering og Analyse af Data}, vil vi først beskrive den grundlæggende teori i klassificering og SVM. Herefter fokuserer vi på klassificering af grafer gennem SVM ved at beskrive nogle eksempler på grafkerner. Til sidst gentager vi eksperimenterne fra \cite{trivial-kernels} og sammenligner resultaterne.
+Denne rapport omhandler klassificering af grafer gennem \textit{support vector machines} (SVM) motiveret af et abstract \cite{trivial-kernels}, som udfordrer etablerede grafkernemetoder ved at foreslå en række simplere metoder, der ifølge deres resultater i flere situationer kan være tilstrækkelige fremfor mere avancerede grafkerner. Da rapporten er en afløsningsopgave i fagområdet \textit{Modellering og Analyse af Data}, vil vi først beskrive den grundlæggende teori i klassificering og SVM. Herefter fokuserer vi på klassificering af grafer gennem SVM ved at beskrive nogle eksempler på grafkerner. Til sidst gentager vi eksperimenterne fra \cite{trivial-kernels} og sammenligner resultaterne.
 
+\section{Terminologi}
+Gennem rapporten vil vi flere steder benytte engelske udtryk inden for fagområdet, hvis der ikke findes oplagte danske oversættelser. I disse tilfælde vil udtrykkene skrives i \textit{kursiv}.
 
 \section{Klassificering}
 Formålet med klassificering er at putte datapunkter bestående af et antal egenskaber i passende kategorier fra en prædifineret mængde af diskrete, beskrivende kategorier. Disse datapunkter er også kendt som tupler bestående af $(x,y)$, hvor $x$ er de givne egenskaber, og $y$ er punktets kategori. Klassificering består i definitionen af at finde en passende klassificeringsmodel, hvilket er en funktion $f$ der tager et datapunkt $x$ og returnerer den tilhørende kategori $y$.
 
 Der findes adskillige teknikker til at bestemme en klassificeringsmodel. En sådan teknik beskriver en læringsalgoritme, der på basis af et træningssæt (et sæt af datapunkter med kendte kategorier) udleder en (evt. suboptimal) model.
 
-Det er sjældent muligt at klassificere ethvert givent punkt korrekt ud fra de tilgængelige egenskaber, og vi har derfor brug for en måde at afgøre nøjagtigheden af den resulterende model. Denne nøjagtighed estimeres ved at klassificere et testsæt med modellen, og se på hvor stor en andel af datapunkterne der har fået den rigtige kategori. For at vise modellens nøjagtighed kan man beregne dens \textit{accuracy}, hvilket fortæller hvor præcis den er, eller man kan beregne dens \textit{error rate}, hvilke er det modsatte af \textit{accuracy} dvs. hvor mange forkerte punkter modellen har produceret.\\
-For at beregne nøjagtigheden af en model, benytter vi et testsæt. Ligesom træningssættet er testsættet en mængde af datapunkter med kendte kategorier. Udregningerne består da i at klassificere punkterne i testsættet ved hjælp af modellen, og sammenligne punkternes kategorier som udregnet af modellen med deres egentlige kategorier, som vi kender i forvejen.\\
+Det er sjældent muligt at klassificere ethvert givent punkt korrekt ud fra de tilgængelige egenskaber, og vi har derfor brug for en måde at afgøre nøjagtigheden af den resulterende model. Denne nøjagtighed estimeres ved at klassificere et testsæt med modellen, og se på hvor stor en andel af datapunkterne der har fået den rigtige kategori. Omvendt betegnes manglen på nøjagtighed som modellens fejlrate. Ligesom træningssættet er testsættet en mængde af datapunkter med kendte kategorier. Udregningerne består da i at klassificere punkterne i testsættet ved hjælp af modellen, og sammenligne punkternes kategorier som udregnet af modellen med deres egentlige kategorier, som vi kender i forvejen.\\
 Det er essentielt at testsættet ikke overlapper med træningssættet, da dette vil tildele en for høj nøjagtighed til modellen. Har man f.eks.\ et meget lille træningssæt kan man nemt lave en model, som tilfældigvis passer perfekt på træningssættet, men som i realiteten er helt forkert. Tester man modellen på et testsæt som næsten overlapper fuldstændigt med træningssættet vil de overlappende punkter højst sandsynligt klassificeres korrekt, hvilket resulterer i meget høj nøjagtighed, selvom modellen i virkeligheden kun passer netop på træningssættet. 
 
 For at udregne nøjagtiheden og fejlraten af klassificeringen bruger vi en \textit{confusion matrix}. En \textit{confusion matrix} ser formelt ud som i tabel 1 nedenfor. Her angiver $f_{ij}$ antallet af datapunkter i testsættet som tilhører klasse $i$, og blev klassificeret som klasse $j$. I det optimale tilfælde, hvor alle datapunkter klassificeres korrekt, har vi intuitivt $f_{ij}=0$ for $i\neq j$, hvilket manifesteres i en diagonal matrice.\\
@@ -133,15 +134,15 @@ For at udregne nøjagtiheden og fejlraten af klassificeringen bruger vi en \text
 \end{center}
 \end{table}
 
-For at beregne vores \textit{accuracy} og \textit{error rate} kan vi finde antallet af korrekte- og forkerte forudsigelser ved at summere tallene på hhv. uden for diagonalen, og dividere værdierne med det totale antal klassificeringer. Vi får:\\
+For at beregne nøjagtigheden og fejlraten kan vi finde antallet af korrekte- og forkerte forudsigelser ved at summere tallene på hhv. uden for diagonalen, og dividere værdierne med det totale antal klassificeringer. Vi får:\\
 
 \begin{align*}
-Accuracy &= \frac{Antallet \ af \ korrekte \ forudsigelser}{Det \ totale \ antal \ forudsigelser} \\
+nøjagtighed &= \frac{Antallet \ af \ korrekte \ forudsigelser}{Det \ totale \ antal \ forudsigelser} \\
          &= \frac{\sum_{i=1}^{n}f_{ii}}{\sum_{i=1}^{n}\sum_{j=1}^{n}f_{ij}}
 \end{align*}
 
 \begin{align*}
-Error \ rate &= \frac{Antallet \ af \ forkerte \ forudsigelser}{Det \ totale \ antal \ forudsigelser} \\
+fejlrate &= \frac{Antallet \ af \ forkerte \ forudsigelser}{Det \ totale \ antal \ forudsigelser} \\
            &= \frac{\sum_{i=1}^{n}\sum_{j=1}^{n}e(i,j)}{\sum_{i=1}^{n}\sum_{j=1}^{n}f_{ij}}\\
            \text{hvor }e(i,j)&=
            \begin{cases} f_{ij} & \text{for } i\neq j \\
@@ -150,10 +151,10 @@ Error \ rate &= \frac{Antallet \ af \ forkerte \ forudsigelser}{Det \ totale \ a
 \end{align*}
 
 
-Her gælder det klart at jo højere \textit{accuracy} desto bedre, og det modsatte gælder for \textit{error rate}. \\
+Her gælder det klart at jo højere nøjagtighed desto bedre, og det modsatte gælder for fejlraten. \\
 
 \subsubsection{Problemer ved klassificering}
-Det er ikke altid muligt at lave en perfekt klassificeringsmodel, som klassificerer ethvert givent punkt korrekt. F.eks. kunne datæn være utilstrækkelig til, at ramme alle tænkelige eksempler korrekt. Betragt træningssættet nedenfor. 
+Det er ikke altid muligt at lave en perfekt klassificeringsmodel, som klassificerer ethvert givent punkt korrekt. F.eks. kunne dataen være utilstrækkelig til, at ramme alle tænkelige eksempler korrekt. Betragt træningssættet nedenfor. 
 
 \begin{tabular}{c|c|c|c}
 	Dyr & Lægger æg & Har et næb & Klasse\\
@@ -191,8 +192,8 @@ Datasættet indeholder kun to binære egenskaber, men ud fra træningssættet ka
 Dette ser undertiden fint ud, men prøver man sætte et næbdyr ind i denne model, vil den blive klassificeret som en fugl (da den har et næb og lægger æg), selvom den egentlig er et pattedyr. Selvom vi egentlig har en model, som måske kan klassificere de fleste dyr korrekt, vil der være specielle tilfælde, hvor den skyder helt ved siden af. I dette eksempel kunne man muligvis løse problemet ved at indsamle flere egenskaber, og benytte et større træningssæt, men dette vil ikke altid være muligt, og der vil som sådan være situationer, hvor man ikke kan bygge en perfekt klassificeringsmodel.
 
 
-\subsection{Beslutningstræer (Decision trees)}
-Et eksempel på en klassificeringsteknik er gennem brug af beslutningstræer. Et beslutningstræ består af knuder og blade samt en rodknude. Et datapunkt kan da klassificeres ved at traversere træet startende i roden.
+\subsection{Beslutningstræer}
+Et eksempel på en klassificeringsteknik er gennem brug af beslutningstræer (\textit{decision trees}). Et beslutningstræ består af knuder og blade samt en rodknude. Et datapunkt kan da klassificeres ved at traversere træet startende i roden.
 
 Hver knude består af et spørgsmål, som har en definitiv mængde svar, der kan besvares ud fra egenskaberne i et givent datapunkt. Ud fra svaret (altså datapunktets egenskaber) peger knuden videre til en ny knude eller et blad. Et blad repræsenterer den endelige kategori. I eksemplet i figur 1, kan der ses et eksempel på hvordan et beslutningstræ fungerer. I dette eksempel antager vi, at vi har fået en mængde, som indeholder enten biler, fly eller både. Vi starter med at spørge om det givet datapunkt har hjul, hvis nej må det være en båd, hvis ja kan det enten være en bil eller et fly, og derfor spørger vi igen, denne gang om det givet datapunkt har vinger, hvis ja er det et fly, og hvis nej må det være en bil. På denne måde har vi sikret os at vores datapunkt er kommet i den rigtige kategori.
 
@@ -338,9 +339,9 @@ Testsættet passer næsten overens, men der er et enkelt punkt som ikke overhold
 
 \section{Support Vector Machines (SVM)}
 
-En SVM træningsalgoritme er en type klassifikationsteknik til binær klassifikation, som er specielt egnet til kontinuert data af mange dimensioner. Teknikken baseres på at finde et \textit{maximal margin hyperplane}, altså et hyperplan som deler datapunkterne op i to dele svarende til deres kategori, med maksimal margin til de nærmeste punkter. Dette hyperplan betegnes som modellens \textit{decision boundary}.
+En SVM træningsalgoritme er en type klassifikationsteknik til binær klassifikation, som er specielt egnet til kontinuert data af mange dimensioner. Teknikken baseres på at finde et \textit{maximal margin hyperplane}, altså et hyperplan som deler datapunkterne op i to dele svarende til deres kategori, med maksimal margin til de nærmeste punkter. Dette hyperplan betegnes som modellens grænse (\textit{decision boundary}). Vores gennemgang af teorien og brugen af SVM baseres i høj grad på beskrivelsen i \cite{data-mining}.
 
-Formålet med at maksimere margin er at optimere modellens generaliseringsevne, og dermed opnå bedst mulig nøjagtighed, når nye punkter skal klassificeres. Hvis vores decision boundary har meget lille margin, er der intuitivt ikke plads til meget forskel på dataen sammenlignet med træningssættet. Dette koncept illustreres i eksemplet nedenfor.
+Formålet med at maksimere margin er at optimere modellens generaliseringsevne, og dermed opnå bedst mulig nøjagtighed, når nye punkter skal klassificeres. Hvis grænsen har meget lille margin, er der intuitivt ikke plads til meget forskel på dataen sammenlignet med træningssættet. Dette koncept illustreres i eksemplet nedenfor.
 
 Betragt træningssættet af todimensionelle punkter, markeret som plusser og cirkler afhængig af deres klasse (figur 6 til venstre). På figur 6 til højre er indtegnet to hyperplaner (sorte linjer) og deres margin (grå linjer), som begge deler træningssættet op uden fejl. Det er tydeligt at B2 har bredere margin end B1, og B2 er derfor objektivt den bedste løsning til problemet. Undersøger man selv dataen for en naturlig tendens i opdelingen, bliver det også tydeligt at se, at B2 følger denne tendens langt bedre end B1.
 
@@ -441,7 +442,7 @@ Vi definerer nu optimeringen af det separerbare lineære SVM som en betinget min
 
 
 \subsubsection{Optimering}
-For at optimere vores objektive funktion, skal vi bruge \textit{Lagrange multiplier}, \textit{Lagrange multiplier} er en metode der bruges til at finde en funktions minimum eller maksimum, og i dette tilfælde skal vi bruge den til at finde (\ref{eq:objective_function})'s minimum, da dette vil give os den bedste \textit{decision boundary}. Vi bruger \textit{Lagranges multiplier} da vores problem består af en kvadratisk objektiv funktion, og vores begrænsninger er lineære i parametrene $w$ og $b$, hvilket ender ud i at være et konvekst optimeringsproblem, og her bliver \textit{Langranges multiplier} brugt som standard.
+For at optimere vores objektive funktion, skal vi bruge \textit{Lagrange multiplier}, \textit{Lagrange multiplier} er en metode der bruges til at finde en funktions minimum eller maksimum, og i dette tilfælde skal vi bruge den til at finde (\ref{eq:objective_function})'s minimum, da dette vil give os den optimale grænse. Vi bruger \textit{Lagranges multiplier} da vores problem består af en kvadratisk objektiv funktion, og vores begrænsninger er lineære i parametrene $w$ og $b$, hvilket ender ud i at være et konvekst optimeringsproblem, og her bliver \textit{Langranges multiplier} brugt som standard.
 
 Det ses let at i vores objektive funktion (\ref{eq:objective_function}), at for at opnå den minimale værdi ville $w = 0$ være den bedste løsning, men denne løsning ville ikke holde da vores betingelser i uligheden fra (\ref{eq:req_final}) ikke vil blive overholdt, og hvis uligheden ikke bliver overholdt, vil det ikke være muligt finde en løsning til problemet. For at løse dette problem, vil vi transformere vores objektive funktion \ref{eq:objective_function} til en \textit{Lagrangian} funktion, en \textit{Lagrangian} funktion inkorporerer vores ulighed fra (\ref{eq:req_final}) i vores objektive funktion (\ref{eq:objective_function}), og hvis uligheden ikke bliver overholdt, vil værdien af funktionen stige, og dermed give et dårligere resultat. Ved at have omskrevet vores objektive funktion (\ref{eq:objective_function}) til en \textit{Lagrangian} funktion, vil det også være muligt for os at bruge \textit{Lagrange multipliers}, og det ses også i funktionen (\ref{eq:L_P}), som er vores \textit{Lagragian} funktion hvor vores uligheder er blevet inkorporeret, at der er blevet indsat et $\lambda$, som er vores \textit{Lagrange multiplier}.
 \begin{equation}
@@ -489,7 +490,7 @@ f(z) = sign(w \cdot z + b) = sign( \sum\limits_{i=1}^N \lambda_i y_i x_i \cdot z
 \end{equation}
 
 \subsubsection{Ikke-separerbare tilfælde}
-I nogle tilfælde vil den bedste grænse (\textit{decision boundary}) ikke altid klassificere alle punkter i det givet dataset korrekt. Dette kan skyldes forskellige ting såsom fejl i træningsdata, eller at der er et enkelt dataset, som ikke holder sig til mønstret for dens klassificering. I disse tilfælde vil vi stadig prøve at opnå så stor en afstand mellem vores margener som muligt, selvom enkelte dataset bliver klassificeret forkert. Dette skyldes at hvis vi valgte en grænse, som ville opdele vores træningssæt uden fejl, ville grænsen ofte have en meget lille afstand mellems dens margener, og dette vil gøre at modellen ville være meget udsat for \textit{overfitting}. På grafen nedenfor ses et eksempel, hvor at $B2$ ville være den oplagte grænse at vælge, da den opdeler alt data korrekt, men vi også vælge $B1$ grundet at den har en større afstand mellem sine margener, og risikoen for \textit{overfitting} ville være mindre. 
+I nogle tilfælde vil den bedste grænse ikke altid klassificere alle punkter i det givet dataset korrekt. Dette kan skyldes forskellige ting såsom fejl i træningsdata, eller at der er et enkelt dataset, som ikke holder sig til mønstret for dens klassificering. I disse tilfælde vil vi stadig prøve at opnå så stor en afstand mellem vores margener som muligt, selvom enkelte dataset bliver klassificeret forkert. Dette skyldes at hvis vi valgte en grænse, som ville opdele vores træningssæt uden fejl, ville grænsen ofte have en meget lille afstand mellems dens margener, og dette vil gøre at modellen ville være meget udsat for \textit{overfitting}. På grafen nedenfor ses et eksempel, hvor at $B2$ ville være den oplagte grænse at vælge, da den opdeler alt data korrekt, men vi også vælge $B1$ grundet at den har en større afstand mellem sine margener, og risikoen for \textit{overfitting} ville være mindre. 
 \begin{figure}[H]
 	\begin{minipage}[t]{0.6\linewidth}
 		\includegraphics[width=7cm]{svm_plot_1}
@@ -860,19 +861,31 @@ Shortest path & \boldmath$85.6667 (\pm 2.2951)$ & $41.5500 (\pm 1.5457)$ & - & $
 
 
 \subsubsection{Kommentarer til resultater}
+\label{section:result_comments}
+Gennemgående giver \textit{Weisfeiler-Lehman} de bedste resultater på alle de datasæt, som vi har testet på, og kunne samtidig udregnes med rimeligt tidsforbrug. De simple kerner kan i flere tilfælde give resultater på niveau med de etablerede kerner, og resultaterne ligger generelt tæt på resultaterne udgivet i \cite{trivial-kernels}. Dog er der en markant forskel i vores resultat for $baseline_2$ på NCI109 ($62.3956$) sammenlignet med resultatet i \cite{trivial-kernels} ($73.0$). Vi observerer i den sammenhæng at resultaterne på NCI1 og NCI109 er meget nær hinanden i alle vores tests, mens der er et stort spring i resultaterne for $baseline_2$ i \cite{trivial-kernels} for disse to datasæt (hhv. 62.1 på NCI1 og 73.0 på NCI109). De to datasæt er imidlertid meget lig hinanden (\cite{graph-datasets}, s.\ 111), og der bør derfor ikke være så stort et spring i resultaterne.
 
 \section{Konklusion}
+Vi har sat os ind i materialet omkring grafkerner og klassificering af grafer ved hjælp af SVM, og har gentaget en række eksperimenter fra \cite{trivial-kernels}. Vores resultater underbygger generelt de postulerede resultater (se \ref{section:result_comments}), og vi støtter konklusionen i \cite{trivial-kernels} om, at man skal overveje om et problem kan løses ved hjælp af en simpel kerne, fremfor at overkomplicere problemet og gå direkte til mere avancerede kerner.
 
 
 
 \renewcommand\refname{Referencer}
 \begin{thebibliography}{9}
+	\bibitem{data-mining}
+	Pang-Ning Tan, Michael Steinbach, Vipin Kumar,
+	 \emph{Introduction to Data Mining, First ed.},
+	 Pearson, 2014
 	\bibitem{shortest-path}
-	Karsten M. Borgwardt, Hans-Peter Kriegel, 
+	Karsten M. Borgwardt, Hans-Peter Kriegel,
 	\emph{Shortest-path kernels on graphs},
 	Institute for Computer Science, Ludwig-Maximilians-University Munich, 2005
 	\bibitem{trivial-kernels}
-	Yuliia Orlova, Morteza Alamgir, Ulrike von Luxburg, \textit{Graph kernel benchmark data sets are trivial!}, Department of Computer Science, University of Hamburg, 2015
+	Yuliia Orlova, Morteza Alamgir, Ulrike von Luxburg,
+	 \textit{Graph kernel benchmark data sets are trivial!}, Department of Computer Science, University of Hamburg, 2015
+	\bibitem{graph-datasets}
+	Toon Calders, Floriana Esposito, Eyke Hüllermeier, Rosa Meo,
+	\emph{Machine Learning and Knowledge Discovery in Databases},
+	European Conference, ECML PKDD 2014
 	\bibitem{libsvm}
 	(Software) Chih-Chung Chang, Chih-Jen Lin, \textit{LIBSVM v3.21}, 2015\\ \verb|https://www.csie.ntu.edu.tw/~cjlin/libsvm/text|
 \end{thebibliography}
