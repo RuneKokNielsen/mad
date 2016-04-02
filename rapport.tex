@@ -730,8 +730,9 @@ hvor $\eps$ er en parameter i træningsmodellen. Hele denne $k_{walk}^{(1)}$ ker
 Vi vil her gennemgå tre simple grafkerner, som vi vil inddrage i vores eksperimenter. Heraf er to af kernerne ($baseline_1,baseline_2$) baseret direkte på definitionerne i \cite{trivial-kernels}.
 
 \subsubsection{$baseline_1$}
+\label{section:baseline_1}
 Denne kerne fokuserer udelukkende på egenskaberne i grafernes knuder, og ignorerer som sådan deres interne struktur. Dette opnås ved at bygge et histogram over hver grafs knudeegenskaber, og sammenligne de to histogrammer i en Gaussisk kerne.\\
-Lad $G_1$ og $G_2$ være to grafer, hvor hver knude har en diskret egenskab. Lad da $l(G_1)$ og $l(G_2)$ være histogrammer for egenskaberne af knuderne i $G_1$ hhv. $G_2$. Så kan vi beskrive kernefunktionen i (\ref{eq:k_baseline_1}), hvor $\epsilon$ er en parameter i modellen, som vælges med krydsvalidering på træningssættet.
+Lad $G_1$ og $G_2$ være to grafer, hvor hver knude har en diskret egenskab. Lad da $l(G_1)$ og $l(G_2)$ være histogrammer for egenskaberne af knuderne i $G_1$ hhv. $G_2$. Så kan vi beskrive kernefunktionen $k_{baseline_1}$ (\ref{eq:k_baseline_1}), hvor $\epsilon$ er en parameter i modellen, som vælges med krydsvalidering på træningssættet.
 \begin{equation}
 \label{eq:k_baseline_1}
 k_{baseline_1}(G_1,G_2)=exp\left(-\frac{\left(l(G_1)- l(G_2)\right)\cdot\left(l(G_1)- l(G_2)\right)}{\epsilon}\right)
@@ -739,14 +740,16 @@ k_{baseline_1}(G_1,G_2)=exp\left(-\frac{\left(l(G_1)- l(G_2)\right)\cdot\left(l(
 
 
 \subsubsection{$baseline_2$}
-$Baseline_2$ er den simpleste grafkerne vi bruger, denne grafkerne sammenligner de givets grafers mængde af knuder i en Gaussisk kerne, bemærk grafernes labels ikke benyttes og grafernes interne strukturer bliver også ignoreret i denne grafkerne. \\
-Lad $G_1$ og $G_2$ være de to givet grafer, og lad $s(G_1)$ og $s(G_2)$ være grafernes mængde af knuder. Vi kan derefter beskrive kernefunktionen i (\ref{eq:k_baseline_2}), $\epsilon$ har samme funktion, som beskrevet i $baseline_1$, og vil blive valgt på samme måde.
+\label{section:baseline_2}
+$Baseline_2$ er den simpleste grafkerne vi bruger, denne grafkerne sammenligner de givet grafers mængde af knuder i en Gaussisk kerne, bemærk grafernes labels ikke benyttes og grafernes interne strukturer bliver også ignoreret i denne grafkerne. \\
+Lad $G_1$ og $G_2$ være de to givet grafer, og lad $s(G_1)$ og $s(G_2)$ være grafernes mængde af knuder. Vi kan derefter beskrive kernefunktionen $k_{baseline_2}$ (\ref{eq:k_baseline_2}), i $baseline_2$ har $\epsilon$ samme funktion, som beskrevet i $baseline_1$, og vil blive valgt på samme måde.
 \begin{equation}
 \label{eq:k_baseline_2}
 k_{baseline_2}(G_1,G_2)=exp\left(-\frac{\left(s(G_1)- s(G_2)\right)\cdot\left(s(G_1)- s(G_2)\right)}{\epsilon}\right)
 \end{equation}
 
 \subsubsection{$degree\ distributions$}
+\label{section:degree_distributions}
 Hvor $baseline_1$ kun benytter egenskaberne af knuderne, baseres denne kerne udelukkende  på den interne struktur i graferne. I vores implementation sammenligner kernen grafernes $degree\ distributions$ (gradfordelinger) i en Gaussisk kerne.
 
 Lad $G_j=(V_j,E_j)$ være en graf. Lad da $nb(v)$ være mængden af naboknuder til knuden $v\in V_j$. Så definerer vi graden af $v$
@@ -756,10 +759,10 @@ d(v) = |nb(v)|
 Da er gradfordelingen for $G_j$, $dd(G_j)$, en $m$-vektor, hvor
 \begin{align}
 m&=max(d(v) | v\in V_j)\\
-dd(G_j)_h&=|(v | v\in V_j \land d(v) = h)|
+dd(G_j)_h&=|\{v | v\in V_j \land d(v) = h\}|
 \end{align}
 
-Med denne definition af gradfordelinger kan vi sammenligne to grafer $G_1=(V_1,E_1),G_2=(V_2,E_2)$ med den Gaussiske kerne i (\ref{eq:k_degree_distributions}), hvor $\epsilon$ vælges med krydsvalidering.
+Med denne definition af gradfordelinger kan vi sammenligne to grafer $G_1=(V_1,E_1),G_2=(V_2,E_2)$ med den Gaussiske kerne $k_{degree\_distributions}$ (\ref{eq:k_degree_distributions}), hvor $\epsilon$ vælges med krydsvalidering.
 \begin{equation}
 \label{eq:k_degree_distributions}
 k_{degree\_distributions}(G_1,G_2)=exp\left(-\frac{(dd(G_1)-dd(G_2))\cdot(dd(G_i)-dd(G_2))}{\epsilon}\right)
@@ -767,7 +770,7 @@ k_{degree\_distributions}(G_1,G_2)=exp\left(-\frac{(dd(G_1)-dd(G_2))\cdot(dd(G_i
 
 
 \subsection{Krydsvalidering}
-Vi så tidligere i afsnittet om ikke-separerbare tilfælde en objektiv formel (\ref{eq:slack_objective_function},\ref{eq:slack_objective_function_cross_validation}). Parameteren C i denne formel bestemmer, hvor meget miskvalificerede punkter straffes. 
+Vi så tidligere i afsnittet om ikke-separerbare tilfælde en objektiv formel (\ref{eq:slack_objective_function}), den samme formel kan ses herunder (\ref{eq:slack_objective_function_cross_validation}). Parameteren C i denne formel bestemmer, hvor meget misklassificerede punkter straffes. 
 \begin{equation}
 f(w) = \frac{||w||^2}{2}+C(\sum\limits_{i=1}^N \xi_i)^k
 \label{eq:slack_objective_function_cross_validation}
@@ -793,13 +796,13 @@ Train_i = M\setminus \left(Test_i\cup Val_i\right)
 Vi vil her gennemgå \textit{10-fold cross-validation} til optimering af $C$ baseret på implementationen i \cite{libsvm}.\\
 Foruden parameteren $k=10$ benytter algoritmen en endelig mængde $M_C=\{C_1,C_2,..C_m\}$ af mulige værdier for $C$, som vi ønsker at teste for. I hver iteration $i=1,2,..k$ af krydsvalideringen træner vi på $Train_i$ med hvert $C_j\in M_C$, og tester på $Val_i$. Vi vælger da det $C$ som gav den højeste nøjagtighed på valideringssættet, og træner nu på $Train_i\cup Val_i$ med dette $C$, hvorefter i vi tester på $Test_i$, og opnår en nøjagtighed $acc_i$. Efter sidste iteration udregnes gennemsnittet af $acc_1,acc_2,..acc_k$, hvilket vil være det endelige estimering af modellens nøjagtighed.
 
-I figur \ref{fig:cross_validation} (venstre) illustreres hvordan testsættet (gråt) og valideringssættet (rødt) bliver rykket i hver iteration efter formlerne i \ref{eq:cv_test} hhv. \ref{eq:cv_val} for $k=10$. I figur \ref{fig:cross_validation} (højre) ses pseudokode for \textit{10-fold cross validation}. \\
+I figur \ref{fig:cross_validation} (venstre) illustreres hvordan testsættet (gråt) og valideringssættet (rødt) bliver rykket i hver iteration efter formlerne i (\ref{eq:cv_test}) hhv. (\ref{eq:cv_val}) for $k=10$. I figur \ref{fig:cross_validation} (højre) ses pseudokode for \textit{10-fold cross validation}. \\
 
 \begin{figure}[H]
 	\begin{minipage}{0.3\linewidth}
 		\includegraphics[width=3cm]{10-fold-cross-validation_3}
 	\end{minipage}
-	\begin{minipage}{2\linewidth}
+	\begin{minipage}{1\linewidth}
 		\scriptsize
 		\begin{algorithmic}[1]
 			\Function{10-fold Cross Validation}{$K, lk$}
@@ -807,29 +810,36 @@ I figur \ref{fig:cross_validation} (venstre) illustreres hvordan testsættet (gr
 				\State $C$-values=[...]
 				\State result=[]
 				\For{$i = 1 \textrm{ to } k$}
-					\State validationSet=movePointerAndGetValidationSet(K)
-					\State testSet=movePointerAndGetTestSet(K)
-					\State imResult=[]
+					\State validationSet=Change the validation set on $K$ and return the new set.
+					\State testSet=Change the test set on $K$ and return the new set.
+					\State intermediateResult=[]
 					\For{$j = 1 \textrm{ to } size($C$-values)$}
-						\State model=svmtrain((K-validationSet)-testSet,(lk-validationSet)-testSet,$C$-values[i])
-						\State imResult[i]=svmpredict(mode,testSet).getAccuracy()
+						\State model=Train our model on K and lk without our validation/test set, with the current $C$-value and return the trained model.
+						\State intermediateResult[i]=Test our new model on our validation set and return the accuracy.
 					\EndFor
-					\State optimalC=$C$values[max(imResult).getIndex()]
-					\State model=svmtrain(K-testSet,lk-testSet,optimalC)
-					\State result[k]=svmpredict(model,testSet).getAccuracy()
+					\State optimalC=Get the optimal $C$-value from our intermediateResult.
+					\State model=Train our model on K and lk without our test set, with the optimal $C$-value and return the trained model.
+					\State result[k]=Test our new model on our test set and return the accuracy.
 				\EndFor
 				\State \Return{mean(result)}
 			\EndFunction
 		\end{algorithmic}
 	\end{minipage}
-\caption{\textit{Til venstre: De forksellige iterationer i 10-fold cross validation. Til højre: Simplificeret pseudokode af libsvm's 10-fold cross validation.}}
+\caption{\textit{Til venstre: De forksellige iterationer i 10-fold cross validation. De røde felter symbolisere det valgte valideringssæt, og de grå det valgte testsæt. Til højre: Simplificeret pseudokode af Karsten M. Borgwardt's 10-fold cross validation.}}
 \label{fig:cross_validation}
 \end{figure}
 
 
 \subsection{Eksperimenter}
 For at verificere resultaterne i \cite{trivial-kernels} har vi selv gennemført eksperimenterne.
-Vores primære mål med eksperimenterne er at verificere, at de to simple grafkerner beskrevet i \cite{trivial-kernels} kan måle sig med de etablerede og mere komplekse grafkerner. Til at tjekke dette har vi brugt fem forskellige datasaet (MUTAG, ENZYMES, DD, NCI1, NCI109). For at estimere grafkernernes nøjagtighed har vi brugt \textit{10-fold cross-validation} gennem \cite{libsvm} som beskrevet i afsnittet om krydsvalidering.
+Vores primære mål med eksperimenterne er at verificere, at de to simple grafkerner beskrevet i \cite{trivial-kernels} kan måle sig med de etablerede og mere komplekse grafkerner. Til at tjekke dette har vi brugt fem forskellige datasæt (MUTAG, ENZYMES, DD, NCI1, NCI109), vi har valgt at bruge disse datasæt da de ses som standard benchmarks i grafklassificering. For at estimere grafkernernes nøjagtighed har vi brugt \textit{10-fold cross-validation} gennem \cite{libsvm} som beskrevet i afsnittet om krydsvalidering. \\
+Af grafkerner har vi valgt at bruge de følgende: $baseline_1$ \cite{trivial-kernels}, $baseline_2$ \cite{trivial-kernels}, \textit{degree distributions}, \textit{Weisfeiler-Lehman} \cite{WL}, \textit{Ramon \& Gartner} \cite{RG},  \textit{GraphHopper} \cite{graphhopper}, \textit{Graphlet count} \cite{GC}, \textit{Random walk} \cite{RW} og \textit{Shortest path} \cite{shortest-path}, disse grafkerner repræsentere de mest brugte grafkerner, samt de simple grafkerner fra \cite{trivial-kernels} og \textit{degree distributions}. \\
+Nogle af de nævnte grafkerner har behov for at et sæt af specielle parametre, disse parametre har vi sat på følgende måder.\\
+Vores simple grafkerner $baseline_1$, $baseline_2$ og \textit{degree distribitions} kræver hver især et $\epsilon$, dette $\epsilon$ skal tilpasses for at finde det mest optimale, metoden vi bruger til at sætte dette $\epsilon$ er beskrevet i hhv. \ref{section:baseline_1}, \ref{section:baseline_2} og \ref{section:degree_distributions}.\\
+Den næste grafkerne \textit{Weisfeiler-Lehman} kræver kun en parameter sat, denne parameter specificere hvor mange iterationer algoritmen skal udføre, her har vi valgt at den skal udføre $10$ iterationer. \\
+\textit{Ramon \& Gartner} indeholder også en speciel parameter, denne parameter bestemmer den maksimale højde af træet, her har vi valgt at sætte den til $3$, denne kunne godt sættes højere, dette ville resultere i bedre resultater, men grundet at dette vil også forøge dens allerede høje køretid, har vi valgt ikke at sætte den for højere. \\
+For \textit{Random walk} skal vi sætte parameteren \textit{lambda}, hvilke vi har sat til $\frac{1}{d^2}$, hvor $d$ er den maksimale grad for de givet grafer. Denne formel er beskrevet i kildekoden til grafkernen.\\
+\textit{GraphHopper} har tre parametre, hvor den vigtigste af de tre bestemmer hvilke slags kernetype der vil blive brugt, her har vi valgt at den skal bruge den der hedder \textit{"dirac"}.
 
 \subsubsection{Afgrænsning}
 Vi har udregnet resultaterne af 9 forskellige kerner. Af disse har vi sat os ind i $baseline_1$, $baseline_2$, $degree\ distributions$, $Weisfeiler-Lehman$ og $Shortest\ path$, mens de resterende kerner blot er med som sammenligning. Tomme felter (markeret med '-') i tabel \ref{table:results} angiver at vi har sprunget de pågældende udregninger over pga. tidsforbruget.
@@ -843,15 +853,15 @@ Alle eksperimenter er kørt i Matlab gennem \textit{libsvm} \cite{libsvm}. De si
 \begin{tabular}{c|c|c|c|c|c}
 Metoder/Dataset & MUTAG & ENZYMES & DD & NCI1 & NCI109 \\
 \hline
-Baseline$_1$ & \boldmath$81.9444(\pm 2.0992)$ & $39.3500(\pm 1.2459)$ & $77.4786(\pm 0.6140)$ & $68.8200(\pm 0.7369)$ & $68.7427(\pm 0.3957)$ \\
-Baseline$_2$ & \boldmath$81.5556 (\pm 1.1355)$ & $21.3000 (\pm 1.7964)$ & $75.1538 (\pm 0.7320)$ & $62.3771 (\pm 0.6772)$ & $62.3956 (\pm 0.4050)$ \\
+Baseline$_1$ \cite{trivial-kernels} & \boldmath$81.9444(\pm 2.0992)$ & $39.3500(\pm 1.2459)$ & $77.4786(\pm 0.6140)$ & $68.8200(\pm 0.7369)$ & $68.7427(\pm 0.3957)$ \\
+Baseline$_2$ \cite{trivial-kernels} & \boldmath$81.5556 (\pm 1.1355)$ & $21.3000 (\pm 1.7964)$ & $75.1538 (\pm 0.7320)$ & $62.3771 (\pm 0.6772)$ & $62.3956 (\pm 0.4050)$ \\
 Degree Distributions &\boldmath$83.9444 (\pm 2.6248)$ &  $32.9833 (\pm 1.4582)$ & $74.8974 (\pm 0.6979)$ & $66.2238 (\pm 0.4372)$ & $65.2549 (\pm 0.5032)$ \\
-Weisfeiler-Lehman & \boldmath$83.5000 (\pm 3.1322)$ & \boldmath$49.0667 (\pm 1.2229)$ & \boldmath$78.6923 (\pm 0.3273)$ & \boldmath$85.0097 (\pm 0.1907)$ & \boldmath$85.1845 (\pm 0.2438)$ \\
-Ramon \& Gartner & \boldmath$83.0556 (\pm 1.8002)$ & - & - & - & - \\
-GraphHopper & \boldmath$83.9444 (\pm 1.8040)$ & $36.2833 (\pm 1.5356)$ & - & $72.5985 (\pm 0.4184)$ & $71.4029 (\pm 0.3245)$ \\
-Graphlet count & $74.1667 (\pm 2.2106)$ & $32.2000 (\pm 1.3896)$ & \boldmath$79.2735 (\pm 0.4789)$ & $65.9538 (\pm 0.2965)$ & $66.6383 (\pm 0.3391)$ \\
-Random walk & \boldmath$85.1667 (\pm 1.9075)$ & $36.2833 (\pm 1.5357)$ & - & - & - \\
-Shortest path & \boldmath$85.6667 (\pm 2.2951)$ & $41.5500 (\pm 1.5457)$ & - & $73.1946 (\pm 0.3625)$ & $73.1311 (\pm 0.2525)$ \\
+Weisfeiler-Lehman \cite{WL} & \boldmath$83.5000 (\pm 3.1322)$ & \boldmath$49.0667 (\pm 1.2229)$ & \boldmath$78.6923 (\pm 0.3273)$ & \boldmath$85.0097 (\pm 0.1907)$ & \boldmath$85.1845 (\pm 0.2438)$ \\
+Ramon \& Gartner \cite{RG} & \boldmath$83.0556 (\pm 1.8002)$ & - & - & - & - \\
+GraphHopper \cite{graphhopper} & \boldmath$83.9444 (\pm 1.8040)$ & $36.2833 (\pm 1.5356)$ & - & $72.5985 (\pm 0.4184)$ & $71.4029 (\pm 0.3245)$ \\
+Graphlet count \cite{GC} & $74.1667 (\pm 2.2106)$ & $32.2000 (\pm 1.3896)$ & \boldmath$79.2735 (\pm 0.4789)$ & $65.9538 (\pm 0.2965)$ & $66.6383 (\pm 0.3391)$ \\
+Random walk \cite{RW} & \boldmath$85.1667 (\pm 1.9075)$ & $36.2833 (\pm 1.5357)$ & - & - & - \\
+Shortest path \cite{shortest-path} & \boldmath$85.6667 (\pm 2.2951)$ & $41.5500 (\pm 1.5457)$ & - & $73.1946 (\pm 0.3625)$ & $73.1311 (\pm 0.2525)$ \\
 \end{tabular}
 }
 
@@ -873,24 +883,54 @@ Vi har sat os ind i materialet omkring grafkerner og klassificering af grafer ve
 \section{Arbejdsfordeling}
 Med henblik på at få indsigt i hele teorien, har vi såvidt muligt arbejdet sammen om at skrive og forfine disse afsnit. Ligeledes har vi begge arbejdet på implementationerne i Matlab. Selve kørslerne af eksperimenterne har vi fordelt vilkårligt mellem os.
 
-
+\newpage
 \renewcommand\refname{Referencer}
 \begin{thebibliography}{9}
 	\bibitem{data-mining}
-	Pang-Ning Tan, Michael Steinbach, Vipin Kumar,
-	 \emph{Introduction to Data Mining, First ed.},
-	 Pearson, 2014
-	\bibitem{shortest-path}
-	Karsten M. Borgwardt, Hans-Peter Kriegel,
-	\emph{Shortest-path kernels on graphs},
-	Institute for Computer Science, Ludwig-Maximilians-University Munich, 2005
+	Pang-Ning Tan, Michael Steinbach, Vipin Kumar.
+	\emph{Introduction to Data Mining, First ed.}.
+	Pearson, 2014.
+
 	\bibitem{trivial-kernels}
-	Yuliia Orlova, Morteza Alamgir, Ulrike von Luxburg,
-	 \textit{Graph kernel benchmark data sets are trivial!}, Department of Computer Science, University of Hamburg, 2015
+	Yuliia Orlova, Morteza Alamgir, Ulrike von Luxburg.
+	\textit{Graph kernel benchmark data sets are trivial!}.
+	2015.
+
+	\bibitem{WL}
+	Nino Shervashidze, Pascal Schweitzer, Erik Jan van Leeuwen, Kurt Mehlhorn, Karsten M. Borgwardt.
+	\emph{Weisfeiler-lehman graph kernels}.
+	Journal of Machine Learning Research, 12:2539-2561, 2011.
+
+	\bibitem{RG}
+	Jan Ramon, Thomas Gärtner.
+	\emph{Expressivity versus efficiency of graph kernels}.
+	In First International Workshop on Mining Graphs, Trees and Sequences (held with ECML/PKDD'03), 2003.
+
+	\bibitem{graphhopper}
+	Aasa Feragen, Niklas Kasenburg, Jens Petersen, Marleen de Bruijne, Karsten M. Borgwardt.
+	\emph{Scalable kernels for graphs with continuos attributes}.
+	In Advances in Neural Information Processing Systems, pages 216-224, 2013.
+
+	\bibitem{GC}
+	Nino Shervashidze, S. V. N. Vishwanathan, Tobias H. Petri, Kurt Mehlhorn, Karsten M. Borgwardt.
+	\emph{Efficient graphlet kernels for large graph comparison}.
+	In Proceedings of the International Conference on Artificial Intelligence and Statistics, 2009.
+
+	\bibitem{RW}
+	S. V. N. Vishwanathan, Nicol N. Schraudolph, Risi Kondor, Karsten M. Borgwardt.
+	\emph{Graph Kernels}.
+	Journal of Machine Learning Research, 11:1201-1242, 2010.
+
+	\bibitem{shortest-path}
+	Karsten M. Borgwardt, Hans-Peter Kriegel.
+	\emph{Shortest-path kernels on graphs}.
+	In Proceedings of the International Conference on Data Mining, pages 74-81, 2005.
+
 	\bibitem{graph-datasets}
-	Toon Calders, Floriana Esposito, Eyke Hüllermeier, Rosa Meo,
-	\emph{Machine Learning and Knowledge Discovery in Databases},
-	European Conference, ECML PKDD 2014
+	Toon Calders, Floriana Esposito, Eyke Hüllermeier, Rosa Meo.
+	\emph{Machine Learning and Knowledge Discovery in Databases}.
+	European Conference, ECML PKDD 2014.
+
 	\bibitem{libsvm}
 	(Software) Chih-Chung Chang, Chih-Jen Lin, \textit{LIBSVM v3.21}, 2015\\ \verb|https://www.csie.ntu.edu.tw/~cjlin/libsvm/text|
 \end{thebibliography}
