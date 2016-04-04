@@ -360,7 +360,7 @@ Betragt træningssættet af todimensionelle punkter, markeret som plusser og cir
 \subsubsection{Separerbare tilfælde}
 I vores gennemgang af lineære SVM vil vi arbejde med bineær inddeling af datasæt. Vores inddeling kan beskrives mere formelt som $(x_i,y_i) \ i=1,2,...N$, hvor $x_i$ er et datapunkt og $y_i$ er punktets klasse. Af hensyn til udregningerne definerer vi $y_i \in \{-1,1\}$.
 
-Hyperplanet, som udgør grænsen i en opdeling, beskriver vi med ligning (\ref{eq:hyperplane_equation}), hvor $w$ er en normalvektor til hyperplanet, $b$ er den vinkelrette afstand fra hyperplanet til origo, og $x$ er et punkt på hyperplanet.
+Hyperplanet, som udgør grænsen i en opdeling, beskriver vi med ligning (\ref{eq:hyperplane_equation}), hvor $w$ er en normalvektor til hyperplanet, $x$ er et punkt på hyperplanet og $b$ er en konstant.
 \begin{equation}
 \label{eq:hyperplane_equation}
 w \cdot x + b = 0
@@ -409,7 +409,7 @@ Bemærker at venstre side af (\ref{eq:d_1}) er prikproduktet mellem to eukledisk
 \begin{equation}
 ||w||\times||x_1-x_2||\cos\theta=2
 \end{equation}
-Vi benytter nu at den skalare projektion af $A$ på $B$ er givet ved $A_B=||A||\cos\theta$, og at bredden $d$ netop er projektionen af $(x_1-x_2)$ på $w$. Vi får altså:
+Vi benytter nu at den skalare projektion af $A$ på $B$ er givet ved $A_B=||A||\cos\theta$, og at bredden $d$ af margen netop er projektionen af $(x_1-x_2)$ på $w$. Vi får altså:
 \begin{align}
 ||w||\times d &= 2\\
 \label{eq:d_2}
@@ -442,7 +442,7 @@ Vi definerer nu optimeringen af det separerbare lineære SVM som en betinget min
 
 
 \subsubsection{Optimering}
-For at optimere vores objektive funktion, skal vi bruge \textit{Lagrange multiplier}, \textit{Lagrange multiplier} er en metode der bruges til at finde en funktions minimum eller maksimum, og i dette tilfælde skal vi bruge den til at finde (\ref{eq:objective_function})'s minimum, da dette vil give os den optimale grænse. Vi bruger \textit{Lagranges multiplier} da vores problem består af en kvadratisk objektiv funktion, og vores begrænsninger er lineære i parametrene $w$ og $b$, hvilket ender ud i at være et konvekst optimeringsproblem, og her bliver \textit{Langranges multiplier} brugt som standard.
+For at optimere vores objektive funktion, skal vi bruge \textit{Lagrange multiplier}, \textit{Lagrange multiplier} er en metode der bruges til at finde en funktions minimum eller maksimum, og i dette tilfælde skal vi bruge den til at finde (\ref{eq:objective_function})'s minimum, da dette vil give os den optimale grænse. Vi bruger \textit{Lagranges multiplier} da vores problem består af en kvadratisk objektiv funktion, og vores begrænsninger er lineære i parametrene $w$ og $b$, hvilket ender ud i at være et konvekst optimeringsproblem, og her bliver \textit{Lagranges multiplier} brugt som standard.
 
 Det ses let at i vores objektive funktion (\ref{eq:objective_function}), at for at opnå den minimale værdi ville $w = 0$ være den bedste løsning, men denne løsning ville ikke holde da vores betingelser i uligheden fra (\ref{eq:req_final}) ikke vil blive overholdt, og hvis uligheden ikke bliver overholdt, vil det ikke være muligt finde en løsning til problemet. For at løse dette problem, vil vi transformere vores objektive funktion \ref{eq:objective_function} til en \textit{Lagrangian} funktion, en \textit{Lagrangian} funktion inkorporerer vores ulighed fra (\ref{eq:req_final}) i vores objektive funktion (\ref{eq:objective_function}), og hvis uligheden ikke bliver overholdt, vil værdien af funktionen stige, og dermed give et dårligere resultat. Ved at have omskrevet vores objektive funktion (\ref{eq:objective_function}) til en \textit{Lagrangian} funktion, vil det også være muligt for os at bruge \textit{Lagrange multipliers}, og det ses også i funktionen (\ref{eq:L_P}), som er vores \textit{Lagragian} funktion hvor vores uligheder er blevet inkorporeret, at der er blevet indsat et $\lambda$, som er vores \textit{Lagrange multiplier}.
 \begin{equation}
@@ -473,7 +473,7 @@ Som det kan ses i vores nye ligheder, skal alle $\lambda_i$ være $0$ når $y_i(
 Vores optimeringsproblem er stadig kompliceret grundet at vi har $w$, $b$ og $\lambda_i$. Vi kan simplificere problemet ved at bruge \textit{dual problem} metoden. Denne metode bruges ofte i sammenhæng med \textit{Lagrange mlutipliers}. Metoden transformerer vores \textit{Lagrangian} funktion til en funktion, som kun indeholder vores \textit{Lagrange multipliers}. Ved at indsætte konsekvenserne af de partielt differentierede sat til 0 i $L_P$ opnår vi vores \textit{dual problem} funktion som nedenfor.
 \begin{equation}
 \label{eq:L_D}
-L_D = \sum\limits_{i=1}^N \lambda_i - \frac{1}{2}\sum\limits_{i,j} \lambda_i \lambda_j y_i y_j x_j \cdot x_j
+L_D = \sum\limits_{i=1}^N \lambda_i - \frac{1}{2}\sum\limits_{i,j}^N \lambda_i \lambda_j y_i y_j x_j \cdot x_j
 \end{equation}
 Der er to store forskelle på vores primære \textit{Lagrangian} funktion, og vores nye \textit{dual problem} funktion. Den første store forskel er at vores \textit{dual problem} kun indeholder vores trænings data samt vores \textit{Lagrange multipliers}, hvor vores primære \textit{Lagrangian} funktion også indeholder vores $w$ og $b$. Den anden store forskel er, at vores minimeringsproblem  er blevet til et maksimeringsproblem.
 Løsningen af vores \textit{dual problem} kræver at vi finder værdierne af $\lambda_i$, hvilket opnås gennem $\textit{quadratic programming}$. Detaljerne ligger undertiden uden for emnet i denne rapport.\\
@@ -616,7 +616,7 @@ L_D&=\sum_{i=1}^{n}\lambda_i-\frac{1}{2}\sum_{i,j}\lambda_i\lambda_j y_iy_jk(x_i
 Lad $k:X\times X\rightarrow \mathbb{R}$ være en symmetrisk, positivt semidefinit funktion på $X={x_1,..x_n}$. Så ønsker vi at vise at der findes en transformation $\Phi:X\rightarrow H$ hvor $H$ er et Hilbert rum sådan at 
 \begin{equation}
 \label{eq:mercers}
-\langle\phi(x_i),\phi(x_j)\rangle=k(x_i,x_j)
+\langle\Phi(x_i),\Phi(x_j)\rangle=k(x_i,x_j)
 \end{equation}
 
 Betragt matricen $K:$
@@ -627,7 +627,13 @@ k(x_1,x_1) & ... &k(x_1,x_n)\\
 k(x_n,x_1) & ... &k(x_n,x_n)\\
 \end{array}\right]\\
 \end{equation}
-Da $K$ er symmetrisk ved vi fra spektralsætningen at $K$ er diagonaliserbar med en ortogonal matrix $V$ sådan at $\Lambda=V^TKV$, hvor $\Lambda$ er en diagonalmatrix, hvor $\Lambda_{tt}$ er egenværdi $\lambda_t$ for $K$, og hvor kolonne $t$ i $V$ er den tilhørende egenvektorer $v_t$.
+Da $K$ er symmetrisk ved vi fra spektralsætningen at $K$ er diagonaliserbar med en ortogonal matrix $V$ sådan at $\Lambda=V^TKV$, hvor $\Lambda$ er en diagonalmatrix i hvilken $\Lambda_{tt}$ er egenværdi $\lambda_t$ for $K$, og hvor kolonne $t$ i $V$ er den tilhørende egenvektorer $v_t$. Da V er ortogonal kan vi isolere $K$ således:
+\begin{align}
+\Lambda &= V^TKV\\
+V\Lambda &= KV\\
+V\Lambda V^T &= K
+\end{align}
+
 
 Betragt nu transformationen 
 \begin{equation}
@@ -636,9 +642,12 @@ Betragt nu transformationen
 Så får vi
 \begin{align}
 \langle\Phi(x_i),\Phi(x_j)\rangle&=\left(\sqrt{\lambda_t}v_{ti}\right)_{t=1}^n\cdot\left(\sqrt{\lambda_t}v_{tj}\right)_{t=1}^n\\
-&=\sum_{t=1}^n\sqrt{\lambda_t}v_{ti}\sqrt{\lambda_t}v_{tj}=\sum_{t=1}^{n}\lambda_tv_iv_j\\
-&=K_{ij}=k(x_i,x_j)
+&=\sum_{t=1}^n\sqrt{\lambda_t}v_{ti}\sqrt{\lambda_t}v_{tj}=\sum_{t=1}^{n}\lambda_tv_{ti}v_{tj}\\
+&= \left(V\Lambda V^T\right)_{ij} = K_{ij}=k(x_i,x_j)
 \end{align}
+
+
+
 Vi har nu vist at der for en symmetrisk funktion $k=(x_i,x_j)$ vil eksistere en transformation $\Phi$ sådan at (\ref{eq:mercers}) er opfyldt.
 
 
