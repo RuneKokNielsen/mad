@@ -47,6 +47,9 @@ escapeinside={\%*}{*)},          % if you want to add a comment within your code
 mathescape
 }
 
+\usepackage{caption}
+\captionsetup[table]{name=Tabel}
+
 \usepackage{mathtools}
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
@@ -105,11 +108,13 @@ Denne rapport omhandler klassificering af grafer gennem \textit{support vector m
 Gennem rapporten vil vi flere steder benytte engelske udtryk inden for fagområdet, hvis der ikke findes oplagte danske oversættelser. I disse tilfælde vil udtrykkene skrives i \textit{kursiv}.
 
 \section{Klassificering}
+I dette afsnit gennemgår vi den grundlæggende teori omkring klassificering på basis af \cite{data-mining}.
 Formålet med klassificering er at putte datapunkter bestående af et antal egenskaber i passende kategorier fra en prædifineret mængde af diskrete, beskrivende kategorier. Disse datapunkter er også kendt som tupler bestående af $(x,y)$, hvor $x$ er de givne egenskaber, og $y$ er punktets kategori. Klassificering består i definitionen af at finde en passende klassificeringsmodel, hvilket er en funktion $f$ der tager et datapunkt $x$ og returnerer den tilhørende kategori $y$.
 
 Der findes adskillige teknikker til at bestemme en klassificeringsmodel. En sådan teknik beskriver en læringsalgoritme, der på basis af et træningssæt (et sæt af datapunkter med kendte kategorier) udleder en (evt. suboptimal) model.
 
-Det er sjældent muligt at klassificere ethvert givent punkt korrekt ud fra de tilgængelige egenskaber, og vi har derfor brug for en måde at afgøre nøjagtigheden af den resulterende model. Denne nøjagtighed estimeres ved at klassificere et testsæt med modellen, og se på hvor stor en andel af datapunkterne der har fået den rigtige kategori. Omvendt betegnes manglen på nøjagtighed som modellens fejlrate. Ligesom træningssættet er testsættet en mængde af datapunkter med kendte kategorier. Udregningerne består da i at klassificere punkterne i testsættet ved hjælp af modellen, og sammenligne punkternes kategorier som udregnet af modellen med deres egentlige kategorier, som vi kender i forvejen.\\
+Det er sjældent muligt at klassificere ethvert givent punkt korrekt ud fra de tilgængelige egenskaber, og vi har derfor brug for en måde at afgøre nøjagtigheden af den resulterende model. Denne nøjagtighed estimeres ved at klassificere et testsæt med modellen, og se på hvor stor en andel af datapunkterne der har fået den rigtige kategori. Omvendt betegnes manglen på nøjagtighed som modellens fejlrate. Ligesom træningssættet er testsættet en mængde af datapunkter med kendte kategorier. Udregningerne består da i at klassificere punkterne i testsættet ved hjælp af modellen, og sammenligne punkternes kategorier som udregnet af modellen med deres egentlige kategorier, som vi kender i forvejen.
+
 Det er essentielt at testsættet ikke overlapper med træningssættet, da dette vil tildele en for høj nøjagtighed til modellen. Har man f.eks.\ et meget lille træningssæt kan man nemt lave en model, som tilfældigvis passer perfekt på træningssættet, men som i realiteten er helt forkert. Tester man modellen på et testsæt som næsten overlapper fuldstændigt med træningssættet vil de overlappende punkter højst sandsynligt klassificeres korrekt, hvilket resulterer i meget høj nøjagtighed, selvom modellen i virkeligheden kun passer netop på træningssættet. 
 
 For at udregne nøjagtiheden og fejlraten af klassificeringen bruger vi en \textit{confusion matrix}. En \textit{confusion matrix} ser formelt ud som i tabel 1 nedenfor. Her angiver $f_{ij}$ antallet af datapunkter i testsættet som tilhører klasse $i$, og blev klassificeret som klasse $j$. I det optimale tilfælde, hvor alle datapunkter klassificeres korrekt, har vi intuitivt $f_{ij}=0$ for $i\neq j$, hvilket manifesteres i en diagonal matrice.\\
@@ -117,17 +122,17 @@ For at udregne nøjagtiheden og fejlraten af klassificeringen bruger vi en \text
 \begin{table}[H]
 \begin{center}
 \begin{tabular}{cc|c|c|c|c|}
-    & \multicolumn{5}{c}{Predicted Class} \\
+    & \multicolumn{5}{c}{Forventet klasse} \\
     \cline{3-6}
-     & & Class = 0 & Class = 1 & .. & Class = n \\
+     & & Klasse = 0 & Klasse = 1 & .. & Klasse = n \\
     \cline{2-6}
-    \multicolumn{1}{c|}{\multirow{4}{*}{Actual Class}} & Class = 0 & $f_{00}$ & $f_{01}$ & .. & $f_{0n}$ \\
+    \multicolumn{1}{c|}{\multirow{4}{*}{Faktiske klasse}} & Klasse = 0 & $f_{00}$ & $f_{01}$ & .. & $f_{0n}$ \\
     \cline{2-6}
-    \multicolumn{1}{c|}{} & Class = 1 & $f_{10}$ & $f_{11}$ & .. & $f_{1n}$ \\
+    \multicolumn{1}{c|}{} & Klasse = 1 & $f_{10}$ & $f_{11}$ & .. & $f_{1n}$ \\
     \cline{2-6}
     \multicolumn{1}{c|}{} & .. & .. & .. & .. & .. \\
     \cline{2-6}
-    \multicolumn{1}{c|}{} & Class = n & $f_{n0}$ & $f_{n1}$ & .. & $f_{nn}$ \\
+    \multicolumn{1}{c|}{} & Klasse = n & $f_{n0}$ & $f_{n1}$ & .. & $f_{nn}$ \\
     \cline{2-6}
 \end{tabular}
 \caption{\textit{Confusion matrix}}
@@ -195,7 +200,7 @@ Dette ser undertiden fint ud, men prøver man sætte et næbdyr ind i denne mode
 \subsection{Beslutningstræer}
 Et eksempel på en klassificeringsteknik er gennem brug af beslutningstræer (\textit{decision trees}). Et beslutningstræ består af knuder og blade samt en rodknude. Et datapunkt kan da klassificeres ved at traversere træet startende i roden.
 
-Hver knude består af et spørgsmål, som har en definitiv mængde svar, der kan besvares ud fra egenskaberne i et givent datapunkt. Ud fra svaret (altså datapunktets egenskaber) peger knuden videre til en ny knude eller et blad. Et blad repræsenterer den endelige kategori. I eksemplet i figur 1, kan der ses et eksempel på hvordan et beslutningstræ fungerer. I dette eksempel antager vi, at vi har fået en mængde, som indeholder enten biler, fly eller både. Vi starter med at spørge om det givet datapunkt har hjul, hvis nej må det være en båd, hvis ja kan det enten være en bil eller et fly, og derfor spørger vi igen, denne gang om det givet datapunkt har vinger, hvis ja er det et fly, og hvis nej må det være en bil. På denne måde har vi sikret os at vores datapunkt er kommet i den rigtige kategori.
+Hver knude består af et spørgsmål, som har en definitiv mængde svar, der kan besvares ud fra egenskaberne i et givent datapunkt. Ud fra svaret (altså datapunktets egenskaber) peger knuden videre til en ny knude eller et blad. Et blad repræsenterer den endelige kategori. I eksemplet i figur 1, kan der ses et eksempel på hvordan et beslutningstræ fungerer. I dette eksempel antager vi, at vi har fået en mængde, som indeholder enten biler, fly eller både. Vi starter med at spørge om det givne datapunkt har hjul, hvis nej må det være en båd, hvis ja kan det enten være en bil eller et fly, og derfor spørger vi igen, denne gang om det givet datapunkt har vinger, hvis ja er det et fly, og hvis nej må det være en bil. På denne måde har vi sikret os at vores datapunkt er kommet i den rigtige kategori.
 
 \begin{figure}[H]
 \begin{center}
@@ -225,7 +230,7 @@ Et (muligvis suboptimalt) beslutningstræ kan konstrueres fra et træningssæt m
 
 
 \subsubsection{Eksempel på modeludledning}
-For at illustrere brugen af decision trees vil vi her vise et eksempel på, hvordan man ud fra et todimensionelt træningssæt og testsæt kan bygge og efterteste en klassificeringsmodel. Betragt træningssættet til venstre i figur 2 nedenfor. Tegner vi punkterne ind i et koordinatsystem opnår vi figuren til højre, hvor blå cirkler er A, røde plusser er B og gule stjerner er C.
+For at illustrere brugen af \textit{decision trees} vil vi her vise et eksempel på, hvordan man ud fra et todimensionelt træningssæt og testsæt kan bygge og efterteste en klassificeringsmodel. Betragt træningssættet til venstre i figur 2 nedenfor. Tegner vi punkterne ind i et koordinatsystem opnår vi figuren til højre, hvor blå cirkler er A, røde plusser er B og gule stjerner er C.
 
 \begin{figure}[H]
 	\begin{minipage}[t]{0.27\linewidth}
@@ -339,7 +344,7 @@ Testsættet passer næsten overens, men der er et enkelt punkt som ikke overhold
 
 \section{Support Vector Machines (SVM)}
 
-En SVM træningsalgoritme er en type klassifikationsteknik til binær klassifikation, som er specielt egnet til kontinuert data af mange dimensioner. Teknikken baseres på at finde et \textit{maximal margin hyperplane}, altså et hyperplan som deler datapunkterne op i to dele svarende til deres kategori, med maksimal margin til de nærmeste punkter. Dette hyperplan betegnes som modellens grænse (\textit{decision boundary}). Vores gennemgang af teorien og brugen af SVM baseres i høj grad på beskrivelsen i \cite{data-mining}.
+En SVM træningsalgoritme er en type klassifikationsteknik til binær klassifikation, som er specielt egnet til kontinuert data af mange dimensioner. Teknikken baseres på at finde et \textit{maximal margin hyperplane}, altså et hyperplan som deler datapunkterne op i to dele svarende til deres kategori, med maksimal margin til de nærmeste punkter. Dette hyperplan betegnes som modellens grænse (\textit{decision boundary}). Vores gennemgang af teorien og brugen af SVM baseres i høj grad på beskrivelsen i \cite{data-mining} delvist suppleret af \cite{kernel-induced-feature-spaces}.
 
 Formålet med at maksimere margin er at optimere modellens generaliseringsevne, og dermed opnå bedst mulig nøjagtighed, når nye punkter skal klassificeres. Hvis grænsen har meget lille margin, er der intuitivt ikke plads til meget forskel på dataen sammenlignet med træningssættet. Dette koncept illustreres i eksemplet nedenfor.
 
@@ -405,7 +410,7 @@ w\cdot x_1 - w\cdot x_2 &= 2\\
 w\cdot(x_1-x_2)&=2
 \label{eq:d_1}
 \end{align}
-Bemærker at venstre side af (\ref{eq:d_1}) er prikproduktet mellem to euklediske vektorer. Vi kan da udnytte at $A\cdot B = ||A||\times||B||\times\cos\theta$, hvor $A$ og $B$ er euklediske vektorer, og $\theta$ er vinklen mellem dem:
+Bemærk at venstre side af (\ref{eq:d_1}) er prikproduktet mellem to euklidiske vektorer. Vi kan da udnytte at $A\cdot B = ||A||\times||B||\times\cos\theta$, hvor $A$ og $B$ er euklidiske vektorer, og $\theta$ er vinklen mellem dem:
 \begin{equation}
 ||w||\times||x_1-x_2||\cos\theta=2
 \end{equation}
@@ -431,20 +436,20 @@ Da fortegnet på $y_i$ vil svare til fortegnet af $w\cdot x_i+b$ og $||w\cdot x_
 y_i(w \cdot x_i + b) \geq 1, \ i =1,2,...,N
 \end{equation}
 
-Fra (\ref{eq:d_2}) er det klart, at for at maksimere $d$ må vi minimere $w$. Vi opstiller nu den objektive funktion i (\ref{eq:objective_function}).
+Fra (\ref{eq:d_2}) er det klart, at for at maksimere $d$ må vi minimere $||w||$. Vi opstiller nu den objektive funktion i (\ref{eq:objective_function}).
 \begin{equation}
 \label{eq:objective_function}
 f(w)=\frac{||w||^2}{2}
 \end{equation}
 
-Vi definerer nu optimeringen af det separerbare lineære SVM som en betinget minimeringen af $w$ i (\ref{eq:objective_function}) under betingelsen(\ref{eq:req_final}).
+Vi definerer nu optimeringen af det separerbare lineære SVM som en betinget minimering af $||w||$ i (\ref{eq:objective_function}) under betingelserne (\ref{eq:req_final}).
 
 
 
 \subsubsection{Optimering}
-For at optimere vores objektive funktion, skal vi bruge \textit{Lagrange multiplier}, \textit{Lagrange multiplier} er en metode der bruges til at finde en funktions minimum eller maksimum, og i dette tilfælde skal vi bruge den til at finde (\ref{eq:objective_function})'s minimum, da dette vil give os den optimale grænse. Vi bruger \textit{Lagranges multiplier} da vores problem består af en kvadratisk objektiv funktion, og vores begrænsninger er lineære i parametrene $w$ og $b$, hvilket ender ud i at være et konvekst optimeringsproblem, og her bliver \textit{Lagranges multiplier} brugt som standard.
+For at optimere vores objektive funktion, skal vi bruge \textit{Lagrange multipliers}. \textit{Lagrange multipliers} er en metode der bruges til at finde en funktions minimum eller maksimum med betingelser, og i dette tilfælde skal vi bruge den til at finde (\ref{eq:objective_function})'s minimum, da dette vil give os den optimale grænse. Vi bruger \textit{Lagrange multipliers} da vores problem består af en kvadratisk objektiv funktion, og vores betingelser er lineære i parametrene $w$ og $b$, hvilket ender ud i at være et konvekst optimeringsproblem, og her bliver \textit{Lagrange multipliers} brugt som standard.
 
-Det ses let at i vores objektive funktion (\ref{eq:objective_function}), at for at opnå den minimale værdi ville $w = 0$ være den bedste løsning, men denne løsning ville ikke holde da vores betingelser i uligheden fra (\ref{eq:req_final}) ikke vil blive overholdt, og hvis uligheden ikke bliver overholdt, vil det ikke være muligt finde en løsning til problemet. For at løse dette problem, vil vi transformere vores objektive funktion \ref{eq:objective_function} til en \textit{Lagrangian} funktion, en \textit{Lagrangian} funktion inkorporerer vores ulighed fra (\ref{eq:req_final}) i vores objektive funktion (\ref{eq:objective_function}), og hvis uligheden ikke bliver overholdt, vil værdien af funktionen stige, og dermed give et dårligere resultat. Ved at have omskrevet vores objektive funktion (\ref{eq:objective_function}) til en \textit{Lagrangian} funktion, vil det også være muligt for os at bruge \textit{Lagrange multipliers}, og det ses også i funktionen (\ref{eq:L_P}), som er vores \textit{Lagragian} funktion hvor vores uligheder er blevet inkorporeret, at der er blevet indsat et $\lambda$, som er vores \textit{Lagrange multiplier}.
+Det ses let fra vores objektive funktion (\ref{eq:objective_function}), at for at opnå den minimale værdi ville $w = 0$ være den bedste løsning, men denne løsning ville ikke holde da vores betingelser i uligheden fra (\ref{eq:req_final}) ikke vil blive overholdt, og hvis uligheden ikke bliver overholdt, vil det ikke være muligt finde en løsning til problemet. For at løse dette problem, vil vi transformere vores objektive funktion (\ref{eq:objective_function}) til en \textit{Lagrangian} funktion. En \textit{Lagrangian} funktion inkorporerer vores ulighed fra (\ref{eq:req_final}) i vores objektive funktion (\ref{eq:objective_function}), og hvis uligheden ikke bliver overholdt, vil værdien af funktionen stige, og dermed give et dårligere resultat. Ved at have omskrevet vores objektive funktion (\ref{eq:objective_function}) til en \textit{Lagrangian} funktion, vil det også være muligt for os at bruge \textit{Lagrange multipliers}, og det ses også i funktionen (\ref{eq:L_P}), som er vores \textit{Lagragian} funktion hvor vores betingelser er blevet inkorporeret, at der er blevet indsat et $\lambda$, som er vores \textit{Lagrange multiplier}.
 \begin{equation}
 \label{eq:L_P}
 L_P = \frac{1}{2}||w||^2 - \sum\limits_{i=1}^N \lambda_i (y_i(w \cdot x_i + b) - 1)
@@ -459,7 +464,7 @@ For at kunne minimere vores \textit{Lagrangian} funktion, skal vi først lave to
 \label{eq:partial_L_pb}
 \frac{\partial L_p}{\partial b} = 0 \Rightarrow \sum\limits_{i=1}^N \lambda_i y_i = 0
 \end{equation}
-Selvom vi har fundet de partielt differentierede funktioner, er det stadig ikke muligt at finde $w$ og $b$, dette skyldes at vores definition af vores objektive funktion kun indeholder uligheder, og at \textit{Lagrange multiplier} skal bruge ligheder. Hvis vores definition havde indeholdt ligheder, ville det havde været muligt at finde værdierne til $w$, $b$ og $\lambda$ med de $N$ ligninger som vi har fundet. Men for at løse dette problem skal vi transformere vores uligheder til ligheder. Dette kan vi gøre med \textit{Karush-Kuhn-Tucker} betingelserne. Disse betingelser kan ses nedenfor.
+Selvom vi har fundet de partielt differentierede funktioner, er det stadig ikke muligt at finde $w$ og $b$, dette skyldes at vores definition af vores objektive funktion kun indeholder uligheder, og at \textit{Lagrange multipliers} skal bruge ligheder. Hvis vores definition havde indeholdt ligheder, ville det havde været muligt at finde værdierne til $w$, $b$ og $\lambda$ med de $N$ ligninger som vi har fundet. Men for at løse dette problem skal vi transformere vores uligheder til ligheder. Dette kan vi gøre med \textit{Karush-Kuhn-Tucker} betingelserne. Disse betingelser kan ses nedenfor.
 \begin{equation}
 \label{eq:constraint_lambda_i1}
 \lambda_i \geq 0
@@ -489,21 +494,21 @@ Når vi endelig er færdig med at beregne alle vores parametre for vores grænse
 f(z) = sign(w \cdot z + b) = sign( \sum\limits_{i=1}^N \lambda_i y_i x_i \cdot z + b)
 \end{equation}
 
-\subsubsection{Ikke-separerbare tilfælde}
-I nogle tilfælde vil den bedste grænse ikke altid klassificere alle punkter i det givet dataset korrekt. Dette kan skyldes forskellige ting såsom fejl i træningsdata, eller at der er et enkelt dataset, som ikke holder sig til mønstret for dens klassificering. I disse tilfælde vil vi stadig prøve at opnå så stor en afstand mellem vores margener som muligt, selvom enkelte dataset bliver klassificeret forkert. Dette skyldes at hvis vi valgte en grænse, som ville opdele vores træningssæt uden fejl, ville grænsen ofte have en meget lille afstand mellems dens margener, og dette vil gøre at modellen ville være meget udsat for \textit{overfitting}. På grafen nedenfor ses et eksempel, hvor at $B2$ ville være den oplagte grænse at vælge, da den opdeler alt data korrekt, men vi også vælge $B1$ grundet at den har en større afstand mellem sine margener, og risikoen for \textit{overfitting} ville være mindre. 
-\begin{figure}[H]
-	\begin{minipage}[t]{0.6\linewidth}
-		\includegraphics[width=7cm]{svm_plot_1}
-	\end{minipage}
-	\begin{minipage}[t]{0.1\linewidth}
-		\includegraphics[width=7cm]{svm_plot_1_2}
-	\end{minipage}
-\caption{\textit{Til venstre: Opdeling af et ikke-sparerebart tilfælde. Til højre: Opdeling af et ikke-sparerebart tilfælde, med fejl kvalificeret punkter.}}
-\label{fig:hyperplane_example_1}
-\end{figure}
-Grundet at vi har punkter der ikke er klassificeret rigtigt af vores grænse, vil vores tidligere ligninger ikke passe på alle vores dataset. For at rette dette introducerer vi \textit{slack variables} ($\xi$). Disse variabler skal estimere hvor stor afstand der er til det korrekte hyperplan, og dette gøres ved at addere eller subtrahere (hvilke der skal bruges kommer an på hvor datapunktet er placeret) med vores nye variable ($\xi$). 
+\subsubsection{Ikke-separerbare tilfælde og \textit{slack} variable}
+I nogle tilfælde vil den bedste grænse ikke altid klassificere alle punkter i det givet dataset korrekt. Dette kan skyldes forskellige ting såsom fejl i træningsdata, at enkelte datepunkter ikke holder sig til det generelle mønste. I visse tilfælde kan dataen være decideret ikke-separerbare. I disse tilfælde vil vi stadig prøve at opnå så stor en afstand mellem vores margener som muligt, selvom enkelte punkter vil blive klassificeret forkert.
 
- Som det kan ses i vores to nye ligninger skal vi subtrahere hvis vores dataset er placeret under grænsen, men den skal kvalificeres, som om den lå oven for grænsen, dette gør vi ved at subtraherer  højresiden af ligningen med vores \textit{slack variable}, med en værdi som gør at formlen er sand. Det samme gælder for det omvendte scenarie, men her bruges addition på højre siden af ligningen for at få ligningen til at blive sand.  
+Antag at vi har et ikke-separerbart datasæt, og betragt opdelingen i figur \ref{fig:non-separable-data}. Med denne grænse er to punkter klassificeret forkert, hvilket betyder at modellen ikke kan være helt nøjagtig.
+
+\begin{figure}[H]
+	\begin{center} 
+	\includegraphics[width=7cm]{svm_plot_1_2}
+	\end{center}
+	\caption{Opdeling af ikke-separerbar data.}
+	\label{fig:non-separable-data}
+\end{figure}
+
+For at tage højde for dette introduceres såkaldt \textit{slack} variable $\xi_i$ for $i=1,2..N$, som tilføjer en vægtning af forkert klassificerede punkter når vi optimerer modellen. Værdien af $\xi_i$ sættes så lavt som muligt sådan at ligningerne (\ref{eq:slack_hyperplane_1}) og (\ref{eq:slack_hyperplane_2}) går op.
+
 \begin{equation}
 \label{eq:slack_hyperplane_1}
 w \cdot x_i + b \geq 1 - \xi_i \ hvis \ y_i = 1
@@ -512,9 +517,20 @@ w \cdot x_i + b \geq 1 - \xi_i \ hvis \ y_i = 1
 \label{eq:slack_hyperplane_2}
 w \cdot x_i + b \leq -1 +\xi_i \ hvis \ y_i = -1
 \end{equation}
-Bemærk $\forall i : \xi_i > 0$
 
-For ikke bare at vælge en grænse med store margener, og så bare rette alle de forkerte klassificeret dataset til med \textit{slack variables}, introducerer vi en vægt for hvert datapunkt, som er kvalificeret forkert. Denne vægt kan ses i den modificerede objektive funktion nedenfor, bemærk at $C$ og $k$ bliver sat a brugeren (ofte vil $k = 1$ grundet simplicitet). Det ses klart at for hvert punkt, som er kvalificeret forkert, vil de valgte margener blive rangeret dårligere. 
+For et korrekt klassificeret punkt $x_i$ kan vi intuitivt sætte $\xi_i$ til 0. For et forkert klassificeret punkt $x_i$ med vinkelret afstand $a$ til den rigtige margen sættes $\xi_i=||w||*a$. Vi har altså $\xi_i\geq 0$ for alle $i=1,2...N$.
+
+Brugen af \textit{slack} variable er dog ikke begrænset til ikke-separerbar data. I praksis benyttes de også i separerbar data for at undgå \textit{overfitting}. Antag at vi har et separerbart datasæt som i figur \ref{fig:separable-data-slack}, og betragt de to grænser B1 og B2. I dette eksempel deler B2 træningssættet op uden fejl, men får en lille margin sammenlignet med B1, som passer bedre ind i det generelle mønster i dataen. Til gengæld fejlklassificerer B1 to punkter. Med tilgangen beskrevet i afsnittet om det separerbar tilfælde ville vi vælge B2, da der ikke måtte være nogen fejl, men dette er reelt \textit{overfitting}, da grænsen ikke passer på mønstret. Med indførslen af \textit{slack} variable kan vi nu objektivt opveje om B1 reelt er bedre end B2 på trods af de fejlklassificerede punkter.
+
+\begin{figure}[H]
+	\begin{center} 
+		\includegraphics[width=7cm]{svm_plot_1}
+	\end{center}
+	\caption{Opdeling af ikke-separerbar data.}
+	\label{fig:separable-data-slack}
+\end{figure}
+
+For at balancere mellem \textit{overfitting} og fejlklassificering, introducerer vi $\xi_i$ som vægt i den objektive funktion (\ref{eq:slack_objective_function}). Således vil antallet (samt størrelsen) af fejlklassificeringer veje imod bredden af margerne, når modellen optimeres. I den nye funktion vælges parameterne $C$ og $k$ til at afgøre, hvor tungt fejlklassicerede punkter skal veje (ofte vil $k = 1$ grundet simplicitet).
 \begin{equation}
 \label{eq:slack_objective_function}
 f(w) = \frac{||w||^2}{2}+C(\sum\limits_{i=1}^N \xi_i)^k
@@ -556,7 +572,7 @@ Igen finder vi de partielt differentieret funktioner af $L_p$.
 \frac{\partial L_p}{\partial \xi_i} = C - \lambda_i - \mu_i = 0 \Rightarrow \lambda_i + \mu_i = C
 \end{equation}
 
-Hvis man som sidst indsætter vores nye ligninger ind i vores \textit{Lagrangian} funktion får vi igen et \textit{dual problem}, og dette er det samme som vi fandt frem til i det \textit{separable} tilfaelde. Den skiller sig lidt ud da vi har lidt flere betingelser, sidst havde vi bare at $\lambda_i \geq 0$, her har vi at $C \geq \lambda_i \geq 0$. Herfra er det den samme fremgangsmåde med \textit{quadratic programming} etc, som i det \textit{separable} tilfælde, se (\ref{eq:final_opt}) og (\ref{eq:calc_class}).
+Hvis man som sidst indsætter vores nye ligninger ind i vores \textit{Lagrangian} funktion får vi igen et \textit{dual problem}, og dette er det samme som vi fandt frem til i det separerbare tilfælde. Den skiller sig lidt ud da vi har lidt flere betingelser, sidst havde vi bare at $\lambda_i \geq 0$, her har vi at $C \geq \lambda_i \geq 0$. Herfra er det den samme fremgangsmåde med \textit{quadratic programming} etc, som i det \textit{separable} tilfælde, se (\ref{eq:final_opt}) og (\ref{eq:calc_class}).
 \begin{equation}
 \label{eq:slack_L_D}
 L_D = \sum\limits_{i=1}^N \lambda_i - \frac{1}{2}\sum\limits_{i,j}\lambda_i \lambda_j y_i y_j x_i \cdot x_j
@@ -567,8 +583,8 @@ Det er ikke altid muligt at definere en lineær opdeling af dataen. Den tilgæng
 
 Antag at vi har en transformation $\Phi(x)$ fra det originale rum til et transformeret rum, hvor en lineær opdeling er mulig. Så kan vi genbruge vores viden fra det lineære tilfælde, og optimeringen er nogenlunde den samme. For at opnå den maksimale margin skal vi igen minimere funktionen 
 $$f(w)=\frac{||w||^2}{2}$$
-Under kravet at
-$$y_i(w\cdot\Phi(x_i)+b)\geq 1,\text{ for }i=1,2..,N$$
+under betingelserne:
+$$y_i(w\cdot\Phi(x_i)+b)\geq 1,\text{ for }i=1,2..,N.$$
 Ligningen er næsten identisk med det lineære tilfælde, men vi optimerer nu med $\Phi(x_i)$ - altså $x_i$ i det transformerede rum.
 
 Lagrange kan nu benyttes på samme måde som i det lineære tilfælde. Også her skal vi blot benytte de transfomerede punkter.
@@ -757,7 +773,7 @@ Lad $G_1$ og $G_2$ være de to givet grafer, og lad $s(G_1)$ og $s(G_2)$ være g
 k_{baseline_2}(G_1,G_2)=exp\left(-\frac{\left(s(G_1)- s(G_2)\right)\cdot\left(s(G_1)- s(G_2)\right)}{\epsilon}\right)
 \end{equation}
 
-\subsubsection{$degree\ distributions$}
+\subsubsection{$Degree\ distributions$}
 \label{section:degree_distributions}
 Hvor $baseline_1$ kun benytter egenskaberne af knuderne, baseres denne kerne udelukkende  på den interne struktur i graferne. I vores implementation sammenligner kernen grafernes $degree\ distributions$ (gradfordelinger) i en Gaussisk kerne.
 
@@ -834,27 +850,29 @@ I figur \ref{fig:cross_validation} (venstre) illustreres hvordan testsættet (gr
 			\EndFunction
 		\end{algorithmic}
 	\end{minipage}
-\caption{\textit{Til venstre: De forksellige iterationer i 10-fold cross validation. De røde felter symbolisere det valgte valideringssæt, og de grå det valgte testsæt. Til højre: Simplificeret pseudokode af Karsten M. Borgwardt's 10-fold cross validation.}}
+\caption{\textit{Til venstre: De forskellige iterationer i 10-fold cross validation. De røde felter symbolisere det valgte valideringssæt, og de grå det valgte testsæt. Til højre: Simplificeret pseudokode af Karsten M. Borgwardt's 10-fold cross validation.}}
 \label{fig:cross_validation}
 \end{figure}
 
 
 \subsection{Eksperimenter}
 For at verificere resultaterne i \cite{trivial-kernels} har vi selv gennemført eksperimenterne.
-Vores primære mål med eksperimenterne er at verificere, at de to simple grafkerner beskrevet i \cite{trivial-kernels} kan måle sig med de etablerede og mere komplekse grafkerner. Til at tjekke dette har vi brugt fem forskellige datasæt (MUTAG, ENZYMES, DD, NCI1, NCI109), vi har valgt at bruge disse datasæt da de ses som standard benchmarks i grafklassificering. For at estimere grafkernernes nøjagtighed har vi brugt \textit{10-fold cross-validation} gennem \cite{libsvm} som beskrevet i afsnittet om krydsvalidering. \\
+Vores primære mål med eksperimenterne er at verificere, at de to simple grafkerner beskrevet i \cite{trivial-kernels} samt \textit{Degree distributions} kan måle sig med de etablerede og mere komplekse grafkerner. Til at tjekke dette har vi brugt fem forskellige datasæt (MUTAG, ENZYMES, DD, NCI1, NCI109), vi har valgt at bruge disse datasæt da de ses som standard benchmarks i grafklassificering. For at estimere grafkernernes nøjagtighed har vi brugt \textit{10-fold cross-validation} gennem \cite{libsvm} som beskrevet i afsnittet om krydsvalidering. \\
 Af grafkerner har vi valgt at bruge de følgende: $baseline_1$ \cite{trivial-kernels}, $baseline_2$ \cite{trivial-kernels}, \textit{degree distributions}, \textit{Weisfeiler-Lehman} \cite{WL}, \textit{Ramon \& Gartner} \cite{RG},  \textit{GraphHopper} \cite{graphhopper}, \textit{Graphlet count} \cite{GC}, \textit{Random walk} \cite{RW} og \textit{Shortest path} \cite{shortest-path}, disse grafkerner repræsentere de mest brugte grafkerner, samt de simple grafkerner fra \cite{trivial-kernels} og \textit{degree distributions}. \\
 Nogle af de nævnte grafkerner har behov for at et sæt af specielle parametre, disse parametre har vi sat på følgende måder.\\
 Vores simple grafkerner $baseline_1$, $baseline_2$ og \textit{degree distribitions} kræver hver især et $\epsilon$, dette $\epsilon$ skal tilpasses for at finde det mest optimale, metoden vi bruger til at sætte dette $\epsilon$ er beskrevet i hhv. \ref{section:baseline_1}, \ref{section:baseline_2} og \ref{section:degree_distributions}.\\
-Den næste grafkerne \textit{Weisfeiler-Lehman} kræver kun en parameter sat, denne parameter specificere hvor mange iterationer algoritmen skal udføre, her har vi valgt at den skal udføre $10$ iterationer. \\
-\textit{Ramon \& Gartner} indeholder også en speciel parameter, denne parameter bestemmer den maksimale højde af træet, her har vi valgt at sætte den til $3$, denne kunne godt sættes højere, dette ville resultere i bedre resultater, men grundet at dette vil også forøge dens allerede høje køretid, har vi valgt ikke at sætte den for højere. \\
+Den næste grafkerne \textit{Weisfeiler-Lehman} kræver kun en parameter sat. Denne parameter specificerer, hvor mange iterationer algoritmen skal udføre. Her har vi selv valgt (uden brug af krydsvalidering) at den skal udføre $10$ iterationer. \\
+\textit{Ramon \& Gartner} indeholder også en speciel parameter. Denne parameter bestemmer den maksimale højde af træet. Her har vi valgt at sætte den til $3$. Værdien kunne godt sættes højere. Dette ville resultere i bedre resultater, men grundet at dette vil også forøge dens allerede høje køretid, har vi selv valgt ikke at sætte den for højt. \\
 For \textit{Random walk} skal vi sætte parameteren \textit{lambda}, hvilke vi har sat til $\frac{1}{d^2}$, hvor $d$ er den maksimale grad for de givet grafer. Denne formel er beskrevet i kildekoden til grafkernen.\\
-\textit{GraphHopper} har tre parametre, hvor den vigtigste af de tre bestemmer hvilke slags kernetype der vil blive brugt, her har vi valgt at den skal bruge den der hedder \textit{"dirac"}.
+\textit{GraphHopper} har tre parametre, hvor den vigtigste af de tre bestemmer hvilke slags kernetype der vil blive brugt, her har vi valgt at den skal bruge den der hedder \textit{"dirac"}.\\
+\textit{Shortest path} kan køres så der kun tages højde for længden af stierne, eller så der også tages højde for knudernes egenskaber (f.eks. som i (\ref{eq:k_node})). Vi har valgt at tage højde for begge.\\
+\textit{Graphlet count}
 
 \subsubsection{Afgrænsning}
-Vi har udregnet resultaterne af 9 forskellige kerner. Af disse har vi sat os ind i $baseline_1$, $baseline_2$, $degree\ distributions$, $Weisfeiler-Lehman$ og $Shortest\ path$, mens de resterende kerner blot er med som sammenligning. Tomme felter (markeret med '-') i tabel \ref{table:results} angiver at vi har sprunget de pågældende udregninger over pga. tidsforbruget.
+Vi har udregnet resultaterne af 9 forskellige kerner. Af disse har vi sat os ind i $baseline_1$, $baseline_2$, $degree\ distributions$, \textit{Shortest path} og (i mindre grad) \textit{Weisfeiler-Lehman}, mens de resterende kerner blot er med som sammenligning. Tomme felter (markeret med '-') i tabel \ref{table:results} angiver at vi har sprunget de pågældende udregninger over pga. tidsforbruget.
 
 \subsubsection{Kørsel}
-Alle eksperimenter er kørt i Matlab gennem \textit{libsvm} \cite{libsvm}. De simple kerner ($baseline_1$, $baseline_2$, $degree\ distributions$) har vi selv implementeret i Matlab, mens eksperimenterne med de resterende kerner benytter eksisterende implementationer.
+Alle SVM-eksperimenter er kørt i Matlab gennem \textit{libsvm} \cite{libsvm}. De simple kerner ($baseline_1$, $baseline_2$, $degree\ distributions$) har vi selv implementeret i Matlab, mens eksperimenterne med de resterende kerner benytter eksisterende implementationer. Resultaterne kan aflæses i tabel \ref{table:results}.
 
 \begin{table}[H]
 \begin{center}
@@ -887,7 +905,8 @@ Shortest path \cite{shortest-path} & \boldmath$85.6667 (\pm 2.2951)$ & $41.5500 
 Gennemgående giver \textit{Weisfeiler-Lehman} de bedste resultater på alle de datasæt, som vi har testet på, og kunne samtidig udregnes med rimeligt tidsforbrug. De simple kerner kan i flere tilfælde give resultater på niveau med de etablerede kerner, og resultaterne ligger generelt tæt på resultaterne udgivet i \cite{trivial-kernels}. Dog er der en markant forskel i vores resultat for $baseline_2$ på NCI109 ($62.3956$) sammenlignet med resultatet i \cite{trivial-kernels} ($73.0$). Vi observerer i den sammenhæng at resultaterne på NCI1 og NCI109 er meget nær hinanden i alle vores tests, mens der er et stort spring i resultaterne for $baseline_2$ i \cite{trivial-kernels} for disse to datasæt (hhv. 62.1 på NCI1 og 73.0 på NCI109). De to datasæt er imidlertid meget lig hinanden (\cite{graph-datasets}, s.\ 111), og der bør derfor ikke være så stort et spring i resultaterne.
 
 \section{Konklusion}
-Vi har sat os ind i materialet omkring grafkerner og klassificering af grafer ved hjælp af SVM, og har gentaget en række eksperimenter fra \cite{trivial-kernels}. Vores resultater underbygger generelt de postulerede resultater (se \ref{section:result_comments}), og vi støtter konklusionen i \cite{trivial-kernels} om, at man skal overveje om et problem kan løses ved hjælp af en simpel kerne, fremfor at overkomplicere problemet og gå direkte til mere avancerede kerner.
+Vi har sat os ind i materialet omkring grafkerner og klassificering af grafer ved hjælp af SVM, og har gentaget en række eksperimenter fra \cite{trivial-kernels}.
+Vores resultater er meget lig resultaterne præsenteret i \cite{trivial-kernels}, og som sådan kan de simple kerner ofte opnå resultater på niveau med flere etablerede kerner. Dog giver den noget mere avancerede \textit{Weisfeiler-Lehman} kerne gennemgående overlegne resultater, så konklusionen, at grafdata er trivielt at klassificere, underbygges ikke af resultaterne.
 
 \section{Arbejdsfordeling}
 Med henblik på at få indsigt i hele teorien, har vi såvidt muligt arbejdet sammen om at skrive og forfine disse afsnit. Ligeledes har vi begge arbejdet på implementationerne i Matlab. Selve kørslerne af eksperimenterne har vi fordelt vilkårligt mellem os.
@@ -899,10 +918,15 @@ Med henblik på at få indsigt i hele teorien, har vi såvidt muligt arbejdet sa
 	Pang-Ning Tan, Michael Steinbach, Vipin Kumar.
 	\emph{Introduction to Data Mining, First ed.}.
 	Pearson, 2014.
+	
+	\bibitem{kernel-induced-feature-spaces}
+	Nello Christianini, John Shawe-Taylor.
+	\emph{An Introduction to Support Vector Mahines ans Other Kernel-based Learning Methods}.
+	Cambridge University Press, 2000.
 
 	\bibitem{trivial-kernels}
 	Yuliia Orlova, Morteza Alamgir, Ulrike von Luxburg.
-	\textit{Graph kernel benchmark data sets are trivial!}.
+	\emph{Graph kernel benchmark data sets are trivial!}.
 	2015.
 
 	\bibitem{WL}
