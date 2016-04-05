@@ -874,8 +874,10 @@ Vi har udregnet resultaterne af 9 forskellige kerner. Af disse har vi sat os ind
 \subsubsection{Kørsel}
 Alle SVM-eksperimenter er kørt i Matlab gennem \textit{libsvm} \cite{libsvm}. De simple kerner ($baseline_1$, $baseline_2$, $degree\ distributions$) har vi selv implementeret i Matlab, mens eksperimenterne med de resterende kerner benytter eksisterende implementationer. Resultaterne kan aflæses i tabel \ref{table:results}.
 
+
 \begin{table}[H]
-\begin{center}
+\centering
+\hspace*{-0.7in}
 \scalebox{0.7} {
 \begin{tabular}{c|c|c|c|c|c}
 Metoder/Dataset & MUTAG & ENZYMES & DD & NCI1 & NCI109 \\
@@ -891,14 +893,9 @@ Random walk \cite{RW} & \boldmath$85.1667 (\pm 1.9075)$ & $36.2833 (\pm 1.5357)$
 Shortest path \cite{shortest-path} & \boldmath$85.6667 (\pm 2.2951)$ & $41.5500 (\pm 1.5457)$ & - & $73.1946 (\pm 0.3625)$ & $73.1311 (\pm 0.2525)$ \\
 \end{tabular}
 }
-
-
-
-\end{center}
 \caption{\textit{Resultater}}
 \label{table:results}
 \end{table}
-
 
 \subsubsection{Kommentarer til resultater}
 \label{section:result_comments}
