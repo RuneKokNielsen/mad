@@ -866,7 +866,7 @@ Den næste grafkerne \textit{Weisfeiler-Lehman} kræver kun en parameter sat. De
 For \textit{Random walk} skal vi sætte parameteren \textit{lambda}, hvilke vi har sat til $\frac{1}{d^2}$, hvor $d$ er den maksimale grad for de givet grafer. Denne formel er beskrevet i kildekoden til grafkernen.\\
 \textit{GraphHopper} har tre parametre, hvor den vigtigste af de tre bestemmer hvilke slags kernetype der vil blive brugt, her har vi valgt at den skal bruge den der hedder \textit{"dirac"}.\\
 \textit{Shortest path} kan køres så der kun tages højde for længden af stierne, eller så der også tages højde for knudernes egenskaber (f.eks. som i (\ref{eq:k_node})). Vi har valgt at tage højde for begge.\\
-\textit{Graphlet count}
+\textit{Graphlet count} har ingen parametrer.
 
 \subsubsection{Afgrænsning}
 Vi har udregnet resultaterne af 9 forskellige kerner. Af disse har vi sat os ind i $baseline_1$, $baseline_2$, $degree\ distributions$, \textit{Shortest path} og (i mindre grad) \textit{Weisfeiler-Lehman}, mens de resterende kerner blot er med som sammenligning. Tomme felter (markeret med '-') i tabel \ref{table:results} angiver at vi har sprunget de pågældende udregninger over pga. tidsforbruget.
